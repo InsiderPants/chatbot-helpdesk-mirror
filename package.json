@@ -1,0 +1,27 @@
+{
+  "name": "customer-query-resolution-chatbot",
+  "version": "1.0.0",
+  "description": "customer-query-resolution-chatbot",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dabasajay/customer-query-resolution-chatbot.git"
+  },
+  "author": "Manish, Prashant, Raghav, Ayush, Ajay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dabasajay/customer-query-resolution-chatbot/issues"
+  },
+  "homepage": "https://github.com/dabasajay/customer-query-resolution-chatbot#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.2",
+    "nodemon": "^1.18.9",
+    "validator": "^10.10.0"
+  }
+}
