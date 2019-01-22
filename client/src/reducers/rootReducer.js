@@ -4,6 +4,6 @@ import resolutionReducer from './resolutionReducer';
 import errorReducer from './errorReducer';
 
 export default combineReducers({
-  resolution: resolutionReducer,
+  chat: resolutionReducer,
   errors: errorReducer,
 });

@@ -36,7 +36,7 @@ class Home extends React.Component {
 
     openChat = () => {
         this.setState({ 
-            open: true,
+            open: !this.state.open,
         })
     };
 

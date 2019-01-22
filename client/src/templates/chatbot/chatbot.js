@@ -11,10 +11,10 @@ import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Chats from './chats';
 
 //Actions
 import {getResolution} from '../../actions/getResolution';
+
 
 const styles = theme => ({
     textField: {
@@ -39,13 +39,14 @@ const styles = theme => ({
 });
 
 class Chatbot extends Component {
+
     state = {
         open: this.props.isOpen,
-        text: '',
-        item: []
+        text: ''
     }
 
     handleTextChange = (e) => {
+        e.preventDefault();
         this.setState({
             text: e.target.value
         })
@@ -58,23 +59,28 @@ class Chatbot extends Component {
         this.props.updateState(false);
     }
 
-    sendChat = () => {
+    sendChat = (e)=>{
+        e.preventDefault();
         let networkReq = {
             text: this.state.text
         }
         this.props.getResolution(networkReq)
-        const newItem = {
-            text: this.state.text,
-            reply: this.props.reply,
-        }
-        this.setState(state => ({
-            item: this.state.item.concat(newItem),
-            text: '',
-        }))
     }
 
     render() {
         const { classes } = this.props
+
+        const chat = this.props.conversation.map((item,key)=>{
+                return(
+                    <div key={key} style={{position: 'relative'}}>
+                        <br/>
+                        Client : {item.user}
+                        <br/>
+                        Server : {item.reply}
+                    </div>
+                );
+        })
+
         return(
             <div className={classes.root}>
                 <Button className={classes.closeIcon} onClick={this.closeChat}>
@@ -84,13 +90,15 @@ class Chatbot extends Component {
                     <LinearProgress className={classes.loadingBar}/> 
                     : null
                 }
-                <Chats item={this.state.item}/>
+
+                {chat}
+
                 <div className={classes.textArea}>
                     <Grid container spacing={8}>
                         <Grid item xs={10}>
                             <TextField
                                 className = {classes.textField}
-                                value={this.state.name}
+                                value={this.state.text}
                                 onChange={this.handleTextChange}
                                 placeholder="Enter Your Query"
                                 fullWidth
@@ -112,8 +120,10 @@ class Chatbot extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    isLoading: state.resolution.isLoading,
-    reply: state.resolution.reply
+    user: state.chat.user,
+    reply: state.chat.reply,
+    conversation: state.chat.conversation,
+    isLoading: state.chat.isLoading
 });
 
 export default compose(
@@ -123,4 +133,3 @@ export default compose(
     withRouter,
     withStyles(styles)
 )(Chatbot);
-
