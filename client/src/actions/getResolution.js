@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { GET_ERRORS, GET_RESOLUTION, LOADING_RESULTS } from './types';
 
-export const getResults = (data)=>(dispatch)=>{
+export const getResolution = (data) => (dispatch) => {
 	dispatch({type:LOADING_RESULTS});
 	axios.post('/api/getResolution', data)
 		.then(res => {

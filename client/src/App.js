@@ -1,6 +1,6 @@
 // Libraries
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route,Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {Provider} from 'react-redux';
 
 // Components

@@ -6,7 +6,7 @@ const express = require("express"),
 // @access : public route
 router.post("/getResolution",(req,res)=>{
 	// take data from request
-	
+	console.log(req.body);
 	// preprocess it
 	
 	// run algo and rest of the stuff
