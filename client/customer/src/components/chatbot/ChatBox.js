@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+// Components
+import {Input, Button, Icon, Form} from 'antd';
+import {ChatBubble} from './ChatBoxUtility';
 
+// Stylesheet
 import './style.css';
 
 //Actions
@@ -16,17 +17,43 @@ class ChatBox extends Component{
         this.state = {
             messageText: ""
         }
+
+        // refs
+        this.chatContainer = React.createRef();
+
         // Function binding to component
         this.onSend = this.onSend.bind(this);
         this.handelMessageFieldChange = this.handelMessageFieldChange.bind(this);
+        this.onSendEnterPress = this.onSendEnterPress.bind(this);
+    }
+    
+    componentDidUpdate(){
+        // Always scroll to the bottom of the chat
+        this.chatContainer.current.scrollTop = this.chatContainer.current.scrollHeight;
+    }
+    
+    onSendEnterPress(event){
+
+        if(event.key == 'Enter'){
+            if(this.state.messageText.length != 0){
+                this.props.getResolution({
+                    message: this.state.messageText
+                });
+                this.setState({messageText: ""});
+            }
+        }
+
     }
     
     onSend(){
-        console.log(this.state.messageText);
-        console.log(this.props.chat.conversation)
-        this.props.getResolution({
-            message: this.state.messageText
-        })
+        
+        if(this.state.messageText.length != 0){
+            this.props.getResolution({
+                message: this.state.messageText
+            });
+            this.setState({messageText: ""});
+        }
+               
     }
 
     handelMessageFieldChange(e){
@@ -38,44 +65,23 @@ class ChatBox extends Component{
 	render() {
 		return (
 			<div className="chat-box">
-				<div className="chat-container">
-					{
-                        this.props.chat.conversation.map((conv, index) => {
-                            if(conv.mtag === 'CLIENT'){
-                                return (
-                                    <div className='bubble me' key={index}>
-                                        {conv.message}
-                                    </div>
-                                );
-                            }
-                            else{
-                                return (
-                                    <div className='bubble you' key={index}>
-                                        {conv.message}
-                                    </div>
-                                );
-                            }
-                        })
-                    }
+				<div className="chat-container" ref={this.chatContainer}>
+					{this.props.chat.conversation.map((conv, index) => <ChatBubble mtag={conv.mtag} message={conv.message} key={index}/>)}
 				</div>
 				<div className="chat-sender">
-					<Grid container spacing={24} alignItems="center" justify="center">
-						<Grid item xs={10}>
-							<TextField
-								fullWidth={true}
-								defaultValue=""
-								margin="normal"
-                                variant="outlined"
-                                onChange={this.handelMessageFieldChange}
-							/>	
-						</Grid>
-						<Grid item xs={2}>
-							<Button variant="contained" color="primary" onClick={this.onSend}>
-								Send
-							</Button>
-						</Grid>
-					</Grid>
-								
+                    <Form>
+                        <Form.Item>
+                            <Input 
+                                onChange={this.handelMessageFieldChange} 
+                                size="large"
+                                value={this.state.messageText}
+                                suffix={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
+                                prefix={<Icon type="right" />}
+                                onKeyPress={this.onSendEnterPress}
+                            />
+                        </Form.Item>
+                    </Form>
+                    
 				</div>
 			</div> 
 		);

@@ -25,9 +25,14 @@ export default function(state=initialState,action){
 				isLoading:false
 			};
 		case SAVE_CHAT:
+			if(state.conversation[state.conversation.length-1].mtag === 'LOADING'){
+				state.conversation.pop()
+			}
+
 			state.conversation.push(action.payload)
 			return {...state};
 		case LOADING_RESULTS:
+			state.conversation.push({mtag:'LOADING'})
 			return {
 				...state,
 				isLoading:true
