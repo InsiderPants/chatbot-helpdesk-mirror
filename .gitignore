@@ -1,5 +1,8 @@
 node_modules/
 mongoData/
-client/node_modules
-client/coverage
-client/build
+client/executive/node_modules
+client/executive/coverage
+client/executive/build
+client/customer/node_modules
+client/customer/coverage
+client/customer/build
