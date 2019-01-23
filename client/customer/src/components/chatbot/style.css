@@ -41,20 +41,18 @@
   }
   
   .chat-box{
-    /* padding: 15px; */
-    /* border: 2px dashed black; */
-  
-    height: 680px;
+    width: 100%;
+    height: 600px;
   }
   
   .chat-container{
     padding: 15px;
     overflow: scroll;
-    height: 630px;
+    width: 100%;
+    height: 550px;
   }
   
   .chat-sender{
-    margin-top: 10px;
     /* background-color: #00b0ff; */
     height: 50px;
   }

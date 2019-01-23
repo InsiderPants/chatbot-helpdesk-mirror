@@ -4,12 +4,12 @@ import { GET_ERRORS, GET_AND_SAVE_USER_QUERY, GET_AND_SAVE_BOT_REPLY, SAVE_CHAT,
 
 export const getResolution = (data, dispatch) => {
 	dispatch((dispatcher) => {
-		dispatcher({type:LOADING_RESULTS});
 		dispatcher({type:GET_AND_SAVE_USER_QUERY, payload:data.message});
 		dispatcher({
 			type:SAVE_CHAT,
 			payload:{mtag:'CLIENT', message: data.message}
 		});
+		dispatcher({type:LOADING_RESULTS});
 
 		
 		setTimeout(() => {
