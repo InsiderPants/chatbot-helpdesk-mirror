@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import axios from 'axios';
 
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -11,29 +10,15 @@ import './style.css';
 //Actions
 import {getResolution} from '../../actions/getResolution';
 
-
 class ChatBox extends Component{
     constructor(){
         super();
         this.state = {
             messageText: ""
         }
-
-
         // Function binding to component
         this.onSend = this.onSend.bind(this);
         this.handelMessageFieldChange = this.handelMessageFieldChange.bind(this);
-    }
-    
-    
-    componentDidMount() {
-        axios.post('/api/getResolution',{some:"John doe"})
-            .then(res => {
-                console.log(res.data);
-            })
-            .catch(err => {
-                console.log(err);
-            });
     }
     
     onSend(){
@@ -56,7 +41,7 @@ class ChatBox extends Component{
 				<div className="chat-container">
 					{
                         this.props.chat.conversation.map((conv, index) => {
-                            if(conv.mtag == 'CLIENT'){
+                            if(conv.mtag === 'CLIENT'){
                                 return (
                                     <div className='bubble me' key={index}>
                                         {conv.message}
@@ -97,7 +82,7 @@ class ChatBox extends Component{
 	}
 };
 
-// Redux comection to component ----------
+// Redux connection to component
 const mapStateToProps = (state) => {
     return {chat : state.chat};
 }

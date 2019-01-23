@@ -6,3 +6,4 @@ client/executive/build
 client/customer/node_modules
 client/customer/coverage
 client/customer/build
+package-lock.json
