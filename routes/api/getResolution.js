@@ -13,10 +13,14 @@ router.post("/getResolution",(req,res)=>{
 	
 	// return results object
 	results = {
-		reply:"Hi from server!"
+		reply: "Hey you wanna go out tonight or what??"
 	}
 	console.log(results)
 	res.send(results)
 })
+
+// router.get('/exampleChats', (req, res) => {
+// 	res.json()
+// });
 
 module.exports = router
