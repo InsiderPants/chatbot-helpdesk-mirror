@@ -74,6 +74,7 @@ class ChatBox extends Component{
                             <Input 
                                 onChange={this.handelMessageFieldChange} 
                                 size="large"
+                                placeholder="Write a message..."
                                 value={this.state.messageText}
                                 suffix={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
                                 prefix={<Icon type="right" />}

@@ -30,7 +30,7 @@ export const getResolution = (data, dispatch) => {
 						payload:(err.response)?err.response.data:"Unknown Error Occured"})
 				);
 
-		},1000)
+		},1500)
 		
 	});
 }
