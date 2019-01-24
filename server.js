@@ -1,24 +1,26 @@
+// Required Libraries
 const express = require("express"),
 	  app = express(),
 	  mongoose = require("mongoose"),
 	  bodyParser = require('body-parser');
-
-const chatbotAPI = require("./routes/api/chatbot.js");
-const executiveAPI = require("./routes/api/executive.js");
 
 // Body Parser middleware to parse request
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json()) // if there's a json object in request, it'll populate it
 
 // Connecting to database
-// const db = require('./config/keys.js').mongoURI;
-// mongoose.connect(db,{useNewUrlParser:true})
-// 		.then(()=> console.log("Connected to database"))
-// 		.catch((err)=>console.log(err));
+const db = require('./config/keys.js').mongoURI;
+mongoose.connect(db,{useNewUrlParser:true})
+		.then(()=> console.log("Connected to database"))
+		.catch((err)=>console.log(err));
+
+// Required APIs
+const chatbotAPI = require("./routes/api/chatbot.js");
+const executiveAPI = require("./routes/api/executive.js");
 
 // Home
 app.get('/',(req,res)=>{
-	res.send("You reached Home!");
+	res.send("You've reached Server Home!");
 })
 
 // Use Routes, instead of using app.get()
@@ -34,7 +36,7 @@ app.post('*',(req,res)=>{
 	res.status(404).send("Page Not Found");
 })
 
-const port = process.env.PORT || "8000";
+const port = process.env.PORT || "8888";
 const ip = process.env.IP;
 
 app.listen(port,ip,()=>{
