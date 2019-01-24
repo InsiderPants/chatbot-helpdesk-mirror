@@ -13,7 +13,7 @@ export const getResolution = (data, dispatch) => {
 
 		
 		setTimeout(() => {
-			axios.post('/api/getResolution', data)
+			axios.post('/api/chatbotGetResolution', data)
 				.then(res => {
 					dispatcher({
 						type:GET_AND_SAVE_BOT_REPLY,

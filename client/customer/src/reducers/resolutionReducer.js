@@ -3,7 +3,7 @@ import {GET_AND_SAVE_USER_QUERY, GET_AND_SAVE_BOT_REPLY, SAVE_CHAT, LOADING_RESU
 const initialState = {
   user: {},
   reply: {},
-  conversation: [{mtag:'SERVER', message: 'Hi there! How can I help you?'}],
+  conversation: [{mtag:'SERVER', message: "Hi there! I'm a chatbot, how can I help you today?"}],
   isLoading: false
 };
 
@@ -21,7 +21,7 @@ export default function(state=initialState,action){
 				isLoading:false
 			};
 		case SAVE_CHAT:
-			if(state.conversation.length != 0){
+			if(state.conversation.length !== 0){
 				if(state.conversation[state.conversation.length-1].mtag === 'LOADING'){
 					state.conversation.pop()
 				}

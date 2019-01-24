@@ -3,7 +3,8 @@ const express = require("express"),
 	  mongoose = require("mongoose"),
 	  bodyParser = require('body-parser');
 
-const getResolutionAPI = require("./routes/api/getResolution.js");
+const chatbotAPI = require("./routes/api/chatbot.js");
+const executiveAPI = require("./routes/api/executive.js");
 
 // Body Parser middleware to parse request
 app.use(bodyParser.urlencoded({extended:false}));
@@ -21,7 +22,8 @@ app.get('/',(req,res)=>{
 })
 
 // Use Routes, instead of using app.get()
-app.use('/api',getResolutionAPI);
+app.use('/api',chatbotAPI);
+app.use('/api',executiveAPI);
 
 // For any unexpected get route
 app.get('*',(req,res)=>{

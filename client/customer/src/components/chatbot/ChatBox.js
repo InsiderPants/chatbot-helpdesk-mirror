@@ -34,8 +34,8 @@ class ChatBox extends Component{
     
     onSendEnterPress(event){
 
-        if(event.key == 'Enter'){
-            if(this.state.messageText.length != 0){
+        if(event.key === 'Enter'){
+            if(this.state.messageText.length !== 0){
                 this.props.getResolution({
                     message: this.state.messageText
                 });
@@ -47,7 +47,7 @@ class ChatBox extends Component{
     
     onSend(){
         
-        if(this.state.messageText.length != 0){
+        if(this.state.messageText.length !== 0){
             this.props.getResolution({
                 message: this.state.messageText
             });
