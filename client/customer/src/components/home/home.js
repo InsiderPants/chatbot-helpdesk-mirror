@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 
 import ChatBox from '../chatbot/ChatBox';
-import { Layout, Menu, Breadcrumb, Row, Col } from 'antd';
+import { Layout, Menu, Row, Col } from 'antd';
 import 'antd/dist/antd.css';
+import './homeStyle.css';
 
 
 const { Header, Content, Footer } = Layout;
@@ -24,15 +25,10 @@ class Home extends Component {
                         <Menu.Item key="3">nav 3</Menu.Item>
                     </Menu>
                 </Header>
-                <Content style={{ padding: '0 50px', marginTop: 64 }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
-                        <Breadcrumb.Item>List</Breadcrumb.Item>
-                        <Breadcrumb.Item>App</Breadcrumb.Item>
-                    </Breadcrumb>
+                <Content className="content-box">
                     <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
                         <Row type="flex" justify="space-around" align="middle">
-                            <Col span={16}>
+                            <Col lg={12} md={16} sm={20} xs={24}  >
                                 <ChatBox/>
                             </Col>
                         </Row>

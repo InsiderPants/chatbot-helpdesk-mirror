@@ -22,7 +22,7 @@
     color:  #fff;
     background-color:#00b0ff;
     align-self: flex-start;
-    animation-name: slideFromLeft;
+    animation: slideFromLeft 0.4s;
   }
   .bubble.you:before {
     left: -3px;
@@ -33,7 +33,7 @@
     color: #1a1a1a;
     background-color: #eceff1;
     align-self: flex-end;
-    animation-name: slideFromRight;
+    animation: slideFromRight 0.4s;
   }
   .bubble.me:before {
     right: -3px;
@@ -51,10 +51,89 @@
     width: 100%;
     height: 550px;
   }
+  .chat-container::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+  }
   
   .chat-sender{
     /* background-color: #00b0ff; */
     height: 50px;
   }
   
+  @keyframes slideFromLeft {
+    0% {
+      margin-left: -200px;
+      opacity: 0;
+    }
+    100% {
+      margin-left: 0;
+      opacity: 1;
+    }
+  }
+  @-webkit-keyframes slideFromLeft {
+    0% {
+      margin-left: -200px;
+      opacity: 0;
+    }
+    100% {
+      margin-left: 0;
+      opacity: 1;
+    }
+  }
+  @keyframes slideFromRight {
+    0% {
+      margin-right: -200px;
+      opacity: 0;
+    }
+    100% {
+      margin-right: 0;
+      opacity: 1;
+    }
+  }
+  @-webkit-keyframes slideFromRight {
+    0% {
+      margin-right: -200px;
+      opacity: 0;
+    }
+    100% {
+      margin-right: 0;
+      opacity: 1;
+    }
+  }
   
+
+/* ----------- iPhone 6, 6S, 7 and 8 ----------- */
+ 
+/* Portrait */
+ 
+@media only screen
+and (min-device-width: 375px)
+and (max-device-width: 667px)
+and (-webkit-min-device-pixel-ratio: 2)
+and (orientation: portrait) {
+  .bubble {
+    font-size: 13px;
+    position: relative;
+    display: inline-block;
+    clear: both;
+    margin-bottom: 8px;
+    padding: 13px 14px;
+    vertical-align: top;
+    border-radius: 5px;
+  }
+
+  .chat-box{
+    width: 100%;
+    height: 550px;
+  }
+  
+  .chat-container{
+    padding: 15px;
+    overflow: scroll;
+    width: 100%;
+    height: 500px;
+  }
+}
+
+/* ----------- -------------------- ----------- */
