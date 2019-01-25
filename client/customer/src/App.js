@@ -17,9 +17,7 @@ class App extends Component{
         return(
             <Provider store={store}>
               <Router>
-                <div>
-                    <Route exact path='/' component={Home}/>
-                </div>
+                <Home/>
               </Router>
             </Provider>
         );
