@@ -1,7 +1,10 @@
 // --- API for customer to get resolution using chatbot ---
 
 const express = require("express"),
-	  router = express.Router();
+	  router = express.Router(),
+	  nlpEngine = require("../../utils/nlpEngine.js"),
+	  sentimentEngine = require("../../utils/sentimentEngine.js"),
+	  findResponse = require("../../utils/findResponse.js");
 
 // @route  : POST /api/chatbotGetResolution
 // @desc   : receive query from *customer* and send reply using chatbot engine
@@ -9,21 +12,17 @@ const express = require("express"),
 // --TO-DO-- : make this a private route using auth (customer details)
 router.post("/chatbotGetResolution",(req,res)=>{
 	// Take data from request
-	console.log(req.body);
-	// Preprocess it
-	
+	query = req.body.message;
 	// Use NLP Engine
-
+	console.log("\nBefore : ",query)
+	query = nlpEngine(query);
+	console.log("After : ",query)
 	// use Sentimentatl Analysis Engine
-
-	// Find response
-	
-	// Return results object
-	results = {
-		reply: "Hi there! I'm a chatbot, how can I help you today?"
-	}
-	console.log(results)
-	res.send(results)
+	sentiment = sentimentEngine(query);
+	// Find & Return response
+	findResponse(query)
+		.then(response=>res.send({reply:response[0]}))
+		.catch(err=>res.send({reply:"Sorry, unknown error occured. We're looking into the matter."}))
 })
 
 module.exports = router
