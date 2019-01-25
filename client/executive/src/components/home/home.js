@@ -1,13 +1,19 @@
-import React, { Component } from 'react';
+// importing packages
+import React from 'react';
 
-class Home extends Component {
-	render(){
+//importing components
+import Navbar from '../navbar/navbar';
+import Body from '../body/body';
+
+class Home extends React.Component {
+    render() {
         return(
             <div>
-                Home
+                <Navbar/>
+                <Body/>
             </div>
         );
     }
 }
 
-export {Home};
+export default Home;

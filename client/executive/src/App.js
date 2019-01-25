@@ -5,7 +5,7 @@ import {Provider} from 'react-redux';
 
 // Components
 // import Navbar from './components/navbar/navbar';
-import {Home} from './components/home/home';
+import Home from './components/home/home';
 
 // Actions
 
