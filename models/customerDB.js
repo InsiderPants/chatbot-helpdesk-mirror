@@ -14,11 +14,11 @@ const customerSchema = new Schema({
 	visitCounter:{
 		type: Number,
 		required: true
-	}
+	},
 	chatbotResolvedCounter:{
 		type: Number,
 		required: true
-	}
+	},
 	executiveResolvedCounter:{
 		type: Number,
 		required: true
