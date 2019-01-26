@@ -1,13 +1,20 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
 
+// Components
+import {Link} from 'react-router-dom';
 import {
 	Input, Button, Row, Col
 } from 'antd';
 
+// Actions
+import {loginUser} from '../../actions/authActions';
+
+// Styles
 import './loginStyle.css';
 
-class LoginForm extends React.Component {
+
+class LoginForm extends Component {
 	constructor(){
 		super();
 		this.state = {
@@ -21,6 +28,18 @@ class LoginForm extends React.Component {
 
 	handleLogin(){
 		console.log(this.state.email);
+
+		// Sending Login Action for testing [Assuming success Login]
+		this.props.loginUser({
+			userInfo: {
+				name: 'Prashant',
+				email: 'prash.kumar047@gmail.com',
+				contact: '+919856457875'
+			},
+			previousChat: [{mtag:'SERVER', message: "your previous chat"}]
+		})
+		// Redirect to Chat when user logged in
+		this.props.history.push('/chat');
 	}
 
 	handleEmailFieldChange(e){
@@ -44,14 +63,26 @@ class LoginForm extends React.Component {
 					<Button type="primary" onClick={this.handleLogin}>Continue</Button>
 				</Col>
 				<Col span={24} style={{display:"flex", alignItems: "center", justifyContent: "center", marginTop: "20px"}}>
-					Or&nbsp;<Link to="/signup"> register now!</Link> 
+					Or&nbsp;<Link to={`/signup`}> register now!</Link> 
 				</Col>
 			</Row>
 		</div>
 		);
     }
 }
-  
 
 
-export {LoginForm};
+// Redux connection
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loginUser: (data) => loginUser(data, dispatch)
+    };
+};
+
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

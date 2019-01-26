@@ -32,6 +32,7 @@ class ChatBox extends Component{
         this.chatContainer.current.scrollTop = this.chatContainer.current.scrollHeight;
     }
     
+    // Activated when Enterkey is pressed in message input box
     onSendEnterPress(event){
 
         if(event.key === 'Enter'){
@@ -45,6 +46,7 @@ class ChatBox extends Component{
 
     }
     
+    // Activated when send button is pressed
     onSend(){
     
         if(this.state.messageText.length !== 0){
@@ -56,6 +58,7 @@ class ChatBox extends Component{
                
     }
 
+    // When the text in message input field changes
     handelMessageFieldChange(e){
         this.setState({
             messageText: e.target.value
@@ -83,9 +86,9 @@ class ChatBox extends Component{
                                             size="large"
                                             placeholder="Write a message..."
                                             value={this.state.messageText}
-                                            suffix={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
                                             prefix={<Icon type="right" />}
                                             onKeyPress={this.onSendEnterPress}
+                                            addonAfter={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
                                         />
                                     </Form.Item>
                                 </Form>

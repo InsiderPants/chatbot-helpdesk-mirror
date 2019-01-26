@@ -36,7 +36,7 @@ app.post('*',(req,res)=>{
 	res.status(404).send("Page Not Found");
 })
 
-const port = process.env.PORT || "8888";
+const port = process.env.PORT || "8000";
 const ip = process.env.IP;
 
 app.listen(port,ip,()=>{
