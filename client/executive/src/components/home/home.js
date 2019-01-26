@@ -1,43 +1,36 @@
 // importing packages
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
 
-//importing components
-import Navbar from '../navbar/navbar';
+//components
 import Body from '../body/body';
+
 
 class Home extends React.Component {
 
-    constructor(){
-        super();
-
-        this.checkAuth = this.checkAuth.bind(this);
-    }
-
-    checkAuth() {        
-        if (this.props.executive.isAuthenticated === false){
-            this.props.history.push('/login');
-        }
-    }
-
     render() {
-        this.checkAuth();
+        console.log(this.props.executive.isAuthenticated)
         return(
-            <div style={{minHeight: '100vh', backgroundImage: 'linear-gradient(#7390b8 , #003141)',}}>
-                <Navbar/>
-                <Body/>
+            <div>
+                {
+                    //checking if executive is authencated or not
+                    this.props.executive.isAuthenticated ?
+                    <Body />
+                    :
+                    <Redirect to='/login'/> 
+                }      
             </div>
         );
     }
 }
 
+//connecting to redux
 const mapStateToProps = (state) => {
     return {
         executive: state.executive
     };
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -45,7 +38,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    withRouter
-)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

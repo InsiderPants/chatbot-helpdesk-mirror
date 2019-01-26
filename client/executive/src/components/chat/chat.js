@@ -99,9 +99,13 @@ class Chat extends Component {
         return (
             <div>
                 <div className={classes.chat_container} ref={this.chatContainer}>
-                    {this.props.chat.conversation.map((chat, i) => <RenderChat tag={chat.tag} message={chat.message} key={i}/>)}
+                    {
+                        this.props.chat.conversation.map((chat, i) => <RenderChat tag={chat.tag} message={chat.message} key={i}/>)
+                        //rendering chats
+                    }
                 </div>
                 <div>
+                    {/* for input and sending chats */}
                     <form className={classes.form_container}>
                         <Grid container spacing={8}>
                             <Grid item sm={10}>
@@ -134,6 +138,7 @@ class Chat extends Component {
     }
 }
 
+//connecting to redux
 const mapStateToProps = (state) => {
     return {
         chat: state.chat
