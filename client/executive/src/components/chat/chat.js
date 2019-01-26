@@ -31,8 +31,8 @@ const styles = theme => ({
         margin: theme.spacing.unit,
     },
     chat_container: {
-        height: '650px',
         width: '100%',
+        height: '79vh',
         overflow: 'auto',
     },
     iconButton: {
@@ -121,8 +121,8 @@ class Chat extends Component {
                                 />
                             </Grid>
                             <Grid item sm={2}>
-                                <Fab variant="extended" color="primary" aria-label="Edit" className={classes.fab} onClick={this.onSend}>
-                                    <Icon className={classes.extendedIcon}>send</Icon>
+                                <Fab variant="extended" color="primary" aria-label="Edit" className={classes.fab} onClick={this.onSend} style={{backgroundColor: '#08254f'}}>
+                                    <Icon className={classes.extendedIcon} >send</Icon>
                                     Send
                                 </Fab>
                             </Grid>

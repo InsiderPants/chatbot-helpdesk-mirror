@@ -159,12 +159,13 @@ class Navbar extends Component {
         
         return(
             <div className={classes.root}>
-                <AppBar position="static">
+                <AppBar position="static" style={{backgroundColor: '#08254f'}}>
                 <Toolbar>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer" onClick={this.toggleDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
                     <Drawer open={this.state.sideMenu} onClose={this.toggleDrawer(false)}>
+                        <div style={{backgroundColor: '#eceff1', minHeight: '100vh'}}>
                         <div
                             tabIndex={0}
                             role="button"
@@ -172,6 +173,7 @@ class Navbar extends Component {
                             onKeyDown={this.toggleDrawer(false)}
                         >
                             {sideList}
+                        </div>
                         </div>
                     </Drawer>
                     <Typography className={classes.title} variant="h6" color="inherit" noWrap>

@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 const styles = theme => ({
     root: {
         flexGrow: 1,
-        marginRight: '5px',
+        overflow: 'hidden',
     },
     paper: {
         margin: theme.spacing.unit,
@@ -26,14 +26,14 @@ class Body extends Component {
 
         return (
             <div className={classes.root}>
-                <Grid container spacing={8}>
+                <Grid container spacing={8} justify="space-evenly">
                     <Grid item xs={12} sm={6} md={6}>
-                        <Paper className={classes.paper}>
+                        <Paper className={classes.paper} style={{height: '50vh', backgroundColor: '#eceff1'}}>
                             space for options view or charts
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={6}>
-                        <Paper className={classes.paper}>
+                        <Paper className={classes.paper} style={{backgroundColor: '#eceff1'}}>
                             <Chat/>
                         </Paper>
                     </Grid> 
