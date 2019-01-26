@@ -1,6 +1,10 @@
+//importing packages
 import axios from 'axios';
+
+//importing types
 import { GET_ERRORS, GET_USER_QUERY_FROM_BACKEND, GET_EXECUTIVE_ANSWER, SAVE_CHAT, LOADING_QUERY } from './types';
 
+//getting customer query from backend (willchange later to soket.io)
 export const getResolution = (data, dispatch) => {
     dispatch((dispatcher)=> {
         dispatcher({
