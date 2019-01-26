@@ -12,6 +12,7 @@ class SignupForm_ extends Component{
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    // When the SignUp form is submitted
     handleSubmit(e){
         e.preventDefault(); // prevent default action of submit event
         this.props.form.validateFieldsAndScroll((error, values) => {
@@ -33,7 +34,6 @@ class SignupForm_ extends Component{
                 <Select.Option value="86">+86</Select.Option>
             </Select>
         );
-
 
         return(
             <div className="login-form-wrapper">

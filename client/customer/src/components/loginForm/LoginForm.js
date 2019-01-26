@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
+// Components
 import {Link} from 'react-router-dom';
 import {
 	Input, Button, Row, Col
@@ -9,6 +10,7 @@ import {
 // Actions
 import {loginUser} from '../../actions/authActions';
 
+// Styles
 import './loginStyle.css';
 
 

@@ -11,7 +11,7 @@ export default function(state=initialState, action){
     switch(action.type){
         case LOGIN_USER:
             /* 
-                payload = {
+                action.payload = {
                     name, email, contact
                 }
             */
@@ -21,6 +21,9 @@ export default function(state=initialState, action){
                 ...action.payload
             };
         case SIGNOUT_USER:
+            /* 
+                action.payload = undefined
+            */
             return {
                 isAuthenticated: false,
                 name: '',

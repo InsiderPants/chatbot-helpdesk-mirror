@@ -6,7 +6,9 @@ import {connect} from 'react-redux';
 import ChatBox from '../chatbot/ChatBox';
 import LoginForm from '../loginForm/LoginForm';
 import {SignupForm} from '../signupForm/SignupForm';
-import { Layout, Menu, Button} from 'antd';
+import { 
+    Layout, Menu, Button
+} from 'antd';
 
 // Style Sheets
 import 'antd/dist/antd.css';
@@ -65,6 +67,7 @@ class Home extends Component {
                     {this.props.userInfo.isAuthenticated ? <AuthenticatedNavItems/>: <UnAuthenticatedNavItems/>}  
                 </Header>
                 <Content className="content-box">
+                    {/* This is a protected route ------ Only accessible when user is authenticated */}
                     <Route path='/chat' render={(props) => {
                         return this.props.userInfo.isAuthenticated ? (
                             <ChatBox {...props}/>
