@@ -1,50 +1,82 @@
 import React, { Component } from 'react';
-import {Route,Link} from 'react-router-dom';
+import {Route, Link, Redirect} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 // Components
 import ChatBox from '../chatbot/ChatBox';
-import {LoginForm} from '../loginForm/LoginForm';
+import LoginForm from '../loginForm/LoginForm';
 import {SignupForm} from '../signupForm/SignupForm';
-import { Layout, Button, Menu} from 'antd';
+import { Layout, Menu, Button} from 'antd';
 
 // Style Sheets
 import 'antd/dist/antd.css';
 import './homeStyle.css';
 
+// Actions
+import {signOutUser} from '../../actions/authActions';
+
 
 const { Header, Content, Footer } = Layout;
 
 class Home extends Component {
+    constructor(){
+        super();
+
+        // Bindings
+        this.handleSignOut = this.handleSignOut.bind(this);
+    }
+    
+    handleSignOut(){
+        this.props.signOutUser();
+    }
+
 	render(){
+        const AuthenticatedNavItems = (props) => {
+            return (
+                <Button ghost type="primary" onClick={this.handleSignOut}>Sign Out</Button>
+            );
+        };
+
+        const UnAuthenticatedNavItems = (props) =>{
+            return (
+                <Menu
+                    theme="dark"
+                    mode="horizontal"
+                    defaultSelectedKeys={['1']}
+                    style={{ lineHeight: '64px' }}
+                > 
+                    <Menu.Item key="1">
+                        <Link to="/login">
+                            Login
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item key="2">
+                        <Link to="/signup">
+                            Signup
+                        </Link>
+                    </Menu.Item>
+                </Menu>
+            );
+        }
+
         return(
             <Layout>
                 <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-                    <Menu
-                        theme="dark"
-                        mode="horizontal"
-                        defaultSelectedKeys={['2']}
-                        style={{ lineHeight: '64px' }}
-                    >
-                        <Menu.Item key="1">
-                            <Link to="/chat">
-                                Chat
-                            </Link>
-                        </Menu.Item>   
-                        <Menu.Item key="2">
-                            <Link to="/login">
-                                Login
-                            </Link>
-                        </Menu.Item>
-                        <Menu.Item key="3">
-                            <Link to="/signup">
-                                Signup
-                            </Link>
-                        </Menu.Item>
-                    </Menu>
+                    {this.props.userInfo.isAuthenticated ? <AuthenticatedNavItems/>: <UnAuthenticatedNavItems/>}  
                 </Header>
                 <Content className="content-box">
-                    <Route path={`/chat`} component={ChatBox}/>
-                    <Route path={`/login`} component={LoginForm}/>
+                    <Route path='/chat' render={(props) => {
+                        return this.props.userInfo.isAuthenticated ? (
+                            <ChatBox {...props}/>
+                        ):(
+                            <Redirect to={{
+                                    pathname: '/login',
+                                    state: {from: props.location}
+                                }}
+                            />
+                        )
+                    }}/>
+                    <Route exact path={`/login`} component={LoginForm}/>
                     <Route path={`/signup`} component={SignupForm}/>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>
@@ -55,4 +87,17 @@ class Home extends Component {
     }
 }
 
-export {Home};
+// Redux connection
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.userInfo
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signOutUser: () => signOutUser(dispatch)
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

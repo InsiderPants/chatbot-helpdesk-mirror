@@ -1,4 +1,9 @@
-import {GET_AND_SAVE_USER_QUERY, GET_AND_SAVE_BOT_REPLY, SAVE_CHAT, LOADING_RESULTS} from '../actions/types'
+import {
+	GET_AND_SAVE_USER_QUERY, 
+	GET_AND_SAVE_BOT_REPLY, 
+	SAVE_CHAT, LOADING_RESULTS, RECIVE_PREVIOUS_CHAT,
+	SIGNOUT_USER
+} from '../actions/types'
 
 const initialState = {
   user: {},
@@ -20,6 +25,12 @@ export default function(state=initialState,action){
 				reply:action.payload,
 				isLoading:false
 			};
+		case RECIVE_PREVIOUS_CHAT:
+			// Cycle throught previous chats and add it to the conversation
+			action.payload.forEach((conv, index) => {
+				state.conversation.push(conv);
+			});
+			return {...state}
 		case SAVE_CHAT:
 			if(state.conversation.length !== 0){
 				if(state.conversation[state.conversation.length-1].mtag === 'LOADING'){
@@ -35,6 +46,10 @@ export default function(state=initialState,action){
 				...state,
 				isLoading:true
 			};
+		case SIGNOUT_USER:
+			// Delete conversation on client side 
+			state.conversation = [];
+			return state;
 		default:
 			return state;
 	}

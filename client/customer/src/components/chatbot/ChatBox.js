@@ -83,9 +83,9 @@ class ChatBox extends Component{
                                             size="large"
                                             placeholder="Write a message..."
                                             value={this.state.messageText}
-                                            suffix={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
                                             prefix={<Icon type="right" />}
                                             onKeyPress={this.onSendEnterPress}
+                                            addonAfter={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
                                         />
                                     </Form.Item>
                                 </Form>

@@ -29,8 +29,8 @@ class SignupForm_ extends Component{
             initialValue: '91'
         })(
             <Select>
-                <Select.Option value="91">91</Select.Option>
-                <Select.Option value="86">86</Select.Option>
+                <Select.Option value="91">+91</Select.Option>
+                <Select.Option value="86">+86</Select.Option>
             </Select>
         );
 

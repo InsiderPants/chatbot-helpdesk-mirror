@@ -2,8 +2,10 @@
 import {combineReducers} from 'redux';
 import resolutionReducer from './resolutionReducer';
 import errorReducer from './errorReducer';
+import userReducer from './userReducer';
 
 export default combineReducers({
   chat: resolutionReducer,
   errors: errorReducer,
+  userInfo: userReducer
 });
