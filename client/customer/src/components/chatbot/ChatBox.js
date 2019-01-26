@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
 // Components
-import {Input, Button, Icon, Form, Row, Col,} from 'antd';
+import {
+    Input, Button, Icon, Form, Row, Col, Divider
+} from 'antd';
 import {ChatBubble} from './ChatBoxUtility';
 
 // Stylesheet
@@ -67,9 +69,16 @@ class ChatBox extends Component{
 
 	render() {
 		return (
-            <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
+            <div className="chat-box-wrapper">
                 <Row type="flex" justify="space-around" align="middle">
-                    <Col lg={12} md={16} sm={20} xs={24}  >
+                    <Col lg={12} md={16} sm={20} xs={24}>
+                        <Divider orientation="left" style={{color: '#00B0FF'}}>
+                            Bot Richard - <small style={{color: '#000'}}>You are currently talking with the bot</small>
+                        </Divider>
+                    </Col>
+                </Row>
+                <Row type="flex" justify="space-around" align="middle">
+                    <Col lg={12} md={16} sm={20} xs={24} >
                         <div className="chat-box">
                             <div className="chat-container" ref={this.chatContainer}>
                                 {

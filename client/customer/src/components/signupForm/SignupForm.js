@@ -44,7 +44,7 @@ class SignupForm_ extends Component{
                             <Form.Item label="Name">
                                 {
                                     getFieldDecorator('name',{
-                                            rules: [{required: true, message: "Please enter you name"}]
+                                            rules: [{required: true, message: "Please enter you name!"}]
                                         }
                                     )(<Input/>)
                                 }
@@ -53,7 +53,7 @@ class SignupForm_ extends Component{
                                 {
                                     getFieldDecorator('email',{
                                             rules: [
-                                                {required: true, message: "Please enter you name"},
+                                                {required: true, message: "Please enter you E-Mail!"},
                                                 {type: 'email', message: 'Please enter valid E-Mail!'}
                                             ]
                                         }

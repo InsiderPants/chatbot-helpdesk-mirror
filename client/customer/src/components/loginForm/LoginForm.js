@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 // Components
 import {Link} from 'react-router-dom';
 import {
-	Input, Button, Row, Col
+	Input, Button, Row, Col, message
 } from 'antd';
 
 // Actions
@@ -38,6 +38,7 @@ class LoginForm extends Component {
 			},
 			previousChat: [{mtag:'SERVER', message: "your previous chat"}]
 		})
+		message.success('Login Successful')
 		// Redirect to Chat when user logged in
 		this.props.history.push('/chat');
 	}
