@@ -29,24 +29,24 @@ const styles = theme => ({
     me: {
         float: 'right',
         color: '#1a1a1a',
-        backgroundColor: '#eceff1',
+        backgroundColor: '#b8c7da',
         alignSelf: 'flex-end',
         marginRight: '10px',
         // animation: 'slideFromRight 0.4s',
         '&:before': {
             right: '-3px',
-            backgroundColor: '#eceff1',
+            backgroundColor: '#b8c7da',
         }
     },
     you: {
         float: 'left',
         color:  '#fff',
-        backgroundColor: '#3f51b5',
+        backgroundColor: '#103e7e',
         alignSelf: 'flex-start',
         // animation: 'slideFromLeft 0.4s',
         '&:before': {
             left: '-3px',
-            backgroundColor: '#00b0ff',
+            backgroundColor: '#103e7e',
         }
     }
 });
