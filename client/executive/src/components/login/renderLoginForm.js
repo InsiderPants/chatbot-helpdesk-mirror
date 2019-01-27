@@ -2,6 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { Redirect, withRouter  } from 'react-router-dom';
 
 //importing components
 import TextField from '@material-ui/core/TextField';
@@ -47,8 +48,8 @@ class RenderLoginForm extends React.Component {
         e.preventDefault();
         this.setState({
             email: e.target.value,
-            emailValidInfo: true,
-            emailHelperText: '',
+            emailValidInfo: true,   //to disable red box
+            emailHelperText: '',    //to remove warning
         })
     }
 
@@ -56,8 +57,8 @@ class RenderLoginForm extends React.Component {
         e.preventDefault();
         this.setState({
             password: e.target.value,
-            passwordEmpty: false,
-            passwordHelperText: '',
+            passwordEmpty: false, //to disable red box
+            passwordHelperText: '', //to remove warning
         })
     }
 
@@ -80,6 +81,17 @@ class RenderLoginForm extends React.Component {
                 emailValidInfo: false,
                 emailHelperText: 'Email cannot be empty',
             })
+        }
+        if (this.props.executive.isAuthenticated) {
+            return <Redirect to='/'/>
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {        
+        if (nextProps.executive.isAuthenticated) {
+            //redirecting to home
+            console.log(nextProps.executive.isAuthenticated);
+            this.props.history.push('/');
         }
     }
 
@@ -130,9 +142,10 @@ class RenderLoginForm extends React.Component {
     }
 }
 
+//connecting to redux
 const mapStateToProps = (state) => {
     return {
-        
+        executive: state.executive
     };
 }
 
@@ -145,5 +158,6 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),
+    withRouter,
     withStyles(styles),
 )(RenderLoginForm);

@@ -1,5 +1,7 @@
 //importing packages
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
 //importing components
 import AppBar from '@material-ui/core/AppBar';
@@ -19,6 +21,9 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+
+//actions
+import { signOutUser } from '../../actions/auth';
 
 //CSS
 const styles = theme => ({
@@ -92,8 +97,8 @@ class Navbar extends Component {
     constructor() {
         super();
         this.state = {
-            anchorEl: null,
-            sideMenu: false,
+            anchorEl: null, //for user icon popup
+            sideMenu: false, //for sidemenu
         };
         this.handleProfileMenuOpen = this.handleProfileMenuOpen.bind(this);
         this.toggleDrawer = this.toggleDrawer.bind(this);
@@ -117,9 +122,13 @@ class Navbar extends Component {
             anchorEl: null
         });
     };
+
+    logoutExecutive = () => {
+        this.props.signOutUser()
+    }
     
     render(){
-        const { anchorEl, } = this.state;
+        const { anchorEl } = this.state;
         const { classes } = this.props;
         const isMenuOpen = Boolean(anchorEl);
 
@@ -127,6 +136,7 @@ class Navbar extends Component {
         const sideList = (
         <div className={classes.list}>
             <List>
+                {/* dummy side menu buttons(will change soon) */}
             {['One', 'Two', 'Three', 'Four'].map((text, index) => (
                 <ListItem button key={text}>
                 <ListItemText primary={text} />
@@ -145,6 +155,7 @@ class Navbar extends Component {
         );
         
         const renderMenu = (
+            //rendering usericon popup
             <Menu
                 anchorEl={anchorEl}
                 anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -153,7 +164,7 @@ class Navbar extends Component {
                 onClose={this.handleMenuClose}
             >
                 <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-                <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+                <MenuItem onClick={this.logoutExecutive}>Logout</MenuItem>
             </Menu>
         );
         
@@ -161,9 +172,11 @@ class Navbar extends Component {
             <div className={classes.root}>
                 <AppBar position="static" style={{backgroundColor: '#08254f'}}>
                 <Toolbar>
+                    {/* side menu open/close */}
                     <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer" onClick={this.toggleDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
+                    {/* actual side menu */}
                     <Drawer open={this.state.sideMenu} onClose={this.toggleDrawer(false)}>
                         <div style={{backgroundColor: '#eceff1', minHeight: '100vh'}}>
                         <div
@@ -176,9 +189,11 @@ class Navbar extends Component {
                         </div>
                         </div>
                     </Drawer>
+                    {/* heading */}
                     <Typography className={classes.title} variant="h6" color="inherit" noWrap>
                         Executive Dashboard
                     </Typography>
+                    {/* search bar */}
                     <div className={classes.search}>
                     <div className={classes.searchIcon}>
                         <SearchIcon />
@@ -193,6 +208,7 @@ class Navbar extends Component {
                     </div>
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
+                    {/* user account icon */}
                     <IconButton
                         aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                         aria-haspopup="true"
@@ -210,4 +226,21 @@ class Navbar extends Component {
     }
 }
 
-export default withStyles(styles)(Navbar);
+//connecting to redux
+const mapStateToProps = (state) => {
+    return {
+        
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signOutUser: (data) => signOutUser(dispatch)
+    };
+};
+
+
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps),
+    withStyles(styles),
+)(Navbar);
