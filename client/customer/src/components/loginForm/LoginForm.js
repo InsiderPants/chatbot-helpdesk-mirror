@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import axios from 'axios';
 
 // Components
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {
 	Input, Button, Row, Col, message
 } from 'antd';
@@ -27,20 +28,49 @@ class LoginForm extends Component {
 	}
 
 	handleLogin(){
-		console.log(this.state.email);
+		// Validate Email -----
 
-		// Sending Login Action for testing [Assuming success Login]
-		this.props.loginUser({
-			userInfo: {
-				name: 'Prashant',
-				email: 'prash.kumar047@gmail.com',
-				contact: '+919856457875'
-			},
-			previousChat: [{mtag:'SERVER', message: "your previous chat"}]
+
+		// Send to server ------
+		axios({
+			method: 'post',
+			url: '/auth/login',
+			data: {
+				email: this.state.email
+			}
 		})
-		message.success('Login Successful')
-		// Redirect to Chat when user logged in
-		this.props.history.push('/chat');
+		.then(res => {
+			if(res.data.success){
+				const { name, contact, accessToken, previousChat } = res.data.body;
+				console.log(res.data.message);
+
+				// Dispatch Action to update user state
+				this.props.loginUser({
+					userInfo: {
+						name: name,
+						email: 'prash.kumar047@gmail.com',
+						contact: contact,
+						accessToken: accessToken
+					},
+					previousChat: previousChat
+				})
+
+				message.success('Login Successful');
+				// Redirect user to Chat box
+				this.props.history.push('/chat');
+			}
+			else{
+				// Show the error message to the user
+				message.error(res.data.message)
+			}
+		})
+		.catch(error => {
+			console.log('Error Loging in the user');
+			console.log(error);
+
+			message.error('Login falied');
+		});
+				
 	}
 
 	handleEmailFieldChange(e){
@@ -86,4 +116,4 @@ const mapDispatchToProps = (dispatch) => {
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginForm));

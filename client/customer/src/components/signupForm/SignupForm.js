@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 
 import {
-    Form, Input, Button, Select, Row, Col
+    Form, Input, Button, Select, Row, Col, message
 } from 'antd';
 
 class SignupForm_ extends Component{
@@ -17,7 +18,33 @@ class SignupForm_ extends Component{
         e.preventDefault(); // prevent default action of submit event
         this.props.form.validateFieldsAndScroll((error, values) => {
             if(!error){
-                console.log(values);
+                const { name, email, prefix, phone } = values;
+
+                // Send signup data to the server
+                axios({
+                    method: 'post',
+                    url: 'auth/signup',
+                    data: {
+                        name: name,
+                        email: email,
+                        contact: `+${prefix}${phone}`
+                    }
+                })
+                .then(res => {
+                    if(res.data.success){
+                        message.success(res.data.message);
+                        // Redirect user to login page
+                        this.props.history.push('/login');
+                    }
+                    else{
+                        // Display the error message to the user
+                        message.error(res.data.message);
+                    }
+                })
+                .catch(error => {
+                    console.log('Error sending signup request');
+                    console.log(error);
+                });
             }
         });
     }

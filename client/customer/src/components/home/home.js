@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Route, Link, Redirect} from 'react-router-dom';
+import {Route, Link, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 
 // Components
@@ -103,4 +103,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));

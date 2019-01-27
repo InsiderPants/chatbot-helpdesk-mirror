@@ -11,20 +11,26 @@ const customerSchema = new Schema({
 		type: String,
 		required: true
 	},
+	contact:{
+		type: String,
+		required: true
+	},
 	visitCounter:{
 		type: Number,
-		required: true
+		default: 0
 	},
 	chatbotResolvedCounter:{
 		type: Number,
-		required: true
+		default: 0
 	},
 	executiveResolvedCounter:{
 		type: Number,
-		required: true
+		default: 0
+	},
+	conversation: {
+		type:[{mtag:{type: String}, message: {typpe:String}}]
 	}
 })
 
-var customerDB = mongoose.model("customers",customerSchema)
-
+var customerDB = mongoose.model("customers",  customerSchema)
 module.exports = customerDB

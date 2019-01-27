@@ -40,7 +40,8 @@ class ChatBox extends Component{
         if(event.key === 'Enter'){
             if(this.state.messageText.length !== 0){
                 this.props.getResolution({
-                    message: this.state.messageText
+                    message: this.state.messageText,
+                    accessToken: this.props.userInfo.accessToken
                 });
                 this.setState({messageText: ""});
             }
@@ -53,7 +54,8 @@ class ChatBox extends Component{
     
         if(this.state.messageText.length !== 0){
             this.props.getResolution({
-                message: this.state.messageText
+                message: this.state.messageText,
+                accessToken: this.props.userInfo.accessToken
             });
             this.setState({messageText: ""});
         }
@@ -113,7 +115,10 @@ class ChatBox extends Component{
 
 // Redux connection to component
 const mapStateToProps = (state) => {
-    return {chat : state.chat};
+    return {
+        chat : state.chat,
+        userInfo: state.userInfo
+    };
 }
 
 const mapDispatchToProps = (dispatch) => {

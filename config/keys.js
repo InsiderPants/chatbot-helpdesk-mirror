@@ -1,3 +1,4 @@
 module.exports = {
-	mongoURI:'mongodb://localhost/chatbot'
+	mongoURI:'mongodb://localhost/chatbot',
+	jwtCode: 'letscallitasecret'
 };

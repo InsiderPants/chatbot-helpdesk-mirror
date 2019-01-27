@@ -4,7 +4,8 @@ const initialState = {
     isAuthenticated: false,
     name: '',
     email: '',
-    contact: ''
+    contact: '',
+    accessToken: ''
 };
 
 export default function(state=initialState, action){
@@ -12,7 +13,7 @@ export default function(state=initialState, action){
         case LOGIN_USER:
             /* 
                 action.payload = {
-                    name, email, contact
+                    name, email, contact, accessToken
                 }
             */
             return {
@@ -28,7 +29,8 @@ export default function(state=initialState, action){
                 isAuthenticated: false,
                 name: '',
                 email: '',
-                contact: ''
+                contact: '',
+                accessToken: ''
             };
         default:
             return {...state};
