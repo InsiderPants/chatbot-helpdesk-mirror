@@ -18,6 +18,9 @@ mongoose.connect(db,{useNewUrlParser:true})
 const chatbotAPI = require("./routes/api/chatbot.js");
 const executiveAPI = require("./routes/api/executive.js");
 
+const login = require("./routes/userAuth/login.js");
+const signup = require("./routes/userAuth/signup.js");
+
 // Home
 app.get('/',(req,res)=>{
 	res.send("You've reached Server Home!");
@@ -26,6 +29,10 @@ app.get('/',(req,res)=>{
 // Use Routes, instead of using app.get()
 app.use('/api',chatbotAPI);
 app.use('/api',executiveAPI);
+
+// auth routes
+app.use('/auth', login);
+app.use('/auth', signup);
 
 // For any unexpected get route
 app.get('*',(req,res)=>{
