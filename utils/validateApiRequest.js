@@ -1,6 +1,10 @@
 const jwt = require('jsonwebtoken');
 const {jwtCode} = require('../config/keys');
 
+const {
+    UNAUTH_API_REQUEST, INVALID_ACCESS_TOKEN
+} = require('../utils/messages').error;
+
 // Middleware to validate API request
 const validateApiRequest = (req, res, next) => {
     const { accessToken } = req.body;
@@ -9,7 +13,7 @@ const validateApiRequest = (req, res, next) => {
     if(accessToken == undefined){
         res.status(401).json({
             success: false,
-            message: 'You are not authorised to access this api'
+            message: UNAUTH_API_REQUEST
         })
     }
     else{
@@ -21,13 +25,14 @@ const validateApiRequest = (req, res, next) => {
 
                 res.status(400).json({
                     success: false,
-                    message: 'Access token not valid'
+                    message: INVALID_ACCESS_TOKEN
                 })
             }
             else{
                 console.log(`api call from ${decoded.email} verified`);
                 // Store email in req to pass to chatbot.js and store convo
                 req.body.email = decoded.email
+                
                 // Send the request to next middleware ---------
                 next();
             }

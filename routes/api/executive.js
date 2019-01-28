@@ -26,15 +26,21 @@ router.post("/executiveGetResolution",(req,res)=>{
 	res.send(response)
 })
 
+const {
+	QUERY_RESOLUTION_ADDED_TO_DATABASE
+} = require('../../utils/messages').success;
+
+const {	
+	DATADASE_PUSH_ERROR_USER, INVALID_REQUEST
+} = require('../../utils/messages').error;
+
 // @route  : POST /api/executiveSaveResolution
 // @desc   : receive save request from *executive* and save the query-resolution pair
 // @access : public route
 // --TO-DO-- : make this a private route using auth (executive login)
 router.post("/executiveSaveResolution",(req,res)=>{
 	// Take data from request
-	var query = req.body.query;
-	var response = req.body.response
-	var dbType = req.body.dbType
+	var { query, response, dbType} = req.body;
 
 	// Use NLP Engine
 	console.log("\nBefore : ",query)
@@ -47,23 +53,23 @@ router.post("/executiveSaveResolution",(req,res)=>{
 		.then(obj=>{
 			res.status(200).json({
 				success: true,
-				message: 'Query-Response pair successfull added into database'
+				message: QUERY_RESOLUTION_ADDED_TO_DATABASE
 			})
 		})
-		.catch(err=>res.send({success:false,message:"Server error while adding. Try again"}));
+		.catch(err=>res.send({success:false,message:DATADASE_PUSH_ERROR_USER}));
 	}
 	else if(dbType=='ordinary'){
 		faqDB.create({query:query,resolution:response})
 		.then(obj=>{
 			res.status(200).json({
 				success: true,
-				message: 'Query-Response pair successfull added into database'
+				message: QUERY_RESOLUTION_ADDED_TO_DATABASE
 			})
 		})
-		.catch(err=>res.send({success:false,message:"Server error while adding. Try again"}));
+		.catch(err=>res.send({success:false,message:DATADASE_PUSH_ERROR_USER}));
 	}
 	else
-		res.send({success:false,message:"Invalid request"})
+		res.send({success:false,message:INVALID_REQUEST})
 })
 
 module.exports = router
