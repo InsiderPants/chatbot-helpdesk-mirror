@@ -31,7 +31,7 @@ async function findResponse(customerQuery){
 		}
 	}
 	if(maxScore===0)
-		response = ["Sorry no match found for your query"]
+		response = ["Sorry no match found for your query. Would you like to talk to a human or start a new query?"]
 
 	return await response;
 }

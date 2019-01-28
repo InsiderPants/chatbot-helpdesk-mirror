@@ -17,16 +17,25 @@ router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 	query = req.body.message;
 
 	// Use NLP Engine
+	// var start = new Date().getTime();
 	console.log("\nBefore : ",query)
 	query = nlpEngine(query);
 	console.log("After : ",query)
-
+	// var end = new Date().getTime();
+	// console.log("Call to nlpEngine took " + (end - start) + " milliseconds.")
+	
 	// use Sentimentatl Analysis Engine
-	sentiment = sentimentEngine(query);
-
+	// start = new Date().getTime();
+	// sentiment = sentimentEngine(query);
+	// end = new Date().getTime();
+	// console.log("Call to sentimentEngine took " + (end - start) + " milliseconds.")
+	
 	// Find & Return response
+	// start = new Date().getTime();
 	findResponse(query)
 		.then(response=> {
+			end = new Date().getTime();
+			// console.log("Call to findResponse took " + (end - start) + " milliseconds.")
 			res.status(200).json({
 				success: true,
 				message: 'Access validated',
