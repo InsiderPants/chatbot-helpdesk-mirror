@@ -28,7 +28,7 @@ const customerSchema = new Schema({
 		default: 0
 	},
 	conversation: {
-		type:[{mtag:{type: String}, message: {typpe:String}}]
+		type:[{mtag:{type: String}, message: {type:String}}]
 	}
 })
 

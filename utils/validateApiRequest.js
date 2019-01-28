@@ -26,6 +26,8 @@ const validateApiRequest = (req, res, next) => {
             }
             else{
                 console.log(`api call from ${decoded.email} verified`);
+                // Store email in req to pass to chatbot.js and store convo
+                req.body.email = decoded.email
                 // Send the request to next middleware ---------
                 next();
             }

@@ -17,4 +17,6 @@ mongod --dbpath C:/Users/thekiingslayer/Desktop/customer-query-resolution-chatbo
 	- token not expired
 	- token not stored in localstorage so on reloading, it loses login state
 
-- Once executive is set up, write code for chatbotResolvedCounter,executiveResolvedCounter
+- Once executive is set up
+	- write code for chatbotResolvedCounter,executiveResolvedCounter
+	- 

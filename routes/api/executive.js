@@ -3,8 +3,8 @@
 const express = require("express"),
 	  router = express.Router(),
 	  mongoose = require("mongoose"),
-	  ordinaryDB = require("../models/ordinaryDB.js"),
-	  faqDB = require("../models/faqDB.js")
+	  ordinaryDB = require("../../models/ordinaryDB.js"),
+	  faqDB = require("../../models/faqDB.js")
 	  nlpEngine = require("../../utils/nlpEngine.js");
 
 // @route  : POST /api/executiveGetResolution
