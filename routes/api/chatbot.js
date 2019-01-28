@@ -21,7 +21,9 @@ const {
 // --TO-DO-- : Improve NLP Engine, Set Sentimental Engine
 router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 	// Take data from request
-	var { query, email } = req.body;
+	let email = req.body.email;
+	query = req.body.message;
+	
 
 	// Use NLP Engine
 	// var start = new Date().getTime();
