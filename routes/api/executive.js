@@ -7,6 +7,14 @@ const express = require("express"),
 	  faqDB = require("../../models/faqDB.js")
 	  nlpEngine = require("../../utils/nlpEngine.js");
 
+const {
+	QUERY_RESOLUTION_ADDED_TO_DATABASE, ACCESS_VALIDATED
+} = require('../../utils/messages').success;
+
+const {	
+	DATADASE_PUSH_ERROR_USER, INVALID_REQUEST
+} = require('../../utils/messages').error;
+
 // @route  : POST /api/executiveGetResolution
 // @desc   : receive query from *customer*, send to executive, receive & save(optional) response and return response to customer
 // @access : public route
@@ -20,19 +28,16 @@ router.post("/executiveGetResolution",(req,res)=>{
 	
 	// Return response object
 	response = {
-		reply: "Hi! I'm a human, how can I help you today?"
+		success: true,
+		message: ACCESS_VALIDATED,
+		body: {
+			reply: "Hi! I'm a human, how can I help you today?"
+		}
 	}
 	console.log(response)
 	res.send(response)
 })
 
-const {
-	QUERY_RESOLUTION_ADDED_TO_DATABASE
-} = require('../../utils/messages').success;
-
-const {	
-	DATADASE_PUSH_ERROR_USER, INVALID_REQUEST
-} = require('../../utils/messages').error;
 
 // @route  : POST /api/executiveSaveResolution
 // @desc   : receive save request from *executive* and save the query-resolution pair

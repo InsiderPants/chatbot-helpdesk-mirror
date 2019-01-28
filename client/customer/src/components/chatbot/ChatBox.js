@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 // Components
 import {
-    Input, Button, Icon, Form, Row, Col, Divider
+    Input, Button, Icon, Row, Col, Divider, Select, message
 } from 'antd';
 import {ChatBubble} from './ChatBoxUtility';
 
@@ -11,7 +11,7 @@ import {ChatBubble} from './ChatBoxUtility';
 import './style.css';
 
 //Actions
-import {getResolution} from '../../actions/getResolution';
+import {getResolution, switchMessageHandler} from '../../actions/getResolution';
 
 class ChatBox extends Component{
     constructor(){
@@ -25,8 +25,9 @@ class ChatBox extends Component{
 
         // Function binding to component
         this.onSend = this.onSend.bind(this);
-        this.handelMessageFieldChange = this.handelMessageFieldChange.bind(this);
+        this.handleMessageFieldChange = this.handleMessageFieldChange.bind(this);
         this.onSendEnterPress = this.onSendEnterPress.bind(this);
+        this.handleMessageReciverChange = this.handleMessageReciverChange.bind(this);
     }
     
     componentDidUpdate(){
@@ -41,7 +42,8 @@ class ChatBox extends Component{
             if(this.state.messageText.length !== 0){
                 this.props.getResolution({
                     message: this.state.messageText,
-                    accessToken: this.props.userInfo.accessToken
+                    accessToken: this.props.userInfo.accessToken,
+                    apiEndPoint: this.props.userInfo.apiEndPoint
                 });
                 this.setState({messageText: ""});
             }
@@ -55,7 +57,8 @@ class ChatBox extends Component{
         if(this.state.messageText.length !== 0){
             this.props.getResolution({
                 message: this.state.messageText,
-                accessToken: this.props.userInfo.accessToken
+                accessToken: this.props.userInfo.accessToken,
+                apiEndPoint: this.props.userInfo.apiEndPoint
             });
             this.setState({messageText: ""});
         }
@@ -63,19 +66,43 @@ class ChatBox extends Component{
     }
 
     // When the text in message input field changes
-    handelMessageFieldChange(e){
+    handleMessageFieldChange(e){
         this.setState({
             messageText: e.target.value
         });
     }
 
+    // ----- handle Reciver Change event
+    handleMessageReciverChange(value){
+        let response = this.props.switchMessageHandler({handlerTag: value});
+        
+        if(response.success){
+            message.success(response.message);
+        }
+        else{
+            message.error(response.message);
+        }
+    }
+
 	render() {
+
+        const MessageReciverSelector = (props) => (
+            <Select defaultValue={this.props.userInfo.handler} onSelect={this.handleMessageReciverChange}>
+                <Select.Option value="BOT">Bot</Select.Option>
+                <Select.Option value="HUMAN">Human</Select.Option>
+            </Select>
+        );
+
 		return (
             <div className="chat-box-wrapper">
                 <Row type="flex" justify="space-around" align="middle">
                     <Col lg={12} md={16} sm={20} xs={24}>
                         <Divider orientation="left" style={{color: '#00B0FF'}}>
-                            Bot Richard - <small style={{color: '#000'}}>You are currently talking with the bot</small>
+                            {this.props.userInfo.handler == 'BOT'? 'Bot Richad':'Human Pappu'} -&nbsp;
+                            <small style={{color: '#000'}}>
+                                You are currently talking with a&nbsp; 
+                                { this.props.userInfo.handler == 'BOT'?'bot':'human'}
+                            </small>
                         </Divider>
                     </Col>
                 </Row>
@@ -90,19 +117,16 @@ class ChatBox extends Component{
                                 }
                             </div>
                             <div className="chat-sender">
-                                <Form>
-                                    <Form.Item>
-                                        <Input 
-                                            onChange={this.handelMessageFieldChange} 
-                                            size="large"
-                                            placeholder="Write a message..."
-                                            value={this.state.messageText}
-                                            prefix={<Icon type="right" />}
-                                            onKeyPress={this.onSendEnterPress}
-                                            addonAfter={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
-                                        />
-                                    </Form.Item>
-                                </Form>
+                                <Input
+                                    addonBefore={<MessageReciverSelector/>} 
+                                    onChange={this.handleMessageFieldChange} 
+                                    size="large"
+                                    placeholder="Write a message..."
+                                    value={this.state.messageText}
+                                    prefix={<Icon type="right" />}
+                                    onKeyPress={this.onSendEnterPress}
+                                    addonAfter={<Button ghost type="primary" icon="right-square-o" onClick={this.onSend}/>}
+                                />
                             </div>
                         </div>
                     </Col>
@@ -123,7 +147,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getResolution: (data) => getResolution(data, dispatch) 
+        getResolution: (data) => getResolution(data, dispatch), 
+        switchMessageHandler: (data) => switchMessageHandler(data, dispatch)
     };
 };
 
