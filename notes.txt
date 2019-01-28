@@ -1,4 +1,4 @@
----- FOR SETTING UP DATABASE ----
+---- FOR SETTING UP DATABASE ---------------------------------
 Creat a folder 'mongoData' in this directory
 This folder will contain the mongo database files
 
@@ -9,6 +9,10 @@ run this command for windows:
 mongod --dbpath C:/Users/thekiingslayer/Desktop/customer-query-resolution-chatbot/mongoData/
 
 
----- TO-DO ----
+---- TO-DO ---------------------------------------------------
 - To-Do in routes/api/customer
 - To-Do in routes/api/executive
+
+- Problems with auth:
+	- token not expired
+	- token not stored in localstorage so on reloading, it loses login state

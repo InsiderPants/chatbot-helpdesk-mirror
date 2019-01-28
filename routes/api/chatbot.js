@@ -34,7 +34,7 @@ router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 	// start = new Date().getTime();
 	findResponse(query)
 		.then(response=> {
-			end = new Date().getTime();
+			// end = new Date().getTime();
 			// console.log("Call to findResponse took " + (end - start) + " milliseconds.")
 			res.status(200).json({
 				success: true,
