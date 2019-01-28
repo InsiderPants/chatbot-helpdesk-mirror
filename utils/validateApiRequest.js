@@ -8,10 +8,9 @@ const {
 // Middleware to validate API request
 const validateApiRequest = (req, res, next) => {
     const { accessToken } = req.body;
-
     // check if accessToken exists in the request ------
-    if(accessToken == undefined){
-        res.status(401).json({
+    if(accessToken == ''){
+        res.json({
             success: false,
             message: UNAUTH_API_REQUEST
         })

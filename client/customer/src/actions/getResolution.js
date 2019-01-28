@@ -1,12 +1,17 @@
 import axios from 'axios';
-import { GET_ERRORS, GET_AND_SAVE_USER_QUERY, GET_AND_SAVE_BOT_REPLY, SAVE_CHAT, LOADING_RESULTS } from './types';
+import { GET_ERRORS, GET_AND_SAVE_USER_QUERY,
+	GET_AND_SAVE_BOT_REPLY, SAVE_CHAT,
+	LOADING_RESULTS, SWITCH_RESOLUTION_HANDLER
+} from './types';
 
 /**
  * 
- * @param {{message: String, accessToken: String}} data message from user
+ * @param {{message: String, accessToken: String, apiEndPoint: String}} data message from user
  * @param {Object} dispatch Action Dispatcher
  */
 export const getResolution = (data, dispatch) => {
+	const {message, accessToken, apiEndPoint} = data;
+
 	dispatch((dispatcher) => {
 
 		dispatcher({type:GET_AND_SAVE_USER_QUERY, payload:data.message});
@@ -19,7 +24,7 @@ export const getResolution = (data, dispatch) => {
 
 		
 		setTimeout(() => {
-			axios.post('/api/chatbotGetResolution', data)
+			axios.post(apiEndPoint, {message, accessToken})
 				.then(res => {
 					if(res.data.success){
 						console.log(res.data.message);
@@ -37,6 +42,7 @@ export const getResolution = (data, dispatch) => {
 						});
 					}
 					else{
+						// Log the error message
 						console.log(res.data.message);
 					}
 					
@@ -44,10 +50,28 @@ export const getResolution = (data, dispatch) => {
 				.catch(err => 
 					dispatcher({
 						type: GET_ERRORS,
-						payload: (err.response)?err.response.data:"Unknown Error Occured"})
+						payload: (err.response)?err.response.data:"Unknown Error Occured"
+					})
 				);
 
 		},1500)
 		
 	});
 }
+
+/**
+ * 
+ * @param {{handlerTag: String}} data reciver tag
+ * @param {Object} dispatch 
+ */
+export const switchMessageHandler = (data, dispatch) => {
+	dispatch({
+		type: SWITCH_RESOLUTION_HANDLER,
+		payload: data.handlerTag
+	})
+
+	return {
+		success: true,
+		message: 'Now you are connected to our human executive'
+	};
+};

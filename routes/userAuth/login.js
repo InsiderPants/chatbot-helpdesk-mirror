@@ -13,7 +13,7 @@ const {
 // @route  : POST /auth/login
 // @desc   : receive login info from *customer* and authenticate
 // @access : public route
-// --TO-DO-- : ---
+// --TO-DO-- : Return previous chat to the user
 router.post('/login', (req, res) => {
     // Extract login info from request body
     const {email} = req.body;
