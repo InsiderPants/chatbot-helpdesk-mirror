@@ -3,6 +3,12 @@ const express = require('express'),
       jwt = require('jsonwebtoken'),
       {jwtCode} = require('../../config/keys'),
       Customer = require('../../models/customerDB');
+const {
+    SERVER_ERROR, DATABASE_SAVE_ERROR, UNREGISTERED_EMAIL
+} = require('../../utils/messages').error;
+const {
+    LOGIN_SUCCESS
+} = require('../../utils/messages').success;
 
 // @route  : POST /auth/login
 // @desc   : receive login info from *customer* and authenticate
@@ -16,10 +22,10 @@ router.post('/login', (req, res) => {
     // Validate from the database -------
     Customer.findOne({'email': email}, function(error, customer){
         if(error){
-            console.log('Database Error: Error finding use in login');
+            console.log('Database Error: Error finding user in login');
             res.json({
                 success: false,
-                message: 'Server Error'
+                message: SERVER_ERROR
             });
         }
         else{
@@ -29,21 +35,23 @@ router.post('/login', (req, res) => {
                     email: customer.email,
                     name: customer.name
                 }, jwtCode);
+
+                // Increment visit counter by one
                 customer.set({visitCounter:customer.visitCounter+1})
                 customer.save(function(err,_){
                     if(error){
-                        console.log('Error Saving to database');
+                        console.log(DATABASE_SAVE_ERROR);
                         console.log(error);
 
                         res.json({
                             success: false,
-                            message: 'Server Error'
+                            message: SERVER_ERROR
                         });
                     }else{
                         // Send response to client ---- 
                         res.status(200).json({
                             success: true,
-                            message: 'Login Successful',
+                            message: LOGIN_SUCCESS,
                             body: {
                                 name: customer.name,
                                 contact: customer.contact,
@@ -59,7 +67,7 @@ router.post('/login', (req, res) => {
             else{
                 res.json({
                     success: false,
-                    message: 'This Email is not registered. Please Signup to continue'
+                    message: UNREGISTERED_EMAIL
                 });
             }
         }

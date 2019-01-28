@@ -1,0 +1,20 @@
+module.exports = {
+    error:{
+        SERVER_ERROR: "Server Error",
+        UNKNOWN_ERROR: "Sorry, unknown error occured. We're looking into the matter.",
+        INVALID_REQUEST: "Invalid Request",
+        DATADASE_PUSH_ERROR_USER: "Server error while adding. Try again",
+        DATABASE_SAVE_ERROR: "Error Saving to database",
+        REPEAT_SIGNUP_ERROR: "You are already registered. Please login to continue",
+        UNAUTH_API_REQUEST: 'You are not authorised to access this API',
+        INVALID_ACCESS_TOKEN: "Access token not valid",
+        UNREGISTERED_EMAIL: "This Email is not registered. Please Signup to continue"
+    },
+    success: {
+        ACCESS_VALIDATED: "Access validated",
+        QUERY_RESOLUTION_ADDED_TO_DATABASE: "Query-Response pair successfull added into database",
+        SIGNUP_SUCCESS: "SignUp successful, please login to continue",
+        LOGIN_SUCCESS: 'Login Successful'
+    }
+
+};

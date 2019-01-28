@@ -2,6 +2,13 @@ const express = require('express');
 const router = express.Router();
 const Customer = require('../../models/customerDB.js');
 
+const {
+    SERVER_ERROR, DATABASE_SAVE_ERROR, REPEAT_SIGNUP_ERROR
+} = require('../../utils/messages').error;
+const {
+    SIGNUP_SUCCESS
+} = require('../../utils/messages').success;
+
 // @route  : POST /auth/signup
 // @desc   : receive signup info from *customer* and add to customerDB
 // @access : public route
@@ -18,7 +25,7 @@ router.post('/signup', (req, res) => {
 
             res.json({
                 success: false,
-                message: 'Server Error'
+                message: SERVER_ERROR
             });
         }
         else{
@@ -38,13 +45,13 @@ router.post('/signup', (req, res) => {
 
                         res.json({
                             success: false,
-                            message: 'Server Error'
+                            message: SERVER_ERROR
                         });
                     }
                     else{
                         res.status(200).json({
                             success: true,
-                            message: 'SignUp successful, please login to continue'
+                            message: SIGNUP_SUCCESS
                         });
                     }
                 });
@@ -52,7 +59,7 @@ router.post('/signup', (req, res) => {
             else{
                 res.json({
                     success: false,
-                    message: 'You are already registered. Please login to continue'
+                    message: REPEAT_SIGNUP_ERROR
                 });
             }
         }

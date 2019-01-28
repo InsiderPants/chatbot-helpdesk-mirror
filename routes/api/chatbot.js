@@ -8,6 +8,12 @@ const express = require("express"),
 	  Customer = require('../../models/customerDB.js');
 
 const validateApiRequest = require('../../utils/validateApiRequest.js');
+const {
+	SERVER_ERROR, UNKNOWN_ERROR
+} = require('../../utils/messages').error;
+const {
+	ACCESS_VALIDATED
+} = require('../../utils/messages').success;
 
 // @route  : POST /api/chatbotGetResolution
 // @desc   : receive query from *customer* and send reply using chatbot engine
@@ -15,8 +21,7 @@ const validateApiRequest = require('../../utils/validateApiRequest.js');
 // --TO-DO-- : Improve NLP Engine, Set Sentimental Engine
 router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 	// Take data from request
-	var query = req.body.message;
-	var email = req.body.email
+	var { query, email } = req.body;
 
 	// Use NLP Engine
 	// var start = new Date().getTime();
@@ -44,26 +49,26 @@ router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 		        if(error){
 		            res.json({
 		                success: false,
-		                message: 'Server Error'
+		                message: SERVER_ERROR
 		            });
 		        }
 		        else{
 		        	// customer already exists so no checking for customer==null
 		        	conversation = customer.conversation
 		        	newConvoClient = {mtag:'CLIENT', message:query}
-		        	newConvoServer = {mtag:'SERVER', message:query}
+		        	newConvoServer = {mtag:'SERVER', message:response}
 		            customer.set({conversation:[...conversation,newConvoClient,newConvoServer]})
 	                customer.save(function(err,_){
 	                    if(error){
 	                        res.json({
 	                            success: false,
-	                            message: 'Server Error'
+	                            message: SERVER_ERROR
 	                        });
 	                    }else{
 	                        // Send response to client ---- 
 	                        res.status(200).json({
 								success: true,
-								message: 'Access validated',
+								message: ACCESS_VALIDATED,
 								body: {
 									reply: response
 								}
@@ -73,7 +78,7 @@ router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 		        }
 		    });
 		})
-		.catch(err=>res.send({reply:"Sorry, unknown error occured. We're looking into the matter."}))
+		.catch(err=>res.send({reply:UNKNOWN_ERROR}))
 })
 
 module.exports = router;
