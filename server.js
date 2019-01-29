@@ -1,7 +1,9 @@
 // Required Libraries
 const express = require("express"),
 	  app = express(),
+	  server = require('http').Server(app),
 	  mongoose = require("mongoose"),
+	  io = require('socket.io')(server);
 	  bodyParser = require('body-parser');
 
 // Body Parser middleware to parse request
@@ -16,7 +18,7 @@ mongoose.connect(db,{useNewUrlParser:true})
 
 // Required APIs
 const chatbotAPI = require("./routes/api/chatbot.js");
-const executiveAPI = require("./routes/api/executive.js");
+const executiveAPI = require("./routes/api/executive.js")(app, io);
 
 const login = require("./routes/userAuth/login.js");
 const signup = require("./routes/userAuth/signup.js");
@@ -28,7 +30,9 @@ app.get('/',(req,res)=>{
 
 // Use Routes, instead of using app.get()
 app.use('/api',chatbotAPI);
-app.use('/api',executiveAPI);
+//app.use(executiveAPI);
+// check executive.js in /routes
+executiveAPI;
 
 // auth routes
 app.use('/auth', login);
@@ -46,6 +50,6 @@ app.post('*',(req,res)=>{
 const port = process.env.PORT || "8000";
 const ip = process.env.IP;
 
-app.listen(port,ip,()=>{
+server.listen(port,ip,()=>{
 	console.log(`Server running on port ${port} and ip ${ip}`);
 })

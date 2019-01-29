@@ -12,7 +12,7 @@ import Fab from '@material-ui/core/Fab';
 import RenderChat from './renderChat';
 
 //action
-import {getResolution} from '../../actions/getResolution';
+import { getCustomerQuery } from '../../actions/getCustomerQuery';
 
 //CSS
 const styles = theme => ({
@@ -62,7 +62,7 @@ class Chat extends Component {
     onSendEnterPress(event){
         if(event.key === 'Enter'){
             if(this.state.message.length !== 0){
-                this.props.getResolution({
+                this.props.getCustomerQuery({
                     message: this.state.message
                 });
                 this.setState({message: ''});
@@ -73,7 +73,7 @@ class Chat extends Component {
 
     onSend(event) {
         if(this.state.message.length !== 0) {
-            this.props.getResolution({
+            this.props.getCustomerQuery({
                 message: this.state.message
             });
             this.setState({
@@ -147,7 +147,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getResolution: (data) => getResolution(data, dispatch)
+        getCustomerQuery: (data) => getCustomerQuery(data, dispatch)
     };
 };
 
