@@ -1,3 +1,6 @@
+/*
+    *Module for finding response to a query from database
+*/
 const mongoose = require("mongoose"),
 	  faqDB = require("../models/faqDB.js"),
 	  ordinaryDB = require("../models/ordinaryDB.js");
@@ -35,7 +38,6 @@ async function findResponse(customerQuery){
 	if(maxScore>=threshold){
 		return await response;
 	}
-
 	// Search in ordinary database if not found in FAQ DB
 	info = await ordinaryDB.collection.stats()
 	databaseSize = info["count"]
@@ -54,7 +56,6 @@ async function findResponse(customerQuery){
 	if(maxScore<threshold){
 		response = ["Sorry no match found for your query. Would you like to talk to a human or start a new query?"]
 	}
-
 	return await response;
 }
 
