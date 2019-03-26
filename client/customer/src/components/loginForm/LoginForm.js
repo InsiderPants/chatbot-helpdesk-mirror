@@ -34,7 +34,7 @@ class LoginForm extends Component {
 		// Send to server ------
 		axios({
 			method: 'post',
-			url: '/auth/login',
+			url: '/auth/customer/login',
 			data: {
 				email: this.state.email
 			}
