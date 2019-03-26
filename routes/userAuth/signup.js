@@ -1,28 +1,28 @@
-const express = require('express');
-const router = express.Router();
-const Customer = require('../../models/customerDB.js');
+/*
+    *API for Signup
+*/
+const express = require('express'),
+      router = express.Router(),
+      Customer = require('../../models/customerDB.js');
 
 const {
     SERVER_ERROR, DATABASE_SAVE_ERROR, REPEAT_SIGNUP_ERROR
 } = require('../../utils/messages').error;
+
 const {
     SIGNUP_SUCCESS
 } = require('../../utils/messages').success;
-
-// @route  : POST /auth/signup
-// @desc   : receive signup info from *customer* and add to customerDB
-// @access : public route
-// --TO-DO-- : ---
+/*
+    *route  : POST /auth/signup
+    *desc   : receive signup info from *customer* and add to customerDB
+    *access : public route
+*/
 router.post('/signup', (req, res) => {
     // Extract signup info from request body
-    const { email, contact, name } = req.body;
-
-    // Check if the user already exixts 
-    Customer.findOne({'email': email}, function(error, customer){
-        if(error){
-            console.log('Database Error: Error finding user in signup');
-            console.log(error);
-
+    const {email, contact, name} = req.body;
+    // Check if the customer already exixts
+    Customer.findOne({'email': email}, function(err, customer){
+        if(err){
             res.json({
                 success: false,
                 message: SERVER_ERROR
@@ -30,19 +30,15 @@ router.post('/signup', (req, res) => {
         }
         else{
             if(customer == null){
-                // Creating the user Document
+                // New customer
                 const newCustomer = new Customer({
                     email: email,
                     contact: contact,
                     name: name
                 });
-                
-                // Save the new user in the database -----
-                newCustomer.save(function(error, _temp) {
-                    if(error){
-                        console.log('Error Saving to database');
-                        console.log(error);
-
+                // Save the new customer in the database
+                newCustomer.save(function(err, _) {
+                    if(err){
                         res.json({
                             success: false,
                             message: SERVER_ERROR
@@ -56,6 +52,7 @@ router.post('/signup', (req, res) => {
                     }
                 });
             }
+            // Customer already exists
             else{
                 res.json({
                     success: false,
@@ -64,10 +61,6 @@ router.post('/signup', (req, res) => {
             }
         }
     });
-
-    
-    
-    
 });
 
 module.exports = router;

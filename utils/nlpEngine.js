@@ -1,3 +1,6 @@
+/*
+    *Module for NLP Engine
+*/
 var natural = require('natural');
 
 function nlpEngine(customerQuery){

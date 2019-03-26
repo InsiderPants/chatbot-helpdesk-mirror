@@ -1,51 +1,37 @@
-// --- API for customer to get resolution using chatbot ---
-
+/*
+	*API for customer to get resolution using chatbot
+*/
 const express = require("express"),
 	  router = express.Router(),
 	  nlpEngine = require("../../utils/nlpEngine.js"),
 	  sentimentEngine = require("../../utils/sentimentEngine.js"),
 	  findResponse = require("../../utils/findResponse.js"),
-	  Customer = require('../../models/customerDB.js');
+	  Customer = require('../../models/customerDB.js'),
+	  validateApiRequest = require('../../utils/validateApiRequest.js');
 
-const validateApiRequest = require('../../utils/validateApiRequest.js');
 const {
 	SERVER_ERROR, UNKNOWN_ERROR
 } = require('../../utils/messages').error;
+
 const {
 	ACCESS_VALIDATED
 } = require('../../utils/messages').success;
-
-// @route  : POST /api/chatbotGetResolution
-// @desc   : receive query from *customer* and send reply using chatbot engine
-// @access : private route
-// --TO-DO-- : Improve NLP Engine, Set Sentimental Engine
+/*
+	*route  : POST /api/chatbotGetResolution
+	*desc   : receive query from *customer* and send reply using chatbot engine
+	*access : private route
+*/
 router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 	// Take data from request
-	
-	let email = req.body.email;
-	query = req.body.message;
-	
+	let email = req.body.email,
+		query = req.body.message;
 	// Use NLP Engine
-	// var start = new Date().getTime();
-	// console.log("\nBefore : ",query)
 	query = nlpEngine(query);
-	// console.log("After : ",query)
-	// var end = new Date().getTime();
-	// console.log("Call to nlpEngine took " + (end - start) + " milliseconds.")
-	
-	// use Sentimentatl Analysis Engine
-	// start = new Date().getTime();
-	// sentiment = sentimentEngine(query);
-	// end = new Date().getTime();
-	// console.log("Call to sentimentEngine took " + (end - start) + " milliseconds.")
-	
+	// Use Sentimentatl Analysis Engine
+	sentiment = sentimentEngine(query);
 	// Find & Return response
-	// start = new Date().getTime();
 	findResponse(query)
 		.then(response=> {
-			// end = new Date().getTime();
-			// console.log("Call to findResponse took " + (end - start) + " milliseconds.")
-
 			// Save chat in conversation array
 			Customer.findOne({'email': email}, function(error, customer){
 		        if(error){
@@ -55,11 +41,10 @@ router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 		            });
 		        }
 		        else{
-		        	// customer already exists so no checking for customer==null
-		        	conversation = customer.conversation
+		        	prevConversation = customer.conversation
 		        	newConvoClient = {mtag:'CLIENT', message:query}
 		        	newConvoServer = {mtag:'SERVER', message:response}
-		            customer.set({conversation:[...conversation,newConvoClient,newConvoServer]})
+		            customer.set({conversation:[...prevConversation,newConvoClient,newConvoServer]})
 	                customer.save(function(err,_){
 	                    if(error){
 	                        res.json({
@@ -67,7 +52,7 @@ router.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
 	                            message: SERVER_ERROR
 	                        });
 	                    }else{
-	                        // Send response to client ---- 
+	                        // Send response to client
 	                        res.status(200).json({
 								success: true,
 								message: ACCESS_VALIDATED,

@@ -1,3 +1,6 @@
+/*
+    *Module for Sentiment Engine
+*/
 function sentimentEngine(customerQuery){
 	return 1
 }

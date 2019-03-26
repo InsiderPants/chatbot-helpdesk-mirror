@@ -1,3 +1,6 @@
+/*
+    *Module for defining all errors
+*/
 module.exports = {
     error:{
         SERVER_ERROR: "Server Error",
