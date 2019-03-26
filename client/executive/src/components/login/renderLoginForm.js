@@ -7,7 +7,7 @@ import { Redirect, withRouter  } from 'react-router-dom';
 //importing components
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 //actions
 import { loginUser } from '../../actions/auth';
@@ -27,6 +27,18 @@ const styles = theme => ({
         top: '5vh',
     }
 })
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#06546f',
+        },
+        error: {
+            main: '#d1121c',
+        },
+    },
+    typography: { useNextVariants: true },
+});
 
 class RenderLoginForm extends React.Component {
     constructor() {
@@ -90,7 +102,7 @@ class RenderLoginForm extends React.Component {
     componentWillReceiveProps(nextProps) {        
         if (nextProps.executive.isAuthenticated) {
             //redirecting to home
-            console.log(nextProps.executive.isAuthenticated);
+            //console.log(nextProps.executive.isAuthenticated);
             this.props.history.push('/');
         }
     }
@@ -100,6 +112,7 @@ class RenderLoginForm extends React.Component {
         return(
             <div>
                 <form className={classes.formContainer} onSubmit={this.handleLoginFormSubmit}>
+                    <MuiThemeProvider theme={theme}>
                     <TextField
                         id="executive-login-email"
                         label="E-Mail *"
@@ -124,6 +137,7 @@ class RenderLoginForm extends React.Component {
                         margin="normal"
                         helperText={this.state.passwordHelperText}
                     />
+                    </MuiThemeProvider>
                     <br/>
                     <br/>
                     <Button 

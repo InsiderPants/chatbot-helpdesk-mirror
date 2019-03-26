@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import Chat from '../chat/chat';
 import Navbar from '../navbar/navbar';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
@@ -29,12 +30,14 @@ class Body extends Component {
             <div className={classes.root} style={{minHeight: '100vh', backgroundImage: 'linear-gradient(#7390b8 , #003141)',}}>
                 <Navbar/>
                 <Grid container spacing={8} justify="space-evenly">
-                    <Grid item xs={12} sm={6} md={6}>
-                        <Paper className={classes.paper} style={{height: '50vh', backgroundColor: '#eceff1'}}>
-                            space for options view or charts 
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={6}>
+                    {/* <Hidden smDown>
+                        <Grid item md={5} lg={5} xl={5}>
+                            <Paper className={classes.paper} style={{height: '50vh', backgroundColor: '#eceff1'}}>
+                                space for options view or charts 
+                            </Paper>
+                        </Grid>
+                    </Hidden> */}
+                    <Grid item xs={12} sm={12} md={11} lg={11} xl={11}>
                         <Paper className={classes.paper} style={{backgroundColor: '#eceff1'}}>
                             <Chat/>
                         </Paper>

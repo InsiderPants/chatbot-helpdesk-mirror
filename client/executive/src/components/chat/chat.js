@@ -32,7 +32,7 @@ const styles = theme => ({
     },
     chat_container: {
         width: '100%',
-        height: '79vh',
+        height: '80vh',
         overflow: 'auto',
     },
     iconButton: {
@@ -108,7 +108,7 @@ class Chat extends Component {
                     {/* for input and sending chats */}
                     <form className={classes.form_container}>
                         <Grid container spacing={8}>
-                            <Grid item sm={10}>
+                            <Grid item xs={10} sm={11} sm={11} lg={11} xl={11}>
                                 <TextField
                                     id="executive-chat-input"
                                     value={this.state.message}
@@ -124,10 +124,9 @@ class Chat extends Component {
                                     onKeyPress={this.onSendEnterPress}
                                 />
                             </Grid>
-                            <Grid item sm={2}>
-                                <Fab variant="extended" color="primary" aria-label="Edit" className={classes.fab} onClick={this.onSend} style={{backgroundColor: '#08254f'}}>
+                            <Grid item xs={2} sm={1} md={1} lg={1} xl={1}>
+                                <Fab color="primary" aria-label="Edit" className={classes.fab} onClick={this.onSend} style={{backgroundColor: '#08254f'}}>
                                     <Icon className={classes.extendedIcon} >send</Icon>
-                                    Send
                                 </Fab>
                             </Grid>
                         </Grid>

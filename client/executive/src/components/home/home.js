@@ -10,7 +10,7 @@ import Body from '../body/body';
 class Home extends React.Component {
 
     render() {
-        console.log(this.props.executive.isAuthenticated)
+        //console.log(this.props.executive.isAuthenticated)
         return(
             <div>
                 {
