@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import Chat from '../chat/chat';
 import Navbar from '../navbar/navbar';
 import Grid from '@material-ui/core/Grid';
-import Hidden from '@material-ui/core/Hidden';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
@@ -23,6 +22,11 @@ const styles = theme => ({
 });
 
 class Body extends Component {
+
+    componentDidMount() {
+        console.log(localStorage.getItem('AccessToken'));
+    }
+
     render() {
         const { classes } = this.props;
 

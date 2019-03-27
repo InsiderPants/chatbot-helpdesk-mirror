@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 //import components
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
@@ -43,6 +43,18 @@ const styles = theme => ({
         marginLeft: 8,
         flex: 1,
     }
+});
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#06546f',
+        },
+        error: {
+            main: '#d1121c',
+        },
+    },
+    typography: { useNextVariants: true },
 });
 
 class Chat extends Component {
@@ -107,8 +119,9 @@ class Chat extends Component {
                 <div>
                     {/* for input and sending chats */}
                     <form className={classes.form_container}>
+                        <MuiThemeProvider theme={theme}>
                         <Grid container spacing={8}>
-                            <Grid item xs={10} sm={11} sm={11} lg={11} xl={11}>
+                            <Grid item xs={10} sm={11} md={11} lg={11} xl={11}>
                                 <TextField
                                     id="executive-chat-input"
                                     value={this.state.message}
@@ -130,6 +143,7 @@ class Chat extends Component {
                                 </Fab>
                             </Grid>
                         </Grid>
+                        </MuiThemeProvider>
                     </form>
                 </div>
             </div>

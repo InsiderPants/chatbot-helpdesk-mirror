@@ -15,7 +15,7 @@ class Home extends React.Component {
             <div>
                 {
                     //checking if executive is authencated or not
-                    this.props.executive.isAuthenticated ?
+                    localStorage.getItem('AccessToken') !== null ?
                     <Body />
                     :
                     <Redirect to='/login'/> 

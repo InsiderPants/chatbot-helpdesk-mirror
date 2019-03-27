@@ -2,11 +2,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { Redirect, withRouter  } from 'react-router-dom';
+import { Redirect, Link, withRouter  } from 'react-router-dom';
 
 //importing components
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 //actions
@@ -25,7 +26,14 @@ const styles = theme => ({
     formContainer: {
         position: 'relative',
         top: '5vh',
-    }
+    },
+    registerTextContainer: {
+        position: 'relative',
+        right: '10%',
+    },
+    registerText: {
+        textDecoration: 'none',
+    },
 })
 
 const theme = createMuiTheme({
@@ -107,6 +115,12 @@ class RenderLoginForm extends React.Component {
         }
     }
 
+    UNSAFE_componentWillMount() {
+        if(localStorage.getItem('AccessToken') !== null) {
+            this.props.history.push('/');
+        }
+    }
+
     render() {
         const {classes} = this.props;
         return(
@@ -138,6 +152,10 @@ class RenderLoginForm extends React.Component {
                         helperText={this.state.passwordHelperText}
                     />
                     </MuiThemeProvider>
+                    <br/>
+                    <Typography className={classes.registerTextContainer} align='right' variant='body1'>
+                        <Link className={classes.registerText} to='/register'>New User? Click here to register.</Link>
+                    </Typography>
                     <br/>
                     <br/>
                     <Button 
