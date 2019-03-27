@@ -2,12 +2,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { Redirect, withRouter  } from 'react-router-dom';
+import { Redirect, Link, withRouter  } from 'react-router-dom';
 
 //importing components
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 //actions
 import { loginUser } from '../../actions/auth';
@@ -25,8 +26,27 @@ const styles = theme => ({
     formContainer: {
         position: 'relative',
         top: '5vh',
-    }
+    },
+    registerTextContainer: {
+        position: 'relative',
+        right: '10%',
+    },
+    registerText: {
+        textDecoration: 'none',
+    },
 })
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#06546f',
+        },
+        error: {
+            main: '#d1121c',
+        },
+    },
+    typography: { useNextVariants: true },
+});
 
 class RenderLoginForm extends React.Component {
     constructor() {
@@ -90,7 +110,13 @@ class RenderLoginForm extends React.Component {
     componentWillReceiveProps(nextProps) {        
         if (nextProps.executive.isAuthenticated) {
             //redirecting to home
-            console.log(nextProps.executive.isAuthenticated);
+            //console.log(nextProps.executive.isAuthenticated);
+            this.props.history.push('/');
+        }
+    }
+
+    UNSAFE_componentWillMount() {
+        if(localStorage.getItem('AccessToken') !== null) {
             this.props.history.push('/');
         }
     }
@@ -100,6 +126,7 @@ class RenderLoginForm extends React.Component {
         return(
             <div>
                 <form className={classes.formContainer} onSubmit={this.handleLoginFormSubmit}>
+                    <MuiThemeProvider theme={theme}>
                     <TextField
                         id="executive-login-email"
                         label="E-Mail *"
@@ -124,6 +151,11 @@ class RenderLoginForm extends React.Component {
                         margin="normal"
                         helperText={this.state.passwordHelperText}
                     />
+                    </MuiThemeProvider>
+                    <br/>
+                    <Typography className={classes.registerTextContainer} align='right' variant='body1'>
+                        <Link className={classes.registerText} to='/register'>New User? Click here to register.</Link>
+                    </Typography>
                     <br/>
                     <br/>
                     <Button 
