@@ -28,8 +28,15 @@ export const getResolution = (data, dispatch) => {
 				.then(res => {
 					if(res.data.success){
 						console.log(res.data.message);
-
-						const { reply } = res.data.body;
+						/*
+							*sentiment - numeric b/w 1 and 0
+							*intent - string representating the intent
+							*confidence - confidence score b/w 1 and 0 for intent
+							*entities - Array containing entities
+							*reply - Array containing replies
+							*actions - Array containing actions
+						*/
+						const { sentiment, intent, confidence, entities, reply, actions } = res.data.response;
 						dispatcher({
 							type:GET_AND_SAVE_BOT_REPLY,
 							payload: reply

@@ -15,7 +15,7 @@ module.exports = {
     },
     success: {
         ACCESS_VALIDATED: "Access validated",
-        QUERY_RESOLUTION_ADDED_TO_DATABASE: "Query-Response pair successfull added into database",
+        SUCCESSFULLY_ADDED_TO_DATABASE: "Successfully added into database",
         SIGNUP_SUCCESS: "SignUp successful, please login to continue",
         LOGIN_SUCCESS: 'Login Successful'
     }

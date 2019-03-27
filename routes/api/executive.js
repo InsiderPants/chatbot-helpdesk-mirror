@@ -2,12 +2,10 @@
 	*API for customer to get resolution from executive
 */
 const mongoose = require("mongoose"),
-	  ordinaryDB = require("../../models/ordinaryDB.js"),
-	  faqDB = require("../../models/faqDB.js"),
-	  nlpEngine = require("../../utils/nlpEngine.js");
+	  intentToActionDB = require("../../models/intentToActionDB.js");
 
 const {
-	QUERY_RESOLUTION_ADDED_TO_DATABASE, ACCESS_VALIDATED
+	SUCCESSFULLY_ADDED_TO_DATABASE, ACCESS_VALIDATED
 } = require('../../utils/messages').success;
 
 const {	
@@ -39,51 +37,28 @@ module.exports = (app, io) => {
 	})
 	/*
 		*route  : POST /api/executiveSaveResolution
-		*desc   : receive save request from executive and save the query-resolution pair
+		*desc   : receive save request from executive and save Intent-Reply-Actions
 		*access : public route
 		***TO-DO: make this a private route using auth (executive login)
 	*/
 	app.post("/api/executiveSaveResolution", (req, res) => {
 		// Take Data from Request
-		var {query, response, dbType} = req.body;
-		// Use NLP Engine/ Process the data before saving
-
-		// Save Query-Response pair
-		if (dbType === 'faq') {
-			ordinaryDB.create({
-					query: query,
-					resolution: response
-				})
-				.then(obj => {
-					res.status(200).json({
-						success: true,
-						message: QUERY_RESOLUTION_ADDED_TO_DATABASE
-					})
-				})
-				.catch(err => res.send({
-					success: false,
-					message: DATADASE_PUSH_ERROR_USER
-				}));
-		} else if (dbType == 'ordinary') {
-			faqDB.create({
-					query: query,
-					resolution: response
-				})
-				.then(obj => {
-					res.status(200).json({
-						success: true,
-						message: QUERY_RESOLUTION_ADDED_TO_DATABASE
-					})
-				})
-				.catch(err => res.send({
-					success: false,
-					message: DATADASE_PUSH_ERROR_USER
-				}));
-		} else{
-			res.send({
-				success: false,
-				message: INVALID_REQUEST
+		var {intent, reply, actions} = req.body;
+		// Save Intent-Reply-Actions
+		intentToActionDB.create({
+				intent: intent,
+				reply: reply,
+				actions: actions
 			})
-		}
+			.then(obj => {
+				res.status(200).json({
+					success: true,
+					message: SUCCESSFULLY_ADDED_TO_DATABASE
+				})
+			})
+			.catch(err => res.send({
+				success: false,
+				message: DATADASE_PUSH_ERROR_USER
+			}));
 	})
 }
