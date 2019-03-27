@@ -23,7 +23,7 @@ class SignupForm_ extends Component{
                 // Send signup data to the server
                 axios({
                     method: 'post',
-                    url: 'auth/signup',
+                    url: 'auth/customer/signup',
                     data: {
                         name: name,
                         email: email,
