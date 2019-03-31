@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { withRouter } from 'react-router-dom';
 
 //importing components
 import AppBar from '@material-ui/core/AppBar';
@@ -103,6 +104,7 @@ class Navbar extends Component {
         this.handleProfileMenuOpen = this.handleProfileMenuOpen.bind(this);
         this.toggleDrawer = this.toggleDrawer.bind(this);
         this.handleMenuClose = this.handleMenuClose.bind(this);
+        this.addQueryPairRoute = this.addQueryPairRoute.bind(this);
     }
 
     handleProfileMenuOpen = event => {
@@ -126,6 +128,13 @@ class Navbar extends Component {
     logoutExecutive = () => {
         this.props.signOutUser()
     }
+
+    addQueryPairRoute = () => {
+        if(this.props.executive.isAuthenticated) {
+            console.log("Redirecting ot add query page and this route is secure");
+            this.props.history.push('/addquerypair');
+        }
+    }
     
     render(){
         const { anchorEl } = this.state;
@@ -137,15 +146,15 @@ class Navbar extends Component {
         <div className={classes.list}>
             <List>
                 {/* dummy side menu buttons(will change soon) */}
-            {['One', 'Two', 'Three', 'Four'].map((text, index) => (
-                <ListItem button key={text}>
+            {['Add Query Pair'].map((text, index) => (
+                <ListItem button key={text} onClick={this.addQueryPairRoute}>
                 <ListItemText primary={text} />
                 </ListItem>
             ))}
             </List>
             <Divider />
             <List>
-            {['Five', 'Six', 'Seven'].map((text, index) => (
+            {['About Us', 'Contact'].map((text, index) => (
                 <ListItem button key={text}>
                 <ListItemText primary={text} />
                 </ListItem>
@@ -229,7 +238,7 @@ class Navbar extends Component {
 //connecting to redux
 const mapStateToProps = (state) => {
     return {
-        
+        executive: state.executive,
     };
 }
 
@@ -242,5 +251,6 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),
+    withRouter,
     withStyles(styles),
 )(Navbar);

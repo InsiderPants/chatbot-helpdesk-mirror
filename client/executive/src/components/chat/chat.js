@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 //import components
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
@@ -32,7 +32,7 @@ const styles = theme => ({
     },
     chat_container: {
         width: '100%',
-        height: '79vh',
+        height: '80vh',
         overflow: 'auto',
     },
     iconButton: {
@@ -43,6 +43,18 @@ const styles = theme => ({
         marginLeft: 8,
         flex: 1,
     }
+});
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#06546f',
+        },
+        error: {
+            main: '#d1121c',
+        },
+    },
+    typography: { useNextVariants: true },
 });
 
 class Chat extends Component {
@@ -107,8 +119,9 @@ class Chat extends Component {
                 <div>
                     {/* for input and sending chats */}
                     <form className={classes.form_container}>
+                        <MuiThemeProvider theme={theme}>
                         <Grid container spacing={8}>
-                            <Grid item sm={10}>
+                            <Grid item xs={10} sm={11} md={11} lg={11} xl={11}>
                                 <TextField
                                     id="executive-chat-input"
                                     value={this.state.message}
@@ -124,13 +137,13 @@ class Chat extends Component {
                                     onKeyPress={this.onSendEnterPress}
                                 />
                             </Grid>
-                            <Grid item sm={2}>
-                                <Fab variant="extended" color="primary" aria-label="Edit" className={classes.fab} onClick={this.onSend} style={{backgroundColor: '#08254f'}}>
+                            <Grid item xs={2} sm={1} md={1} lg={1} xl={1}>
+                                <Fab color="primary" aria-label="Edit" className={classes.fab} onClick={this.onSend} style={{backgroundColor: '#08254f'}}>
                                     <Icon className={classes.extendedIcon} >send</Icon>
-                                    Send
                                 </Fab>
                             </Grid>
                         </Grid>
+                        </MuiThemeProvider>
                     </form>
                 </div>
             </div>

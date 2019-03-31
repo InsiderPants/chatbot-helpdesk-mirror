@@ -10,12 +10,12 @@ import Body from '../body/body';
 class Home extends React.Component {
 
     render() {
-        console.log(this.props.executive.isAuthenticated)
+        //console.log(this.props.executive.isAuthenticated)
         return(
             <div>
                 {
                     //checking if executive is authencated or not
-                    this.props.executive.isAuthenticated ?
+                    localStorage.getItem('AccessToken') !== null ?
                     <Body />
                     :
                     <Redirect to='/login'/> 
