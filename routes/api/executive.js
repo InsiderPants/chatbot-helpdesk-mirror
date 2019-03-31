@@ -2,7 +2,7 @@
 	*API for customer to get resolution from executive
 */
 const mongoose = require("mongoose"),
-	  intentToActionDB = require("../../models/intentToActionDB.js");
+	  intentsDB = require("../../models/intentsDB.js");
 
 const {
 	SUCCESSFULLY_ADDED_TO_DATABASE, ACCESS_VALIDATED
@@ -43,10 +43,11 @@ module.exports = (app, io) => {
 	*/
 	app.post("/api/executiveSaveResolution", (req, res) => {
 		// Take Data from Request
-		var {intent, reply, actions} = req.body;
+		var {intent, examples, reply, actions} = req.body;
 		// Save Intent-Reply-Actions
-		intentToActionDB.create({
+		intentsDB.create({
 				intent: intent,
+				examples: examples,
 				reply: reply,
 				actions: actions
 			})

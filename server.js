@@ -16,10 +16,10 @@ app.use(bodyParser.json()) // if there's a json object in request, it'll populat
 const db = require('./config/keys.js').mongoURI;
 mongoose.connect(db,{useNewUrlParser:true})
 		.then(()=> console.log("Connected to database"))
-		.catch((err)=>console.log(err));
+		.catch((err)=>console.log("Error connecting with mongodb"));
 
 // Required APIs
-const chatbotAPI = require("./routes/api/chatbot.js");
+const chatbotAPI = require("./routes/api/chatbot.js")(app);
 const executiveAPI = require("./routes/api/executive.js")(app, io);
 
 const login = require("./routes/userAuth/login.js");
@@ -30,10 +30,9 @@ app.get('/',(req,res)=>{
 	res.send("You've reached Server Home!");
 })
 
-// Use Routes, instead of using app.get()
-app.use('/api',chatbotAPI);
-//app.use(executiveAPI);
-// check executive.js in /routes
+// Chatbot API
+chatbotAPI
+// Executive API
 executiveAPI;
 
 // auth routes

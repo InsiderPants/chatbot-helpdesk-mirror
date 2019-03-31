@@ -115,5 +115,4 @@ router.post('/executive/signup', (req, res) => {
     });
 });
 
-
 module.exports = router;

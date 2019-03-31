@@ -1,21 +1,44 @@
 /*
     *Module for finding response
 */
-const nlpEngine = require('./nlp/nlpEngine'),
-	  sentimentEngine = require('./sentiment/sentimentEngine'),
-	  searchDatabase = require('./searchDatabase');
+const searchDatabase = require('./searchDatabase');
 
-async function findResponse(customerQuery){
+async function findResponse(customerQuery,pipeline){
 	// Passing through NLP Engine
-	// console.log(customerQuery)
-	var result = await nlpEngine(customerQuery);
-	// console.log(result)
+	// Result object
+	var result = {
+		"text":customerQuery,
+		"sentiment":null,
+		"intent":'',
+		"confidence":null,
+		"entities":[],
+		"reply":[],
+		"actions":[]
+	};
+	// Tokens
+	tokens = await pipeline.tokenizer.tokenize(customerQuery);
+	// console.log(tokens)
+
+	// Features to feed in intent classifier
+	features = await pipeline.featurizer.transform(tokens);
+	// console.log(features)
+	
+	// Named Entity Recognition
+	// entities = await pipeline.ner(customerQuery);
+
+	// Intent Classification
+	// classifiedResult = await pipeline.intentClassifier.predict(features);
+	// result['intent'] = await classifiedResult['intent'];
+	// result['confidence'] = await classifiedResult['confidence'];
+
 	// Passing through Sentiment Engine
-	result['sentiment'] = await sentimentEngine(result['text']);
-	// console.log(result)
+	// result['sentiment'] = await pipeline.sentimentEngine(result['text']);
+
 	// Search Database using intent for actions
 	// result = await searchDatabase(result);
+
 	// console.log(result)
+	
 	// Return result object
 	return await result;
 }
