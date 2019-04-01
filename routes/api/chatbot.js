@@ -24,7 +24,7 @@ module.exports = (app) => {
 	*desc   : receive query from *customer* and send reply using chatbot engine
 	*access : private route
 	*/
-	app.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
+	app.post("/api/chatbotGetResolution", validateApiRequest, (req,res)=>{
 		// Take data from request
 		let email = req.body.email,
 			query = req.body.message;
