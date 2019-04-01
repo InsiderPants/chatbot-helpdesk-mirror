@@ -41,14 +41,14 @@ class LoginForm extends Component {
 		})
 		.then(res => {
 			if(res.data.success){
-				const { name, contact, accessToken, previousChat } = res.data.body;
+				const { name, contact, email, accessToken, previousChat } = res.data.body;
 				console.log(res.data.message);
 
 				// Dispatch Action to update user state
 				this.props.loginUser({
 					userInfo: {
 						name: name,
-						email: 'prash.kumar047@gmail.com',
+						email: email,
 						contact: contact,
 						accessToken: accessToken
 					},

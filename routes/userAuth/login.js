@@ -56,6 +56,7 @@ router.post('/customer/login', (req, res) => {
                             body: {
                                 name: customer.name,
                                 contact: customer.contact,
+                                email: customer.email,
                                 accessToken: accessToken,
                                 previousChat: [{mtag:'SERVER', message: "your previous chat"}]
                             }

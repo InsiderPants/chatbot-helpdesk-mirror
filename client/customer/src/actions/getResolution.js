@@ -43,10 +43,13 @@ export const getResolution = (data, dispatch) => {
 						});
 
 						// Add Bot's reply to the conversation
-						dispatcher({
-							type:SAVE_CHAT,
-							payload:{mtag:'SERVER',message: reply}
-						});
+						reply.forEach((str)=>{
+							// str is string item from reply array
+							dispatcher({
+								type:SAVE_CHAT,
+								payload:{mtag:'SERVER',message: str}
+							});
+						})
 					}
 					else{
 						// Log the error message
