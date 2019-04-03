@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 // Components
 import Home from './components/home/home';
 import Login from './components/login/login';
-import AddQueryPair from './components/queryPair/addQueryPair';
+import AddIntent from './components/intent/addIntent';
 import Register from './components/register/register';
 
 // Actions
@@ -22,7 +22,7 @@ class App extends Component {
                     <div>
                         <Route exact path='/login' component={Login}/>
                         <Route exact path='/register' component={Register}/>
-                        <Route exact path='/addquerypair' component={AddQueryPair}/>
+                        <Route exact path='/addintent' component={AddIntent}/>
                         <Route exact path='/' component={Home}/>
                     </div>
                 </Router>

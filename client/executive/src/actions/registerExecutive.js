@@ -4,7 +4,7 @@ import { REGISTER_EXECUTIVE, GET_ERRORS } from './types';
 
 export const registerExecutive = (data, dispatch) => {
     console.log('from register executive action ')
-    axios.post('/auth/executive/signup', data)
+    axios.post('http://localhost:8000/auth/executive/signup', data)
         .then(res => {
             if(res.data.success) {
                 dispatch((dispatcher) => {
@@ -22,5 +22,13 @@ export const registerExecutive = (data, dispatch) => {
                     })
                 })
             }
+        })
+        .catch(err => {
+            dispatch((dispatcher) => {
+                dispatcher({
+                    type: GET_ERRORS,
+                    payload: (err.response) ? err : "Unknown Error Occured",
+                })
+            })
         })
 };
