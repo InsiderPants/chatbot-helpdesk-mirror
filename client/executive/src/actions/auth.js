@@ -16,7 +16,7 @@ export const loginUser = (data, dispatch) => {
     //         payload: data,
     //     });
     // });
-    axios.post('http://localhost:8000/auth/executive/login', data)
+    axios.post('/auth/executive/login', data)
         .then(res => {
             // console.log(res.data.body.accessToken);
             if(res.data.success) {

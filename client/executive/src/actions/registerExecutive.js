@@ -3,8 +3,7 @@ import axios from 'axios';
 import { REGISTER_EXECUTIVE, GET_ERRORS } from './types';
 
 export const registerExecutive = (data, dispatch) => {
-    console.log('from register executive action ')
-    axios.post('http://localhost:8000/auth/executive/signup', data)
+    axios.post('/auth/executive/signup', data)
         .then(res => {
             if(res.data.success) {
                 dispatch((dispatcher) => {

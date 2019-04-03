@@ -10,9 +10,11 @@ import {
     LOADING_QUERY
 } from './types';
 
-const chat = io('/api/executiveGetResolution');
 //getting customer query from backend
-export const getCustomerQuery = (data, dispatch) => {
+export const getCustomerQuery = (data, socket, dispatch) => {
+    console.log(data)
+    let newSocket = io(socket.io.uri+'/api/executiveGetResolution')
+    // console.log(newSocket)
     dispatch((dispatcher) => {
         dispatcher({
             type: GET_EXECUTIVE_ANSWER,
@@ -29,8 +31,8 @@ export const getCustomerQuery = (data, dispatch) => {
             type: LOADING_QUERY,
         });
 
-        //conetion to socket io
-        chat.on('executive', (data) => {
+        //conetion to newSocket io
+        newSocket.on('executive', (data) => {
             console.log(data);//just for checking
             dispatcher({
                 type: GET_USER_QUERY_FROM_BACKEND,
@@ -45,9 +47,9 @@ export const getCustomerQuery = (data, dispatch) => {
             });
         })
         //sending executive chat
-        chat.emit('executive', {...data, id: 'executive'})
+        newSocket.emit('executive', {...data, id: 'executive'})
         //catching errors
-        chat.on('error', (err) => {
+        newSocket.on('error', (err) => {
             dispatcher({
                 type: GET_ERRORS,
                 payload: (err.response) ? err : "Unknown Error Occured",

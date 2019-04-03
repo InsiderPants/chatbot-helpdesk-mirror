@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import io from 'socket.io-client';
+
 
 //import components
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -13,6 +15,9 @@ import RenderChat from './renderChat';
 
 //action
 import { getCustomerQuery } from '../../actions/getCustomerQuery';
+
+// ESTABLISHING SOCKET CONNECTION TO THE SERVER ----
+let socket = io('http://localhost:8000');
 
 //CSS
 const styles = theme => ({
@@ -160,7 +165,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getCustomerQuery: (data) => getCustomerQuery(data, dispatch)
+        getCustomerQuery: (data) => getCustomerQuery(data, socket, dispatch)
     };
 };
 
