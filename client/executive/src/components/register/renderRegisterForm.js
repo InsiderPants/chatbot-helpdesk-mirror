@@ -33,7 +33,7 @@ const styles = theme => ({
     },
     formContainer: {
         position: 'relative',
-        top: '5vh',
+        top: '3vh',
     },
     registerHeading: {
         marginTop: theme.spacing.unit,
@@ -148,7 +148,6 @@ class RenderRegisterForm extends React.Component {
         const {classes} = this.props;
         return (
             <div>
-                <Typography className={classes.registerHeading} align='center' variant='h2'>Register</Typography>
                 <form className={classes.formContainer} onSubmit={this.handleRegisterFormSubmit}>
                     <MuiThemeProvider theme={theme}>
                         <TextField

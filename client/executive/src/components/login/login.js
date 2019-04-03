@@ -19,7 +19,8 @@ const styles = theme => ({
         top: '15vh',
         padding: theme.spacing.unit * 2,
         textAlign: 'center',
-        height: '50vh',
+        height: '40vh',
+        minHeight: '400px',
         backgroundColor: '#eceff1',
     },
     loginText: {
@@ -39,7 +40,7 @@ const Login = (props) => {
                 justify = "space-evenly"
                 alignItems = "center" 
             >
-                <Grid item xs={10} sm={8} md={6} lg={6} xl={6}>
+                <Grid item xs={10} sm={8} md={6} lg={4} xl={4}>
                     <Paper className={classes.loginBox}>
                         <RenderLoginForm/>
                     </Paper>

@@ -17,14 +17,10 @@ const styles = theme => ({
         top: '10vh',
         padding: theme.spacing.unit * 2,
         textAlign: 'center',
-        height: '60vh',
-        minHeight: '600px',
+        height: '55vh',
+        minHeight: '470px',
         backgroundColor: '#eceff1',
     },
-    registerText: {
-        position: 'relative',
-        left: '0px',
-    }
 })
 
 class Register extends React.Component {
@@ -33,20 +29,20 @@ class Register extends React.Component {
         const {classes} = this.props;
         return (
             <div className={classes.root}>
-                <div>
+                {/* <div> */}
                     <Grid
                         container
                         direction="row"
-                        justify="space-evenly"
+                        justify="center"
                         alignItems="center"
                     >
-                        <Grid item xs={10} sm={8} md={6} lg={6} xl={6}>
+                        <Grid item xs={10} sm={8} md={6} lg={4} xl={4}>
                             <Paper className={classes.registerBox}>
                                 <RenderRegisterForm />
                             </Paper>
                         </Grid>
                     </Grid>
-                </div>
+                {/* </div> */}
             </div>
         );
     }
