@@ -48,9 +48,15 @@ class CountVectorizer{
 			}
 		}
 	}
+	loadVocab(path){
+
+	}
+	saveVocab(path){
+
+	}
 }
 
-function featurizer(train=true){
+function featurizer(train=true,vocab_save_path=null,vocab_load_path=null){
 	corpus = [['deep','learning','ian','good','fellow','learning','jason','shin','shin'],['yoshua','bengio']];
 	cv = new CountVectorizer()
 	cv = cv.fit(corpus)

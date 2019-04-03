@@ -23,7 +23,6 @@ module.exports = (app, io) => {
 	const executiveChat = io.of('/api/executiveGetResolution')
 	// Making Connection
 	executiveChat.on('connection', (socket)=>{
-		console.log(`A new client is connected`);
 		// Collecting Executive Reply and Sending to Customer
 		socket.on('executive', (data) => {
 			console.log(data);

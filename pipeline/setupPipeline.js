@@ -14,7 +14,7 @@ function setupPipeline(){
 	pipeline['tokenizer'] = tokenizer();
 
 	// Load Featurizer
-	pipeline['featurizer'] = featurizer(train=false);
+	pipeline['featurizer'] = featurizer(train=false,vocab_load_path=null);
 
 	// Load NER
 	pipeline['ner'] = null;
