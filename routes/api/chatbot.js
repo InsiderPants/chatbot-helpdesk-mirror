@@ -24,7 +24,7 @@ module.exports = (app) => {
 	*desc   : receive query from *customer* and send reply using chatbot engine
 	*access : private route
 	*/
-	app.post("/chatbotGetResolution", validateApiRequest, (req,res)=>{
+	app.post("/api/chatbotGetResolution", validateApiRequest, (req,res)=>{
 		// Take data from request
 		let email = req.body.email,
 			query = req.body.message;
@@ -51,6 +51,10 @@ module.exports = (app) => {
 		                            message: SERVER_ERROR
 		                        });
 		                    }else{
+		                    	// dummy response
+		                    	response.intent = 'greet'
+		                    	response.reply = ['hi there!','what can I do for you today']
+		                    	response.actions = ['greet','welcome_emoji']
 		                    	console.log('response : ',response)
 		                        // Send response to client
 		                        res.status(200).json({

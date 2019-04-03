@@ -98,10 +98,10 @@ class ChatBox extends Component{
                 <Row type="flex" justify="space-around" align="middle">
                     <Col lg={12} md={16} sm={20} xs={24}>
                         <Divider orientation="left" style={{color: '#00B0FF'}}>
-                            {this.props.userInfo.handler == 'BOT'? 'Bot Richad':'Human Pappu'} -&nbsp;
+                            {this.props.userInfo.handler === 'BOT'? 'Bot Richad':'Human Pappu'} -&nbsp;
                             <small style={{color: '#000'}}>
                                 You are currently talking with a&nbsp; 
-                                { this.props.userInfo.handler == 'BOT'?'bot':'human'}
+                                { this.props.userInfo.handler === 'BOT'?'bot':'human'}
                             </small>
                         </Divider>
                     </Col>
