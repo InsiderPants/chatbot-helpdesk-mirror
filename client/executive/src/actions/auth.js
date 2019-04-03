@@ -16,7 +16,7 @@ export const loginUser = (data, dispatch) => {
     //         payload: data,
     //     });
     // });
-    axios.post('/auth/executive/login', data)
+    axios.post('http://localhost:8000/auth/executive/login', data)
         .then(res => {
             // console.log(res.data.body.accessToken);
             if(res.data.success) {
@@ -40,6 +40,14 @@ export const loginUser = (data, dispatch) => {
                     })
                 })
             }
+        })
+        .catch(err => {
+            dispatch((dispatcher) => {
+                dispatcher({
+                    type: GET_ERRORS,
+                    payload: (err.response) ? err : "Unknown Error Occured",
+                })
+            })
         })
 };
 

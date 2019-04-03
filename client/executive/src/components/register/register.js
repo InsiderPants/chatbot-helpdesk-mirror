@@ -18,6 +18,7 @@ const styles = theme => ({
         padding: theme.spacing.unit * 2,
         textAlign: 'center',
         height: '60vh',
+        minHeight: '600px',
         backgroundColor: '#eceff1',
     },
     registerText: {

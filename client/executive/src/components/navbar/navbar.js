@@ -104,7 +104,7 @@ class Navbar extends Component {
         this.handleProfileMenuOpen = this.handleProfileMenuOpen.bind(this);
         this.toggleDrawer = this.toggleDrawer.bind(this);
         this.handleMenuClose = this.handleMenuClose.bind(this);
-        this.addQueryPairRoute = this.addQueryPairRoute.bind(this);
+        this.addIntentRoute = this.addIntentRoute.bind(this);
     }
 
     handleProfileMenuOpen = event => {
@@ -129,10 +129,10 @@ class Navbar extends Component {
         this.props.signOutUser()
     }
 
-    addQueryPairRoute = () => {
-        if(this.props.executive.isAuthenticated) {
-            console.log("Redirecting ot add query page and this route is secure");
-            this.props.history.push('/addquerypair');
+    addIntentRoute = () => {
+        if(localStorage.getItem('AccessToken') !== null) {
+            console.log("Redirecting to add Intent page and this route is secure");
+            this.props.history.push('/addintent');
         }
     }
     
@@ -146,8 +146,8 @@ class Navbar extends Component {
         <div className={classes.list}>
             <List>
                 {/* dummy side menu buttons(will change soon) */}
-            {['Add Query Pair'].map((text, index) => (
-                <ListItem button key={text} onClick={this.addQueryPairRoute}>
+            {['Add Intent'].map((text, index) => (
+                <ListItem button key={text} onClick={this.addIntentRoute}>
                 <ListItemText primary={text} />
                 </ListItem>
             ))}
