@@ -74,7 +74,7 @@ class RenderChat extends React.Component{
         else if (this.props.tag === 'loading'){
             return(
                 <div className={`${classes.bubble} ${classes.you}`}>
-                    <CircularProgress color="#fff" size={20} thickness={3.0}/>
+                    <CircularProgress color="inherit" size={20} thickness={3.0}/>
                 </div>
             );
         }
