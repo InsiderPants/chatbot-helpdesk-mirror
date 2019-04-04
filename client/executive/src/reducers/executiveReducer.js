@@ -1,12 +1,12 @@
 import {
     LOGIN_EXECUTIVE,
     LOGOUT_EXECUTIVE,
+    SET_CURRENT_USER
 } from '../actions/types';
 
 const initialState = {
     isAuthenticated: false,
-    email: '',
-    password: '',
+    email: ''
 };
 
 export default function(state=initialState, action) {
@@ -21,8 +21,13 @@ export default function(state=initialState, action) {
         case LOGOUT_EXECUTIVE:
             return {
                 isAuthenticated: false,
-                email: '',
-                password: '',
+                email: ''
+            }
+
+        case SET_CURRENT_USER:
+            return {
+                isAuthenticated: !(typeof action.payload === 'object' && Object.keys(action.payload).length === 0),
+                email: action.payload.email
             }
 
         default:

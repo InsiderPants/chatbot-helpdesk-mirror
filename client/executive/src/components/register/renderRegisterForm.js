@@ -1,14 +1,12 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import axios from 'axios';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-
-import {registerExecutive} from '../../actions/registerExecutive';
 
 const theme = createMuiTheme({
     palette: {
@@ -67,15 +65,6 @@ class RenderRegisterForm extends React.Component {
 
     handleRegisterFormSubmit(e) {
         e.preventDefault();
-        if (this.state.email.length !== 0 && this.state.password.length !== 0 && this.state.name.length !== 0 && this.state.contact.length !== 0 && !isNaN(this.state.contact)) {
-            this.props.registerExecutive({
-                name: this.state.name,
-                contact: this.state.contact,
-                email: this.state.email,
-                password: this.state.password,
-            });
-            this.props.history.push('/login');
-        }
         if (this.state.name.length === 0) {
             this.setState({
                 nameEmpty: true,
@@ -105,6 +94,33 @@ class RenderRegisterForm extends React.Component {
                 emailValidInfo: false,
                 emailHelperText: 'Email cannot be empty',
             })
+        }
+        if (this.state.email.length !== 0 && this.state.password.length !== 0 && this.state.name.length !== 0 && this.state.contact.length !== 0 && !isNaN(this.state.contact)) {
+            let data = {
+                name: this.state.name,
+                contact: this.state.contact,
+                email: this.state.email,
+                password: this.state.password,
+            }
+            axios.post('/auth/executive/signup', data)
+                .then(res => {
+                    /*  {
+                            success: true,
+                            message: SIGNUP_SUCCESS
+                        }
+                    */
+                    if(res.data.success){
+                        // Redirect user to login page
+                        this.props.history.push('/login');
+                    }
+                    else{
+                        // Error from server side
+                        console.log(res.data.message)
+                    }
+                })
+                .catch(err => {
+                    console.log('Error sending signup request');
+                })
         }
     }
 
@@ -216,17 +232,12 @@ class RenderRegisterForm extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    return {
-        executiveRegister: state.executiveRegister,
-    };
+    return {};
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-        registerExecutive: (data) => registerExecutive(data, dispatch)  
-    };
+    return {};
 };
-
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),

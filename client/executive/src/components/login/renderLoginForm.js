@@ -121,9 +121,11 @@ class RenderLoginForm extends React.Component {
                         // Dispatch Action to update user state
                         this.props.loginUser({
                             email: data.email,
-                            password: data.password,
                             success:success,
                             accessToken:body.accessToken
+                        });
+                        this.props.invalidLogin({
+                            error: ''
                         });
                         // Redirect user to Chat box
                         this.props.history.push('/');

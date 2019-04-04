@@ -5,11 +5,13 @@ const express = require('express'),
       router = express.Router(),
       jwt = require('jsonwebtoken'),
       {jwtCode} = require('../../config/keys'),
+      bcrypt = require('bcryptjs'),
+      passport  = require('passport'),
       Customer = require('../../models/customerDB'),
       Executive = require('../../models/executiveDB');
 
 const {
-    SERVER_ERROR, DATABASE_SAVE_ERROR, UNREGISTERED_EMAIL
+    SERVER_ERROR, DATABASE_SAVE_ERROR, UNREGISTERED_EMAIL, INCORRECT_PASSWORD
 } = require('../../utils/messages').error;
 
 const {
@@ -80,11 +82,10 @@ router.post('/customer/login', (req, res) => {
     *route  : POST /auth/executive/login
     *desc   : receive login info from executive and authenticate
     *access : public route
-    ***TO-DO: Add better Auth
 */
 router.post('/executive/login', (req, res) => {
     // Extract login info from request body
-    const {email} = req.body;
+    const {email,password} = req.body;
     // Validate from the database
     Executive.findOne({'email': email}, function(err, executive){
         if(err){
@@ -95,21 +96,54 @@ router.post('/executive/login', (req, res) => {
         }
         else{
             if(executive != null){
-                // Generate access Token
-                const accessToken = jwt.sign({
-                    email: executive.email,
-                    name: executive.name
-                }, jwtCode);
-                // Send response to executive
-                res.status(200).json({
-                    success: true,
-                    message: LOGIN_SUCCESS,
-                    body: {
-                        name: executive.name,
-                        contact: executive.contact,
-                        accessToken: accessToken
-                    }
-                })
+                // If found, check password
+                bcrypt.compare(password,executive.password)
+                    .then(isMatch => {
+                        if(isMatch){
+                            // Create jwt payload
+                            // Payload is basically data
+                            const payload = {
+                                email:executive.email,
+                                name:executive.name
+                            }
+                            // Sign Token
+                            // expiresIn is in seconds
+                            let hours = 6;
+                            jwt.sign(
+                                payload,
+                                jwtCode,
+                                {expiresIn:hours*3600},
+                                (err,token)=>{
+                                    if(err){
+                                        res.json({
+                                            success: false,
+                                            message: SERVER_ERROR
+                                        });
+                                    }
+                                    // Send response to executive
+                                    res.status(200).json({
+                                        success: true,
+                                        message: LOGIN_SUCCESS,
+                                        body: {
+                                            name: executive.name,
+                                            contact: executive.contact,
+                                            accessToken: 'Bearer '+token
+                                        }
+                                    })
+                                });
+                        }else{
+                            res.json({
+                                success: false,
+                                message: INCORRECT_PASSWORD
+                            });
+                        }
+                    })
+                    .catch(err=>{
+                        res.json({
+                            success: false,
+                            message: SERVER_ERROR
+                        });
+                    })
             }
             // If Executive not found
             else{

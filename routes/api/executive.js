@@ -2,7 +2,8 @@
 	*API for customer to get resolution from executive
 */
 const mongoose = require("mongoose"),
-	  intentsDB = require("../../models/intentsDB.js");
+	  intentsDB = require("../../models/intentsDB.js"),
+	  passport	= require('passport');
 
 const {
 	SUCCESSFULLY_ADDED_TO_DATABASE, ACCESS_VALIDATED
@@ -37,10 +38,9 @@ module.exports = (app, io) => {
 	/*
 		*route  : POST /api/executiveSaveResolution
 		*desc   : receive save request from executive and save Intent-Reply-Actions
-		*access : public route
-		***TO-DO: make this a private route using auth (executive login)
+		*access : private route
 	*/
-	app.post("/api/executiveSaveResolution", (req, res) => {
+	app.post("/api/executiveSaveResolution", passport.authenticate('jwt',{session:false}),(req, res) => {
 		// Take Data from Request
 		var {intent, examples, reply, actions} = req.body;
 		// Save Intent-Reply-Actions

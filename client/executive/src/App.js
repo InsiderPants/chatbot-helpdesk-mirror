@@ -1,7 +1,12 @@
 // Libraries
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
+
+import jwt_decode from 'jwt-decode';
+import setAuthToken from './utils/setAuthToken';
+import PrivateRoute from './components/common/PrivateRoute';
+import {setCurrentUser,signOutUser} from './actions/auth';
 
 // Components
 import Home from './components/home/home';
@@ -14,6 +19,24 @@ import Register from './components/register/register';
 // utils and others
 import store from './store';
 
+// Check for Token
+if(localStorage.AccessToken){
+  // set auth token header auth
+  setAuthToken(localStorage.AccessToken);
+  // decode token and get user info and expiration
+  const decoded = jwt_decode(localStorage.AccessToken);
+  // Set current user
+  store.dispatch(setCurrentUser(decoded));
+  // check for expired token
+  const currentTime = Date.now()/1000;
+  if(decoded.exp < currentTime){
+    // Logout user
+    store.dispatch(signOutUser());
+    // redirect to login
+    window.location.href = '/login';
+  }
+}
+
 class App extends Component {
     render(){
         return(
@@ -22,13 +45,15 @@ class App extends Component {
                     <div>
                         <Route exact path='/login' component={Login}/>
                         <Route exact path='/register' component={Register}/>
-                        <Route exact path='/addintent' component={AddIntent}/>
+                        <Switch>
+                            <PrivateRoute exact path = '/addintent' component ={AddIntent} />
+                        </Switch>
                         <Route exact path='/' component={Home}/>
                     </div>
                 </Router>
             </Provider>
-          );
-      }
+        );
+    }
 }
 
 export default App;

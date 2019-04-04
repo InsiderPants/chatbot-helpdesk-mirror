@@ -11,7 +11,8 @@ module.exports = {
         REPEAT_SIGNUP_ERROR: "You are already registered. Please login to continue",
         UNAUTH_API_REQUEST: 'You are not authorised to access this API',
         INVALID_ACCESS_TOKEN: "Access token not valid",
-        UNREGISTERED_EMAIL: "This Email is not registered. Please Signup to continue"
+        UNREGISTERED_EMAIL: "This Email is not registered. Please Signup to continue",
+        INCORRECT_PASSWORD: "Incorrect password, please try again"
     },
     success: {
         ACCESS_VALIDATED: "Access validated",
