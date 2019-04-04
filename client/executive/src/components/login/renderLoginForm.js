@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Redirect, Link, withRouter  } from 'react-router-dom';
+import axios from 'axios';
 
 //importing components
 import TextField from '@material-ui/core/TextField';
@@ -11,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 //actions
-import { loginUser } from '../../actions/auth';
+import { loginUser, invalidLogin } from '../../actions/auth';
 
 //CSS
 const styles = theme => ({
@@ -84,17 +85,8 @@ class RenderLoginForm extends React.Component {
 
     handleLoginFormSubmit(e){
         e.preventDefault();
-        if(this.state.email.length !== 0 && this.state.password.length !==0) {
-            this.props.loginUser({
-                email: this.state.email,
-                password: this.state.password,
-            });
-        }
-        if(this.state.password.length === 0){
-            this.setState({
-                passwordEmpty: true,
-                passwordHelperText: 'Password cannot be empty',
-            })
+        if (this.props.executive.isAuthenticated) {
+            return <Redirect to='/'/>
         }
         if (this.state.email.length === 0) {
             this.setState({
@@ -102,21 +94,56 @@ class RenderLoginForm extends React.Component {
                 emailHelperText: 'Email cannot be empty',
             })
         }
-        if (this.props.executive.isAuthenticated) {
-            return <Redirect to='/'/>
+        if(this.state.password.length === 0){
+            this.setState({
+                passwordEmpty: true,
+                passwordHelperText: 'Password cannot be empty',
+            })
+        }
+        if(this.state.email.length !== 0 && this.state.password.length !==0){
+            let data = {
+                email: this.state.email,
+                password: this.state.password,
+            }
+            axios.post('/auth/executive/login',data)
+                .then(res => {
+                    /*
+                        success: true,
+                        message: LOGIN_SUCCESS,
+                        body: {
+                            name: executive.name,
+                            contact: executive.contact,
+                            accessToken: accessToken
+                        }
+                    */
+                    let {success,message,body} = res.data
+                    if(success){
+                        // Dispatch Action to update user state
+                        this.props.loginUser({
+                            email: data.email,
+                            password: data.password,
+                            success:success,
+                            accessToken:body.accessToken
+                        });
+                        // Redirect user to Chat box
+                        this.props.history.push('/');
+                    }
+                    else{
+                        // Show the error message to the user
+                        this.props.invalidLogin({
+                            error: message
+                        });
+                        console.log(message)
+                    }
+                })
+                .catch(err => {
+                    console.log('Error sending login request');
+                });
         }
     }
 
-    componentWillReceiveProps(nextProps) {        
-        if (nextProps.executive.isAuthenticated) {
-            //redirecting to home
-            //console.log(nextProps.executive.isAuthenticated);
-            this.props.history.push('/');
-        }
-    }
-
-    UNSAFE_componentWillMount() {
-        if(localStorage.getItem('AccessToken') !== null) {
+    componentDidMount() {
+        if(this.props.executive.isAuthenticated) {
             this.props.history.push('/');
         }
     }
@@ -183,7 +210,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        loginUser: (data) => loginUser(data, dispatch)
+        loginUser: (data) => loginUser(data, dispatch),
+        invalidLogin: (data) => invalidLogin(data, dispatch)
     };
 };
 
