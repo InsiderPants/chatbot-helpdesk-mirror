@@ -17,4 +17,5 @@ config = {
 clf = intentClassifier(train=true,
 		features=config.features,
 		labels=config.labels,
+		weights_load_path=null,
 		weights_save_path=config.weights_save_path);

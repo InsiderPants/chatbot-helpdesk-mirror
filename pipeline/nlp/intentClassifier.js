@@ -2,20 +2,42 @@
 	*Module for Intent Classification
 */
 
+const tf = require('@tensorflow/tfjs-node');
+
 class LogisticRegression{
 	constructor(){
 		this.isTrained = false
+		this.model = tf.sequential();
+		this.optimizer = null
 	}
-	train(X,y){
-		this.validateTrainInput(X,y)
+	async train(features,labels){
+		// this.validateTrainInput(features,labels)
 		if(this.isTrained)
 			console.log("Warning: The model is already fitted on a data. Overwriting previous data")
+		this.model.add(tf.layers.dense({
+  							units: 10, 
+  							activation: 'sigmoid', 
+  							inputShape: [features.length]
+  						}));
+  		this.model.add(tf.layers.dense({
+  							units: labels.length, 
+  							activation: 'softmax'
+  						}));
+  		this.optimizer = tf.train.adam();
 		this.isTrained = true
+		this.model.compile({
+		    optimizer: this.optimizer,
+		    loss: 'categoricalCrossentropy',
+		    metrics: ['accuracy']
+	  	});
+	  	await this.model.fit(features, labels, {epochs: 10});
 	}
 	predict(X){
 		this.validateTestInput(X)
 		if(!this.isTrained)
 			throw new Error('You must fit the model first before you can predict on new data!');
+
+		// return {"intent":null,"confidence":1.0};
 	}
 	load_weights(weights_load_path){
 		if(this.isTrained)
@@ -43,9 +65,9 @@ function intentClassifier(train=true,features=null,labels=null,weights_load_path
 	}
 	// Train Model
 	clf.train(features,labels);
+	// console.log(clf)
 	// Save Model
-	clf.save_weights(weights_save_path);
-	// return {"intent":null,"confidence":1.0};
+	// clf.save_weights(weights_save_path);
 }
 
 module.exports = intentClassifier;

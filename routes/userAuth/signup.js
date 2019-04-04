@@ -3,6 +3,7 @@
 */
 const express = require('express'),
       router = express.Router(),
+      bcrypt = require('bcryptjs'),
       Customer = require('../../models/customerDB.js'),
       Executive = require('../../models/executiveDB');
 
@@ -71,7 +72,7 @@ router.post('/customer/signup', (req, res) => {
 */
 router.post('/executive/signup', (req, res) => {
     // Extract signup info from request body
-    const {email, contact, name, password} = req.body;
+    const {email, password, contact, name} = req.body;
     // Check if the executive already exixts
     Executive.findOne({'email': email}, function(err, executive){
         if(err){
@@ -85,23 +86,41 @@ router.post('/executive/signup', (req, res) => {
                 // New executive
                 const newExecutive = new Executive({
                     email: email,
+                    password: password,
                     contact: contact,
                     name: name
                 });
-                // Save the new executive in the database
-                newExecutive.save(function(err, _) {
+                bcrypt.genSalt(10,(err,salt) =>{
                     if(err){
                         res.json({
                             success: false,
                             message: SERVER_ERROR
                         });
                     }
-                    else{
-                        res.status(200).json({
-                            success: true,
-                            message: SIGNUP_SUCCESS
+                    bcrypt.hash(newExecutive.password,salt,(err,hash) => {
+                        if(err){
+                            res.json({
+                                success: false,
+                                message: SERVER_ERROR
+                            });
+                        }
+                        newExecutive.password = hash;
+                        // Save the new executive in the database
+                        newExecutive.save(function(err, _) {
+                            if(err){
+                                res.json({
+                                    success: false,
+                                    message: SERVER_ERROR
+                                });
+                            }
+                            else{
+                                res.status(200).json({
+                                    success: true,
+                                    message: SIGNUP_SUCCESS
+                                });
+                            }
                         });
-                    }
+                    });
                 });
             }
             // Executive already exists

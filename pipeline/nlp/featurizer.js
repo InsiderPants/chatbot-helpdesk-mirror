@@ -2,6 +2,8 @@
 	*Module for generating features
 */
 
+const fs = require('fs');
+
 class CountVectorizer{
 	constructor(){
 		this.isTrained = false;
@@ -48,23 +50,47 @@ class CountVectorizer{
 			}
 		}
 	}
-	loadVocab(path){
-
+	async loadVocab(path){
+		// If model is trained, throw warining
+		if(this.isTrained)
+			throw new Error('Warning: The model is already fitted on a data. Overwriting previous data');
+  		await new Promise(resolve => {
+  			fs.readFile(path,(err, data)=>{
+				if(err)
+					throw new Error('Error while loading vocab');
+				this.vocab = JSON.parse(data)
+				this.isTrained = true;
+				this.vocabLength = Object.keys(this.vocab).length;
+				console.log("Vocab loaded successfully")
+				resolve();
+	  		});
+  		})
 	}
-	saveVocab(path){
-
+	async saveVocab(path){
+		if(!this.isTrained)
+			throw new Error('You must fit a document first before you can save the vocab!');
+		await new Promise(resolve => {
+  			fs.writeFile(path,JSON.stringify(this.vocab),(err)=>{
+				if(err)
+					throw new Error('Error while saving vocab');
+				console.log('Vocab saved successfully')
+				resolve();
+			})
+  		})
 	}
 }
 
-function featurizer(train=true,vocab_save_path=null,vocab_load_path=null){
+async function featurizer(train=true,vocab_save_path=null,vocab_load_path=null){
 	corpus = [['deep','learning','ian','good','fellow','learning','jason','shin','shin'],['yoshua','bengio']];
 	cv = new CountVectorizer()
-	cv = cv.fit(corpus)
 	// for inference, load and return model
 	if(!train){
+		await cv.loadVocab(vocab_load_path)
 		return cv
 	}
 	// train model and save it
+	cv = cv.fit(corpus)
+	await cv.saveVocab(vocab_save_path)
 }
 
 module.exports = featurizer;

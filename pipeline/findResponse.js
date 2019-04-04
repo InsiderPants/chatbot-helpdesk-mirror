@@ -16,11 +16,11 @@ async function findResponse(customerQuery,pipeline){
 		"actions":[]
 	};
 	// Tokens
-	tokens = await pipeline.tokenizer.tokenize(customerQuery);
+	tokens = pipeline.tokenizer.tokenize(customerQuery);
 	// console.log(tokens)
 
 	// Features to feed in intent classifier
-	features = await pipeline.featurizer.transform(tokens);
+	features = pipeline.featurizer.transform(tokens);
 	// console.log(features)
 	
 	// Named Entity Recognition
@@ -40,7 +40,7 @@ async function findResponse(customerQuery,pipeline){
 	// console.log(result)
 	
 	// Return result object
-	return await result;
+	return result;
 }
 
 module.exports = findResponse;

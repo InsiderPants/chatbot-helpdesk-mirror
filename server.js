@@ -5,7 +5,8 @@ const express = require("express"),
 	  app = express(),
 	  server = require('http').Server(app),
 	  mongoose = require("mongoose"),
-	  io = require('socket.io')(server);
+	  passport = require('passport'),
+	  io = require('socket.io')(server),
 	  bodyParser = require('body-parser');
 
 // Body Parser middleware to parse request
@@ -17,6 +18,11 @@ const db = require('./config/keys.js').mongoURI;
 mongoose.connect(db,{useNewUrlParser:true})
 		.then(()=> console.log("Connected to database"))
 		.catch((err)=>console.log("Error connecting with mongodb"));
+
+// Passport middleware
+app.use(passport.initialize());
+// Passport Config
+require('./utils/validateApiRequestExe')(passport);
 
 // Required APIs
 const chatbotAPI = require("./routes/api/chatbot.js")(app);
