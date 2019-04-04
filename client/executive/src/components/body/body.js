@@ -13,11 +13,22 @@ const styles = theme => ({
     root: {
         flexGrow: 1,
         overflow: 'hidden',
+        minWidth: 1000,
+        minHeight: '100vh',
+        backgroundImage: 'linear-gradient(#7390b8 , #18417c)',
     },
     paper: {
         margin: theme.spacing.unit,
         padding: theme.spacing.unit,
         color: theme.palette.text.secondary,
+    },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing.unit,
+        marginLeft: 300,
+    },
+    toolbar: {
+        height: '80px',
     },
 });
 
@@ -31,22 +42,24 @@ class Body extends Component {
         const { classes } = this.props;
 
         return (
-            <div className={classes.root} style={{minHeight: '100vh', backgroundImage: 'linear-gradient(#7390b8 , #003141)',}}>
-                <Navbar/>
-                <Grid container spacing={8} justify="space-evenly">
-                    {/* <Hidden smDown>
-                        <Grid item md={5} lg={5} xl={5}>
+            <div className={classes.root}>
+                <Navbar renderComponent={null}/>
+                <div className={classes.content}>
+                    <Grid container spacing={8} justify="space-evenly">
+                        {/* <Hidden smDown>
+                            <Grid item md={5} lg={5} xl={5}>
                             <Paper className={classes.paper} style={{height: '50vh', backgroundColor: '#eceff1'}}>
-                                space for options view or charts 
+                            space for options view or charts 
                             </Paper>
-                        </Grid>
-                    </Hidden> */}
-                    <Grid item xs={12} sm={12} md={11} lg={11} xl={11}>
-                        <Paper className={classes.paper} style={{backgroundColor: '#eceff1'}}>
-                            <Chat/>
-                        </Paper>
-                    </Grid> 
-                </Grid>
+                            </Grid>
+                        </Hidden> */}
+                        <Grid item xs={12}>
+                            <Paper className={classes.paper} style={{backgroundColor: '#eceff1'}}>
+                                <Chat/>
+                            </Paper>
+                        </Grid> 
+                    </Grid>
+                </div>
             </div>
         );
     } 

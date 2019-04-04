@@ -7,16 +7,8 @@ import { withRouter } from 'react-router-dom';
 //importing components
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import { withStyles } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -27,106 +19,64 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { signOutUser } from '../../actions/auth';
 
 //CSS
+const drawerWidth = 300;
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#ffffff',
+        },
+        error: {
+            main: '#d1121c',
+        },
+    },
+    typography: { useNextVariants: true },
+});
+
 const styles = theme => ({
     root: {
-        width: '100%',
-    },
-    grow: {
         flexGrow: 1,
-    },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
+        marginTop: 0,
+        display: 'flex',
     },
     title: {
-        display: 'none',
-        [theme.breakpoints.up('sm')]: {
-            display: 'block',
-        },
-    },
-    search: {
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: fade(theme.palette.common.white, 0.15),
-        '&:hover': {
-            backgroundColor: fade(theme.palette.common.white, 0.25),
-        },
-        marginRight: theme.spacing.unit * 2,
-        marginLeft: 0,
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing.unit * 3,
-            width: 'auto',
-        },
-    },
-    searchIcon: {
-        width: theme.spacing.unit * 9,
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    inputRoot: {
-        color: 'inherit',
-        width: '100%',
-    },
-    inputInput: {
-        paddingTop: theme.spacing.unit,
-        paddingRight: theme.spacing.unit,
-        paddingBottom: theme.spacing.unit,
-        paddingLeft: theme.spacing.unit * 10,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: 200,
-        },
-    },
-    sectionDesktop: {
-        display: 'none',
-        [theme.breakpoints.up('xs')]: {
-            display: 'flex',
-        },
+        display: 'block',
+        paddingTop: theme.spacing.unit * 2,
     },
     list: {
-            width: 250,
-        },
+        width: drawerWidth,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    toolbar: {
+        height: '80px',
+        paddingLeft: theme.spacing.unit * 2,
+        cursor: 'pointer',
+    },
+    appBar: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+        height: '80px',
+        backgroundColor: '#104087',
+    }
 });
 
 class Navbar extends Component {
     constructor() {
         super();
         this.state = {
-            anchorEl: null, //for user icon popup
-            sideMenu: false, //for sidemenu
+            
         };
-        this.handleProfileMenuOpen = this.handleProfileMenuOpen.bind(this);
-        this.toggleDrawer = this.toggleDrawer.bind(this);
-        this.handleMenuClose = this.handleMenuClose.bind(this);
-        this.addIntentRoute = this.addIntentRoute.bind(this);
     }
 
-    handleProfileMenuOpen = event => {
-        this.setState({
-            anchorEl: event.currentTarget
-        });
-    };
-
-    toggleDrawer = (open) => () => {
-        this.setState({
-            sideMenu: open,
-        });
-    };
-
-    handleMenuClose = () => {
-        this.setState({
-            anchorEl: null
-        });
-    };
-
     logoutExecutive = () => {
-        this.props.signOutUser()
+        this.props.signOutUser();
+    }
+
+    homeRoute = () => {
+        console.log("secure this route");
+        this.props.history.push('/');
     }
 
     addIntentRoute = () => {
@@ -137,99 +87,59 @@ class Navbar extends Component {
     }
     
     render(){
-        const { anchorEl } = this.state;
         const { classes } = this.props;
-        const isMenuOpen = Boolean(anchorEl);
-
 
         const sideList = (
-        <div className={classes.list}>
+        <div>
+            <div className={classes.toolbar} onClick={this.homeRoute}>
+                <Typography className={classes.title} variant="headline" color="inherit" noWrap>
+                    Executive Dashboard
+                </Typography>
+            </div>
+            <Divider />
             <List>
-                {/* dummy side menu buttons(will change soon) */}
-            {['Add Intent'].map((text, index) => (
-                <ListItem button key={text} onClick={this.addIntentRoute}>
-                <ListItemText primary={text} />
-                </ListItem>
-            ))}
+                {['Intents', 'Entities'].map((text, index) => (
+                    <ListItem button key={text} onClick={index === 0 ? this.addIntentRoute : null}>
+                        <ListItemText primary={text} />
+                    </ListItem>
+                ))}
             </List>
             <Divider />
             <List>
-            {['About Us', 'Contact'].map((text, index) => (
-                <ListItem button key={text}>
-                <ListItemText primary={text} />
-                </ListItem>
-            ))}
+                {['Training', 'Analytics'].map((text, index) => (
+                    <ListItem button key={text}>
+                        <ListItemText primary={text} />
+                    </ListItem>
+                ))}
+            </List>
+            <Divider />
+            <List>
+                {['Account', 'Log Out'].map((text, index) => (
+                    <ListItem button key={text} onClick={index === 1 ? this.logoutExecutive : null}>
+                        <ListItemText primary={text} />
+                    </ListItem>
+                ))}
             </List>
         </div>
         );
         
-        const renderMenu = (
-            //rendering usericon popup
-            <Menu
-                anchorEl={anchorEl}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                open={isMenuOpen}
-                onClose={this.handleMenuClose}
-            >
-                <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-                <MenuItem onClick={this.logoutExecutive}>Logout</MenuItem>
-            </Menu>
-        );
-        
         return(
             <div className={classes.root}>
-                <AppBar position="static" style={{backgroundColor: '#08254f'}}>
+                <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
-                    {/* side menu open/close */}
-                    <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer" onClick={this.toggleDrawer(true)}>
-                        <MenuIcon />
-                    </IconButton>
-                    {/* actual side menu */}
-                    <Drawer open={this.state.sideMenu} onClose={this.toggleDrawer(false)}>
-                        <div style={{backgroundColor: '#eceff1', minHeight: '100vh'}}>
-                        <div
-                            tabIndex={0}
-                            role="button"
-                            onClick={this.toggleDrawer(false)}
-                            onKeyDown={this.toggleDrawer(false)}
-                        >
-                            {sideList}
-                        </div>
-                        </div>
-                    </Drawer>
-                    {/* heading */}
-                    <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-                        Executive Dashboard
-                    </Typography>
-                    {/* search bar */}
-                    <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                        <SearchIcon />
-                    </div>
-                    <InputBase
-                        placeholder="Search…"
-                        classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                        }}
-                    />
-                    </div>
-                    <div className={classes.grow} />
-                    <div className={classes.sectionDesktop}>
-                    {/* user account icon */}
-                    <IconButton
-                        aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                        aria-haspopup="true"
-                        onClick={this.handleProfileMenuOpen}
-                        color="inherit"
-                    >
-                        <AccountCircle />
-                    </IconButton>
-                    </div>
+                    <MuiThemeProvider theme={theme}>
+                        {this.props.renderComponent}
+                    </MuiThemeProvider>
                 </Toolbar>
                 </AppBar>
-                {renderMenu}
+                <Drawer 
+                className={classes.list}
+                variant="permanent" 
+                classes={{paper: classes.drawerPaper,}}
+                anchor="left"
+                >
+                    {sideList}
+                </Drawer>
             </div>
         );
     }
