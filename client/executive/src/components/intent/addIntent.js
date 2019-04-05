@@ -10,7 +10,7 @@ const AddIntent = (props) => {
         <div>
             {
                 //console.log(localStorage.getItem('AccessToken') + ' From addintent.js')
-                localStorage.getItem('AccessToken') !== null 
+                props.executive.isAuthenticated === true 
                 ?
                 <RenderIntent/>
                 :
@@ -23,7 +23,7 @@ const AddIntent = (props) => {
 //connecting to redux
 const mapStateToProps = (state) => {
     return {
-
+        executive: state.executive
     };
 }
 

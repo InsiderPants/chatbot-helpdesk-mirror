@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import { withStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -16,7 +16,6 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
 
 import Navbar from '../navbar/navbar';
 
@@ -71,8 +70,12 @@ class RenderIntent extends React.Component {
             intentName: '',
             trainingPhrasesText: '',
             trainingPhrases: [],
+            actionText: '',
+            actionTextError: false,
+            actions: [],
+            responseText: '',
+            responses: [],
         }
-        this.deleteSelectTrainingPhrase = this.deleteSelectTrainingPhrase.bind(this);
     }
 
     // for Intent name value
@@ -106,14 +109,30 @@ class RenderIntent extends React.Component {
     // for entering(kinda submiting) the phrase (OK)
     handleTrainingPhraseSubmit = (e) => {
         if(e.key === 'Enter') {
-            const newString = {
-                text: this.state.trainingPhrasesText,
-                id: this.state.trainingPhrases.length + 1,
-            };
-            this.setState(state => ({
-                trainingPhrases: state.trainingPhrases.concat(newString),
-                trainingPhrasesText: ''
-            }));
+            // checking if string only contains spaces or not
+            if (this.state.trainingPhrasesText.trim().length !== 0) {
+                const newString = {
+                    text: this.state.trainingPhrasesText.trim(),
+                };
+                let found = false;
+                for (let i = 0; i < this.state.trainingPhrases.length; i++) {
+                    if (this.state.trainingPhrases[i].text === newString.text) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found !== true) {
+                    this.setState(state => ({
+                        trainingPhrases: state.trainingPhrases.concat(newString),
+                        trainingPhrasesText: '',
+                    }));
+                }
+                else {
+                    this.setState({
+                        trainingPhrasesText: '',
+                    })
+                }
+            }
             e.preventDefault();
         }
     }
@@ -131,11 +150,125 @@ class RenderIntent extends React.Component {
     editSelectTrainingPhrase = (e, id) => {
         let newPhrases = this.state.trainingPhrases;
         newPhrases[id].text = e.target.value;
-        console.log(newPhrases[id].text);
         this.setState({
             trainingPhrases: newPhrases,
         })
     } 
+
+    // for handling text changes (OK)
+    handleActionTextChange = (e) => {
+        this.setState({
+            actionTextError: false, 
+            actionText: e.target.value,
+        });
+    }
+
+    // for entering(kinda submiting) the phrase 
+    handleActionSubmit = (e) => {
+        if(e.key === 'Enter') {
+            // checking whether string contains specific characters ony 
+            if (/^[a-zA-Z_]+$/.test(this.state.actionText)) {
+                const newString = {
+                    text: this.state.actionText,
+                };
+                //flag if same action is found
+                let found = false;
+                //checking for same stirng
+                for(let i=0; i<this.state.actions.length; i++) {
+                    if (this.state.actions[i].text === newString.text) {
+                        found = true;
+                        break;
+                    }
+                }
+                // if existing action name not found
+                if(found !== true) {
+                    this.setState(state => ({
+                        actions: state.actions.concat(newString),
+                        actionText: '',
+                    }));
+                }
+                // if found
+                else {
+                    this.setState({
+                        actionText: '',
+                    })
+                }
+            }
+            // if string contain illegal characters
+            else {
+                this.setState({
+                    actionTextError: true,
+                })
+            }
+            e.preventDefault();
+        }
+    }
+
+    // deletes the selected Action (OK)
+    deleteSelectAction = (id) => {
+        let newPhrases = this.state.actions;
+        newPhrases.splice(id, 1);
+        this.setState({
+            actions: newPhrases,
+        })
+    }
+
+    // for handling text field changes (OK)
+    handleResponseTextChange = (e) => {
+        this.setState({
+            responseText: e.target.value,
+        });
+    }
+
+    // for entering(kinda submiting) the phrase (OK)
+    handleResponseSubmit = (e) => {
+        if(e.key === 'Enter') {
+            // checking if string contains only spaces or not
+            if(this.state.responseText.trim().length !== 0) {
+                const newString = {
+                    text: this.state.responseText.trim(),
+                };
+                let found = false;
+                for (let i = 0; i < this.state.responses.length; i++) {
+                    if (this.state.responses[i].text === newString.text) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found !== true) {
+                    this.setState(state => ({
+                        responses: state.responses.concat(newString),
+                        responseText: '',
+                    }));
+                }
+                else {
+                    this.setState({
+                        responseText: '',
+                    })
+                }
+            }
+            e.preventDefault();
+        }
+    }
+
+    // deletes the selected Response (OK)
+    deleteSelectResponse = (id) => {
+        let newPhrases = this.state.responses;
+        // deletes particular id in array
+        newPhrases.splice(id, 1);
+        this.setState({
+            responses: newPhrases,
+        })
+    }
+
+    // edits selected Response (OK)
+    editSelectResponse = (e, id) => {
+        let newPhrases = this.state.responses;
+        newPhrases[id].text = e.target.value;
+        this.setState({
+            responses: newPhrases,
+        })
+    }
 
     render() {
         const {classes} = this.props;
@@ -144,17 +277,18 @@ class RenderIntent extends React.Component {
         const trainingPhrases = (
             <Grid container spacing={0} direction='row' justify='center' alignItems='center'>
                 <Grid item xs={12}>
-                    <div>
                     <Input 
                         fullWidth 
                         placeholder='Add User Expression' 
                         style={{marginRight: 8, marginTop: 8}}
                         value={this.state.trainingPhrasesText}
                         onChange={this.handleTrainingPhrasesTextChange}
-                        onKeyPress={this.handleTrainingPhraseSubmit}
+                        onKeyDown={this.handleTrainingPhraseSubmit}
                     />
-                    <br/>
                     <br/><br/>
+                    <div style={{maxHeight: 300, overflowX: 'hidden', overflowY: 'auto'}}>
+                    <br/>
+                    {/* Renders the Phrases */}
                     {
                         this.state.trainingPhrases.map((item, key) => {
                             return( 
@@ -166,6 +300,90 @@ class RenderIntent extends React.Component {
                                     onChange={(e) => this.editSelectTrainingPhrase(e, key)}
                                     endAdornment={
                                         <IconButton onClick={() => this.deleteSelectTrainingPhrase(key)}>
+                                            <Icon>
+                                                deletes
+                                            </Icon>
+                                        </IconButton>
+                                    }
+                                />
+                            );
+                        })
+                    }
+                    </div>
+                </Grid>
+            </Grid>
+        );
+
+        // for Actions
+        const actions = (
+            <Grid container spacing={0} direction='row' justify='center' alignItems='center'>
+                <Grid item xs={12}>
+                    <TextField
+                        fullWidth
+                        error={this.state.actionTextError} // checking if action name is valid or not
+                        helperText={this.state.actionTextError ? "Action Name can only contain alphabets(caps ok) and underscore(_) only" : null}
+                        placeholder='Enter Action Name'
+                        style={{marginRight: 8, marginTop: 8}}
+                        value={this.state.actionText}
+                        onChange={this.handleActionTextChange}
+                        onKeyDown={this.handleActionSubmit}
+                    />
+                    <br/><br/>
+                    <div style={{maxHeight: 300, overflowX: 'hidden', overflowY: 'auto'}}>
+                    <br/>
+                    {/* Renders the action names */}
+                    {
+                        this.state.actions.map((item, key) => {
+                            return( 
+                                <Input 
+                                    key={key}
+                                    fullWidth 
+                                    disabled
+                                    style={{ marginRight: 8, marginTop: 8 }} 
+                                    value={item.text}
+                                    endAdornment={
+                                        <IconButton onClick={() => this.deleteSelectAction(key)}>
+                                            <Icon>
+                                                deletes
+                                            </Icon>
+                                        </IconButton>
+                                    }
+                                />
+                            );
+                        })
+                    }
+                    </div>
+                </Grid>
+            </Grid>
+        );
+
+        // for responses
+        const responses = (
+            <Grid container spacing={0} direction='row' justify='center' alignItems='center'>
+                <Grid item xs={12}>
+                    <Input 
+                        fullWidth 
+                        placeholder='Add Responses' 
+                        style={{marginRight: 8, marginTop: 8}}
+                        value={this.state.responseText}
+                        onChange={this.handleResponseTextChange}
+                        onKeyDown={this.handleResponseSubmit}
+                    />
+                    <br/><br/>
+                    <div style={{maxHeight: 300, overflowX: 'hidden', overflowY: 'auto'}}>
+                    <br/>
+                    {/* Renders the Phrases */}
+                    {
+                        this.state.responses.map((item, key) => {
+                            return( 
+                                <Input 
+                                    key={key}
+                                    fullWidth 
+                                    style={{ marginRight: 8, marginTop: 8 }} 
+                                    value={item.text}
+                                    onChange={(e) => this.editSelectResponse(e, key)}
+                                    endAdornment={
+                                        <IconButton onClick={() => this.deleteSelectResponse(key)}>
                                             <Icon>
                                                 deletes
                                             </Icon>
@@ -205,9 +423,7 @@ class RenderIntent extends React.Component {
                     </ExpansionPanelSummary>
                     <Divider />
                     <ExpansionPanelDetails>
-                        <Typography>
-                            shit
-                        </Typography>
+                        {actions}
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
                 <ExpansionPanel>
@@ -216,9 +432,7 @@ class RenderIntent extends React.Component {
                     </ExpansionPanelSummary>
                     <Divider />
                     <ExpansionPanelDetails>
-                        <Typography>
-                            shit
-                        </Typography>
+                        {responses}
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
             </div>

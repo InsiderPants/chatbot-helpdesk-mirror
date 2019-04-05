@@ -46,9 +46,9 @@ class App extends Component {
                         <Route exact path='/login' component={Login}/>
                         <Route exact path='/register' component={Register}/>
                         <Switch>
-                            <PrivateRoute exact path = '/addintent' component ={AddIntent} />
+                            <PrivateRoute exact path = '/intent' component ={AddIntent} />
+                            <PrivateRoute exact path='/' component={Home}/>
                         </Switch>
-                        <Route exact path='/' component={Home}/>
                     </div>
                 </Router>
             </Provider>
