@@ -15,7 +15,7 @@ const styles = theme => ({
         overflow: 'hidden',
         minWidth: 1000,
         minHeight: '100vh',
-        backgroundImage: 'linear-gradient(#7390b8 , #18417c)',
+        backgroundImage: 'linear-gradient(#91b3ea , #18417c)',
     },
     paper: {
         margin: theme.spacing.unit,
@@ -34,16 +34,12 @@ const styles = theme => ({
 
 class Body extends Component {
 
-    componentDidMount() {
-        console.log(localStorage.getItem('AccessToken'));
-    }
-
     render() {
         const { classes } = this.props;
 
         return (
             <div className={classes.root}>
-                <Navbar renderComponent={null}/>
+                <Navbar renderComponent={<div></div>}/>
                 <div className={classes.content}>
                     <Grid container spacing={8} justify="space-evenly">
                         {/* <Hidden smDown>

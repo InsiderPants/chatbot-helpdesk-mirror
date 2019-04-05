@@ -16,7 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
 //actions
-import { signOutUser } from '../../actions/auth';
+import { signOutUserButton } from '../../actions/auth';
 
 //CSS
 const drawerWidth = 300;
@@ -71,7 +71,7 @@ class Navbar extends Component {
     }
 
     logoutExecutive = () => {
-        this.props.signOutUser();
+        this.props.signOutUserButton();
     }
 
     homeRoute = () => {
@@ -81,8 +81,7 @@ class Navbar extends Component {
 
     addIntentRoute = () => {
         if(localStorage.getItem('AccessToken') !== null) {
-            console.log("Redirecting to add Intent page and this route is secure");
-            this.props.history.push('/addintent');
+            this.props.history.push('/intent');
         }
     }
     
@@ -154,10 +153,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        signOutUser: (data) => signOutUser(dispatch)
+        signOutUserButton: () => signOutUserButton(dispatch)
     };
 };
-
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),

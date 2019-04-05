@@ -46,7 +46,21 @@ export const setCurrentUser = (decoded)=>{
   }
 }
 
-//action for executive logout
+export const signOutUserButton = (dispatch) => {
+    dispatch((dispatcher) => {
+        dispatcher({
+            type: LOGOUT_EXECUTIVE,
+        })
+    });
+    // remove token
+    localStorage.removeItem('AccessToken');
+    // remove auth header for future requests
+    setAuthToken(false);
+    // set current user to empty object which'll set isAuthenticated to false
+    dispatch(setCurrentUser({}));
+};
+
+//action for executive logout for app.js
 export const signOutUser = () => (dispatch) => {
     dispatch({
         type: LOGOUT_EXECUTIVE,
