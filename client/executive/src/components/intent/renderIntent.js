@@ -17,6 +17,16 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Input from '@material-ui/core/Input';
+import Snackbar from '@material-ui/core/Snackbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import ErrorIcon from '@material-ui/icons/Error';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Paper from '@material-ui/core/Paper';
+
 
 import Navbar from '../navbar/navbar';
 
@@ -60,6 +70,16 @@ const styles = theme => ({
     button: {
         margin: theme.spacing.unit,
         marginLeft: theme.spacing.unit * 3,
+        padding: theme.spacing.unit,
+    },
+    error: {
+        backgroundColor: theme.palette.error.dark,
+        margin: theme.spacing.unit,
+    },
+    icon: {
+        fontSize: 20,
+        opacity: 0.9,
+        marginRight: theme.spacing.unit,
     },
 })
 
@@ -69,6 +89,8 @@ class RenderIntent extends React.Component {
         this.state = {
             showIntents: true,
             intentName: '',
+            intentNameError: false,
+            intentNames: [],
             trainingPhrasesText: '',
             trainingPhrases: [],
             actionText: '',
@@ -76,6 +98,9 @@ class RenderIntent extends React.Component {
             actions: [],
             responseText: '',
             responses: [],
+            sendIntentLoading: false,    //do it false
+            saveSuccessSnackbar: false,  //do it false
+            errorSnackbar: false,        //do it false
         }
     }
 
@@ -83,6 +108,7 @@ class RenderIntent extends React.Component {
     handleIntentNameChange = (e) => {
         this.setState({
             intentName: e.target.value,
+            intentNameError: false,
         });
     }
 
@@ -112,12 +138,10 @@ class RenderIntent extends React.Component {
         if(e.key === 'Enter') {
             // checking if string only contains spaces or not
             if (this.state.trainingPhrasesText.trim().length !== 0) {
-                const newString = {
-                    text: this.state.trainingPhrasesText.trim(),
-                };
+                const newString = this.state.trainingPhrasesText.trim();
                 let found = false;
                 for (let i = 0; i < this.state.trainingPhrases.length; i++) {
-                    if (this.state.trainingPhrases[i].text === newString.text) {
+                    if (this.state.trainingPhrases[i] === newString) {
                         found = true;
                         break;
                     }
@@ -169,14 +193,12 @@ class RenderIntent extends React.Component {
         if(e.key === 'Enter') {
             // checking whether string contains specific characters ony 
             if (/^[a-zA-Z_]+$/.test(this.state.actionText)) {
-                const newString = {
-                    text: this.state.actionText,
-                };
+                const newString = this.state.actionText;
                 //flag if same action is found
                 let found = false;
                 //checking for same stirng
                 for(let i=0; i<this.state.actions.length; i++) {
-                    if (this.state.actions[i].text === newString.text) {
+                    if (this.state.actions[i] === newString) {
                         found = true;
                         break;
                     }
@@ -226,12 +248,10 @@ class RenderIntent extends React.Component {
         if(e.key === 'Enter') {
             // checking if string contains only spaces or not
             if(this.state.responseText.trim().length !== 0) {
-                const newString = {
-                    text: this.state.responseText.trim(),
-                };
+                const newString = this.state.responseText.trim();
                 let found = false;
                 for (let i = 0; i < this.state.responses.length; i++) {
-                    if (this.state.responses[i].text === newString.text) {
+                    if (this.state.responses[i] === newString) {
                         found = true;
                         break;
                     }
@@ -274,29 +294,172 @@ class RenderIntent extends React.Component {
     // for saving the intent and send to backend server
     handleSaveButton = (e) =>{
         e.preventDefault();
-        let data = {};
-        data.intentName = this.state.intentName;
-        data.trainingPhrases = this.state.trainingPhrases;
-        data.actionsArray = this.state.actions;
-        data.responses = this.state.responses;
-        // console.log(data);
-        axios.post('/api/executiveSaveIntent',data)
-                .then(res => {
-                    /*
-                        success: ,
-                        message: 
-                    */
-                    let {success,message} = res.data
-                    if(success){
-                        console.log(message)
-                    }
-                    else{
-                        console.log(message)
-                    }
-                })
-                .catch(err => {
-                    console.log('Error sending save request');
+        if (/^[a-zA-Z_]+$/.test(this.state.intentName)) {
+            if (this.state.sendIntentLoading === false) {
+                let data = {};
+                data.intentName = this.state.intentName;
+                data.trainingPhrases = this.state.trainingPhrases;
+                data.actionsArray = this.state.actions;
+                data.responses = this.state.responses;
+
+                // setting state of loading circle = true
+                this.setState({
+                    sendIntentLoading: true,
                 });
+                axios.post('/api/executiveSaveIntent', data)
+                    .then(res => {
+                        /*
+                            success: ,
+                            message: 
+                        */
+                        // loading circle = false
+                        this.setState({
+                            sendIntentLoading: false,
+                        })
+                        let { success, message } = res.data
+                        if (success) {
+                            console.log(message);
+                            // snackbar comes up
+                            this.setState({
+                                saveSuccessSnackbar: true,
+                            })
+                            this.updateIntentNames();
+                            // redirect to view intent 
+                            setTimeout(() => {
+                                this.setState({
+                                    showIntents: true,
+                                })
+                            }, 3000);
+                        }
+                        else {
+                            console.log(message);
+                            this.setState({
+                                errorSnackbar: true,
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        console.log('Error sending save request');
+                    });
+            }
+        }
+        else {
+            this.setState({
+                intentNameError: true,
+            })
+        }
+    }
+
+    // for closing of snackbar
+    handleSnackbarClose = () => {
+        this.setState({
+            saveSuccessSnackbar: false,
+            errorSnackbar: false,
+        });
+    }
+
+    // for deleting intent
+    deleteIntent = (key, item) => {
+        // object to be send to backend contains name of intent as string
+        const obj = {
+            intentName: item
+        }
+
+        axios.post('/api/executiveDeleteIntent', obj)
+            .then(res => {
+                const { success, message } = res.data;
+                if (success) {
+                    let newIntentNames = this.state.intentNames;
+                    newIntentNames.splice(key, 1);
+                    this.setState({
+                        intentNames: newIntentNames
+                    });
+                }
+                else {
+                    console.log(message);
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    // for updating intentNames everytime a new intent is saved
+    updateIntentNames = () => {
+        axios.get('/api/executiveViewIntents')
+            .then(res => {
+                /*
+                    success:
+                    message:
+                    intentNames: (array)
+                */
+                const { success, message, intentNames } = res.data
+                if (success) {
+                    // set state to the array of intent names
+                    this.setState({
+                        intentNames: intentNames,
+                    })
+                }
+                else {
+                    console.log(message)
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    // this function called when a inetnt name is selected and it renders the add intent page wit pre loaded info
+    editSelectedIntent = (item) => {
+        const obj = {
+            intentName: item
+        };
+
+        axios.post('/api/executiveGetIntentInfo', obj)
+            .then(res => {
+                // const { intentName, trainingPhrases, responses, actionsArray } = res.data;
+                const { success, message, data } = res.data;
+                if(success) {
+                    this.setState({
+                        intentName: data.intentName,
+                        trainingPhrases: data.trainingPhrases,
+                        responses: data.responses,
+                        actions: data.actionsArray,
+                    })
+                    setTimeout(() => {
+                        this.setState({
+                            showIntents: false
+                        })
+                    }, 1000);
+                }
+                else {
+                    console.log(message);                    
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    // for setting the state
+    componentDidMount() {
+        axios.get('/api/executiveViewIntents')
+            .then(res => {
+                /*
+                    success:
+                    message:
+                    intentNames: (array)
+                */
+                const { success, message, intentNames } = res.data
+                if (success) {
+                    // set state to the array of intent names
+                    this.setState({
+                        intentNames: intentNames,
+                    })
+                }
+                else {
+                    console.log(message)
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            })
     }
 
     render() {
@@ -325,7 +488,7 @@ class RenderIntent extends React.Component {
                                     key={key}
                                     fullWidth 
                                     style={{ marginRight: 8, marginTop: 8 }} 
-                                    value={item.text}
+                                    value={item}
                                     onChange={(e) => this.editSelectTrainingPhrase(e, key)}
                                     endAdornment={
                                         <IconButton onClick={() => this.deleteSelectTrainingPhrase(key)}>
@@ -367,9 +530,9 @@ class RenderIntent extends React.Component {
                                 <Input 
                                     key={key}
                                     fullWidth 
-                                    disabled
-                                    style={{ marginRight: 8, marginTop: 8 }} 
-                                    value={item.text}
+                                    readOnly
+                                    style={{ marginRight: 8, marginTop: 8, cursor: 'default' }} 
+                                    value={item}
                                     endAdornment={
                                         <IconButton onClick={() => this.deleteSelectAction(key)}>
                                             <Icon>
@@ -409,7 +572,7 @@ class RenderIntent extends React.Component {
                                     key={key}
                                     fullWidth 
                                     style={{ marginRight: 8, marginTop: 8 }} 
-                                    value={item.text}
+                                    value={item}
                                     onChange={(e) => this.editSelectResponse(e, key)}
                                     endAdornment={
                                         <IconButton onClick={() => this.deleteSelectResponse(key)}>
@@ -429,9 +592,29 @@ class RenderIntent extends React.Component {
 
         // Component for View Intents
         const viewIntent = (
-            <div>
-                show intents
-            </div>
+            <Paper elevation={1}>
+                <List component="nav">
+                    {this.state.intentNames.map((item, key) => {
+                        return (
+                            <div key={key}>
+                                <ListItem button onClick={() => this.editSelectedIntent(item)}>
+                                    <ListItemText>
+                                        {item}
+                                    </ListItemText>
+                                    <ListItemIcon>
+                                        <IconButton onClick={() => this.deleteIntent(key, item)}>
+                                            <Icon>
+                                                deletes
+                                            </Icon>
+                                        </IconButton>
+                                    </ListItemIcon>
+                                </ListItem>
+                                <Divider />
+                            </div>
+                        );
+                    })}
+                </List>
+            </Paper>
         );
         
         //Components for adding intents
@@ -464,6 +647,35 @@ class RenderIntent extends React.Component {
                         {responses}
                     </ExpansionPanelDetails>
                 </ExpansionPanel>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    open={this.state.saveSuccessSnackbar}
+                    onClose={this.handleSnackbarClose}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    autoHideDuration={4000}
+                    message={<span id="message-id">Intent Successfully Saved. Redirecting....</span>}
+                />
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    open={this.state.errorSnackbar}
+                    autoHideDuration={6000}
+                    onClose={this.handleSnackbarClose}
+                >
+                    <SnackbarContent
+                        className={classes.error}
+                        message={
+                            <span id="client-snackbar" style={{display: 'flex', alignItems: 'center'}}>
+                                <ErrorIcon className={classes.icon} />
+                                Error from Backend, please try again. 
+                            </span>
+                        }
+                    />
+                </Snackbar>
             </div>
         );
         
@@ -497,11 +709,11 @@ class RenderIntent extends React.Component {
                     {/* Intent Name */}
                     <TextField
                         id="add-intent-nav-textfield"
-                        style={{ marginRight:8 }}
+                        style={{ marginRight: 8, color: '#ffffff' }}
                         placeholder="Intent Name"
                         fullWidth
                         margin="normal"
-                        label="Intent Name"
+                        label={this.state.intentNameError ? " Intent Name only contain a-z(caps ok) and Underscore(_) only" : "Intent Name"}
                         InputLabelProps={{
                             shrink: true,
                             className: classes.input,
@@ -509,6 +721,7 @@ class RenderIntent extends React.Component {
                         InputProps={{
                             className: classes.input,
                         }}
+                        error={this.state.intentNameError}
                         value={this.state.intentName}
                         onChange={this.handleIntentNameChange}
                     />
@@ -516,7 +729,7 @@ class RenderIntent extends React.Component {
                 <Grid item xs={2} sm={2} md={2} lg={1}>
                     {/* Save Button */}
                     <Button variant="contained" onClick={this.handleSaveButton}  className={classes.button}>
-                        Save
+                        {this.state.sendIntentLoading ? <CircularProgress className={classes.progress} size={20} color='inherit'/> : "Save"}
                     </Button>
                 </Grid>
             </Grid>
