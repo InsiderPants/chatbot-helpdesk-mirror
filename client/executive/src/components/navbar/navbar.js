@@ -14,6 +14,9 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Icon from '@material-ui/core/Icon';
+import Grid from '@material-ui/core/Grid';
+
 
 //actions
 import { signOutUserButton } from '../../actions/auth';
@@ -66,7 +69,7 @@ class Navbar extends Component {
     constructor() {
         super();
         this.state = {
-            
+
         };
     }
 
@@ -75,30 +78,61 @@ class Navbar extends Component {
     }
 
     homeRoute = () => {
-        console.log("secure this route");
         this.props.history.push('/');
     }
 
+    // redirecting to inetnt page
     addIntentRoute = () => {
-        if(localStorage.getItem('AccessToken') !== null) {
-            this.props.history.push('/intent');
-        }
+        this.props.history.push('/intent');
+    }
+
+    // redirecting to entities page
+    entitiesRoute = () => {
+        this.props.history.push('/entities');
     }
     
+    // redirecting to training page
+    trainingRoute = () => {
+        this.props.history.push('/training');
+    }
+
+    // redirecting to analytics page
+    analyticsRoute = () => {
+        this.props.history.push('/analytics');
+    }
+
+    // redirecting to account page
+    accountRoute = () => {
+        this.props.history.push('/account');
+    }
+
     render(){
         const { classes } = this.props;
 
         const sideList = (
         <div>
             <div className={classes.toolbar} onClick={this.homeRoute}>
-                <Typography className={classes.title} variant="headline" color="inherit" noWrap>
-                    Executive Dashboard
-                </Typography>
+                <Grid container spacing={0} direction='row' justify='center' alignItems='center'>
+                    <Grid item xs={2}>
+                        <Icon fontSize='large' style={{marginTop: 18}}>
+                            account_circle
+                        </Icon>
+                    </Grid>
+                    <Grid item xs={10}>
+                        <Typography className={classes.title} variant="headline" color="inherit" noWrap>
+                            Dashboard
+                        </Typography>
+                    </Grid>
+                </Grid>
             </div>
             <Divider />
             <List>
                 {['Intents', 'Entities'].map((text, index) => (
-                    <ListItem button key={text} onClick={index === 0 ? this.addIntentRoute : null}>
+                    <ListItem 
+                        button 
+                        key={index} 
+                        onClick={index === 0 ? this.addIntentRoute : this.entitiesRoute} 
+                        selected={index === 0 ? this.props.location.pathname === '/intent' ? true : false : this.props.location.pathname === '/entities' ? true : false}>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
@@ -106,7 +140,11 @@ class Navbar extends Component {
             <Divider />
             <List>
                 {['Training', 'Analytics'].map((text, index) => (
-                    <ListItem button key={text}>
+                    <ListItem 
+                        button 
+                        key={text}
+                        onClick={index === 0 ? this.trainingRoute : this.analyticsRoute}
+                        selected={index === 0 ? this.props.location.pathname === '/training' ? true : false : this.props.location.pathname === '/analytics' ? true : false}>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
@@ -114,7 +152,11 @@ class Navbar extends Component {
             <Divider />
             <List>
                 {['Account', 'Log Out'].map((text, index) => (
-                    <ListItem button key={text} onClick={index === 1 ? this.logoutExecutive : null}>
+                    <ListItem 
+                        button 
+                        key={text} 
+                        onClick={index === 1 ? this.logoutExecutive : this.accountRoute}
+                        selected={index === 0 ? this.props.location.pathname === '/account' ? true : false : false}>
                         <ListItemText primary={text} />
                     </ListItem>
                 ))}
