@@ -13,6 +13,10 @@ import Home from './components/home/home';
 import Login from './components/login/login';
 import AddIntent from './components/intent/addIntent';
 import Register from './components/register/register';
+import Entities from './components/entities/entities';
+import Training from './components/training/training';
+import Analytics from './components/analytics/analytics';
+import Account from './components/account/account';
 
 // Actions
 
@@ -44,11 +48,16 @@ class App extends Component {
                 <Router>
                     <div>
                         <Switch>
-                            <Route exact path='/login' component={Login}/>
-                            <Route exact path='/register' component={Register}/>
-                            <PrivateRoute exact path = '/intent' component ={AddIntent} />
-                            <PrivateRoute exact path='/' component={Home}/>
-                            <Route component={Login}/>
+                            <Route exact path='/login' component={Login} />
+                            <Route exact path='/register' component={Register} />
+                            <PrivateRoute exact path='/intent' component={AddIntent} />
+                            <PrivateRoute exact path='/' component={Home} />
+                            <PrivateRoute exact path='/intent' component={AddIntent} />
+                            <PrivateRoute exact path='/entities' component={Entities} />
+                            <PrivateRoute exact path='/training' component={Training} />
+                            <PrivateRoute exact path='/analytics' component={Analytics} />
+                            <PrivateRoute exact path='/account' component={Account} />
+                            <Route component={Login} />
                         </Switch>
                     </div>
                 </Router>
