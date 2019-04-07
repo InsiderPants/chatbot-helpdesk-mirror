@@ -160,6 +160,12 @@ class RenderRegisterForm extends React.Component {
         })
     }
 
+    componentDidMount() {
+        if(this.props.executive.isAuthenticated) {
+            this.props.history.push('/');
+        }
+    }
+
     render() {
         const {classes} = this.props;
         return (
@@ -232,7 +238,9 @@ class RenderRegisterForm extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        executive: state.executive
+    };
 }
 
 const mapDispatchToProps = (dispatch) => {
