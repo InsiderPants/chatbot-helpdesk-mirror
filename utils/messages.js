@@ -12,13 +12,16 @@ module.exports = {
         UNAUTH_API_REQUEST: 'You are not authorised to access this API',
         INVALID_ACCESS_TOKEN: "Access token not valid",
         UNREGISTERED_EMAIL: "This Email is not registered. Please Signup to continue",
-        INCORRECT_PASSWORD: "Incorrect password, please try again"
+        INCORRECT_PASSWORD: "Incorrect password, please try again",
+        NO_INTENT_IN_DB: "No intent exists in database. Add some to view",
+        INTENT_NOT_FOUND: "Intent not found in database"
     },
     success: {
         ACCESS_VALIDATED: "Access validated",
         SUCCESSFULLY_ADDED_TO_DATABASE: "Successfully added into database",
         SIGNUP_SUCCESS: "SignUp successful, please login to continue",
-        LOGIN_SUCCESS: 'Login Successful'
+        LOGIN_SUCCESS: 'Login Successful',
+        SUCCESSFULLY_REMOVED_FROM_DATABASE: "Successfully removed from database"
     }
 
 };

@@ -1,0 +1,2 @@
+1. fix action color in executive add intent
+2. add validation in all requests in backend
