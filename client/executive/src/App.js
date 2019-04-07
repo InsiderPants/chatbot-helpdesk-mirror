@@ -47,15 +47,17 @@ class App extends Component {
             <Provider store={store}>
                 <Router>
                     <div>
-                        <Route exact path='/login' component={Login}/>
-                        <Route exact path='/register' component={Register}/>
                         <Switch>
-                            <PrivateRoute exact path='/' component={Home}/>
-                            <PrivateRoute exact path = '/intent' component ={AddIntent} />
+                            <Route exact path='/login' component={Login} />
+                            <Route exact path='/register' component={Register} />
+                            <PrivateRoute exact path='/intent' component={AddIntent} />
+                            <PrivateRoute exact path='/' component={Home} />
+                            <PrivateRoute exact path='/intent' component={AddIntent} />
                             <PrivateRoute exact path='/entities' component={Entities} />
                             <PrivateRoute exact path='/training' component={Training} />
                             <PrivateRoute exact path='/analytics' component={Analytics} />
                             <PrivateRoute exact path='/account' component={Account} />
+                            <Route component={Login} />
                         </Switch>
                     </div>
                 </Router>
