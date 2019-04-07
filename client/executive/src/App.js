@@ -49,6 +49,7 @@ class App extends Component {
                             <PrivateRoute exact path = '/intent' component ={AddIntent} />
                             <PrivateRoute exact path='/' component={Home}/>
                         </Switch>
+                        <Route component={Login}/>
                     </div>
                 </Router>
             </Provider>
