@@ -597,8 +597,8 @@ class RenderIntent extends React.Component {
                     {this.state.intentNames.map((item, key) => {
                         return (
                             <div key={key}>
-                                <ListItem button onClick={() => this.editSelectedIntent(item)}>
-                                    <ListItemText>
+                                <ListItem button>
+                                    <ListItemText onClick={() => this.editSelectedIntent(item)}>
                                         {item}
                                     </ListItemText>
                                     <ListItemIcon>
