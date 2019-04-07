@@ -174,7 +174,7 @@ class RenderIntent extends React.Component {
     // edits selected Training Phrase (OK)
     editSelectTrainingPhrase = (e, id) => {
         let newPhrases = this.state.trainingPhrases;
-        newPhrases[id].text = e.target.value;
+        newPhrases[id] = e.target.value;
         this.setState({
             trainingPhrases: newPhrases,
         })
@@ -285,7 +285,7 @@ class RenderIntent extends React.Component {
     // edits selected Response (OK)
     editSelectResponse = (e, id) => {
         let newPhrases = this.state.responses;
-        newPhrases[id].text = e.target.value;
+        newPhrases[id] = e.target.value;
         this.setState({
             responses: newPhrases,
         })
