@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -270,6 +271,34 @@ class RenderIntent extends React.Component {
         })
     }
 
+    // for saving the intent and send to backend server
+    handleSaveButton = (e) =>{
+        e.preventDefault();
+        let data = {};
+        data.intentName = this.state.intentName;
+        data.trainingPhrases = this.state.trainingPhrases;
+        data.actionsArray = this.state.actions;
+        data.responses = this.state.responses;
+        // console.log(data);
+        axios.post('/api/executiveSaveIntent',data)
+                .then(res => {
+                    /*
+                        success: ,
+                        message: 
+                    */
+                    let {success,message} = res.data
+                    if(success){
+                        console.log(message)
+                    }
+                    else{
+                        console.log(message)
+                    }
+                })
+                .catch(err => {
+                    console.log('Error sending save request');
+                });
+    }
+
     render() {
         const {classes} = this.props;
 
@@ -486,7 +515,7 @@ class RenderIntent extends React.Component {
                 </Grid>
                 <Grid item xs={2} sm={2} md={2} lg={1}>
                     {/* Save Button */}
-                    <Button variant="contained" className={classes.button}>
+                    <Button variant="contained" onClick={this.handleSaveButton}  className={classes.button}>
                         Save
                     </Button>
                 </Grid>
