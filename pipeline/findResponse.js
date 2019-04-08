@@ -1,7 +1,15 @@
 /*
     *Module for finding response
 */
-const searchDatabase = require('./searchDatabase');
+const mongoose = require("mongoose"),
+	  intentsDB = require("../models/intentsDB.js");
+
+function fallbackIntent(result){
+	result['intent'] = 'default_fallback';
+	result['reply'] = 'Sorry!!!';
+	result['actions'] = 'initiate_fallback';
+	return result;
+}
 
 async function findResponse(customerQuery,pipeline){
 	// Passing through NLP Engine
@@ -15,13 +23,9 @@ async function findResponse(customerQuery,pipeline){
 		"reply":[],
 		"actions":[]
 	};
-	// Tokens
-	tokens = pipeline.tokenizer.tokenize(customerQuery);
-	// console.log(tokens)
-
 	// Features to feed in intent classifier
-	features = pipeline.featurizer.transform(tokens);
-	// console.log(features)
+	// It required input as array of strings
+	features = await pipeline.featurizer.transform([customerQuery]);
 	
 	// Named Entity Recognition
 	// entities = await pipeline.ner(customerQuery);
@@ -34,13 +38,26 @@ async function findResponse(customerQuery,pipeline){
 	// Passing through Sentiment Engine
 	// result['sentiment'] = await pipeline.sentimentEngine(result['text']);
 
-	// Search Database using intent for actions
-	// result = await searchDatabase(result);
-
-	// console.log(result)
-	
+	// Search Database using intent for actions and reply
+	await intentsDB.findOne({'intent':result['intent']},(err,intent)=>{
+			if(err){
+				// Default fallback intent
+				result = fallbackIntent(result);
+	        }
+	        else{
+	        	if(intent==null){
+	        		// Default fallback intent
+	        		result = fallbackIntent(result);
+	        	}
+	        	else{
+	       			// intent exists
+	        		result['reply'] = intent.reply;
+	        		result['actions'] = intent.actions;
+	        	}
+	        }
+		});
 	// Return result object
-	return result;
+	return result
 }
 
 module.exports = findResponse;

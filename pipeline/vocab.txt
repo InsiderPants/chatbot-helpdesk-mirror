@@ -1,1 +1,0 @@
-{"deep":0,"learning":1,"ian":2,"good":3,"fellow":4,"jason":5,"shin":6,"yoshua":7,"bengio":8}

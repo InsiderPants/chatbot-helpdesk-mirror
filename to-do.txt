@@ -1,2 +1,8 @@
 1. fix action color in executive add intent
 2. add validation in all requests in backend
+3. update problem in edit intent
+4. remove conversation from executiveDB
+5. better error on invalid intent name
+6. remove delays
+7. repeatedly pressing save button cause unexpected behaviour
+8. Use lemmatizer, stemmer etc in tokenizer

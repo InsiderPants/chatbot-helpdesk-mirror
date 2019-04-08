@@ -6,11 +6,8 @@ const featurizer = require('../nlp/featurizer');
 
 // Config
 config = {
-	vocab_save_path:'./vocab.txt'
+	vocab_save_path:__dirname+'/data/vocab.txt'
 }
-
-// Load data from db to feed in featurizer
-
 
 // Train featurizer and save
 feat = featurizer(train=true,
