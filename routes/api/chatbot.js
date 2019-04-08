@@ -3,8 +3,7 @@
 */
 const findResponse = require("../../pipeline/findResponse.js"),
 	  Customer = require('../../models/customerDB.js'),
-	  validateApiRequest = require('../../utils/validateApiRequest.js'),
-	  setupPipeline = require("../../pipeline/setupPipeline");
+	  validateApiRequest = require('../../utils/validateApiRequest.js');
 
 const {
 	SERVER_ERROR, UNKNOWN_ERROR
@@ -14,23 +13,20 @@ const {
 	ACCESS_VALIDATED
 } = require('../../utils/messages').success;
 
-module.exports = (app) => {
-	// setup nlp and sentiment engine pipeline only once, when server starts
-	// and use pipeline for inference only
-	var pipeline = setupPipeline();
-
+module.exports = (app,pipeline) => {
 	/*
 	*route  : POST /api/chatbotGetResolution
 	*desc   : receive query from *customer* and send reply using chatbot engine
 	*access : private route
 	*/
-	app.post("/api/chatbotGetResolution", validateApiRequest, (req,res)=>{
+	app.post("/api/chatbotGetResolution", (req,res)=>{
 		// Take data from request
 		let email = req.body.email,
 			query = req.body.message;
 		// Find & Return response
 		findResponse(query,pipeline)
 			.then(response=>{
+				console.log(response)
 				// Save chat in conversation array
 				Customer.findOne({'email': email}, function(error, customer){
 			        if(error){
@@ -68,7 +64,7 @@ module.exports = (app) => {
 			    });
 			})
 			.catch(err=>{
-				console.log('error')
+				console.log('Error in findResponse')
 				res.send({reply:UNKNOWN_ERROR})
 			})
 	})
