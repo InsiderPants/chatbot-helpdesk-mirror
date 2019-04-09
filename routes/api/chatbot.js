@@ -69,6 +69,7 @@ module.exports = (app,pipeline) => {
 			    });
 			})
 			.catch(err=>{
+				console.log(err)
 				console.log('SERVER: Error in findResponse')
 				res.send({reply:UNKNOWN_ERROR})
 			})

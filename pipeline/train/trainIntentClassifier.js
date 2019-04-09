@@ -6,16 +6,12 @@ const intentClassifier = require('../nlp/intentClassifier');
 
 // Config
 config = {
-	features:null,
-	labels:null,
-	weights_save_path:null
+	vocab_load_path:__dirname+'/data/vocab.txt',
+	weights_save_path:__dirname+'/data/weights'
 }
-
-// Load data from db to feed in classifier
 
 // Train classifier and save
 clf = intentClassifier(train=true,
-		features=config.features,
-		labels=config.labels,
 		weights_load_path=null,
+		vocab_load_path=config.vocab_load_path,
 		weights_save_path=config.weights_save_path);

@@ -7,3 +7,4 @@ client/customer/node_modules
 client/customer/coverage
 client/customer/build
 package-lock.json
+pipeline/train/data/

@@ -23,20 +23,19 @@ async function findResponse(customerQuery,pipeline){
 		"reply":[],
 		"actions":[]
 	};
-	// Features to feed in intent classifier
-	// It required input as array of strings
-	features = await pipeline.featurizer.transform([customerQuery]);
-	
 	// Named Entity Recognition
 	// entities = await pipeline.ner(customerQuery);
+	// console.log("SERVER: Entities for query : ",entities);
 
 	// Intent Classification
-	// classifiedResult = await pipeline.intentClassifier.predict(features);
-	// result['intent'] = await classifiedResult['intent'];
-	// result['confidence'] = await classifiedResult['confidence'];
+	classifiedResult = await pipeline.intentClassifier.predict(customerQuery);
+	result['intent'] = await classifiedResult['intent'];
+	result['confidence'] = await classifiedResult['confidence'];
 
 	// Passing through Sentiment Engine
 	// result['sentiment'] = await pipeline.sentimentEngine(result['text']);
+
+	console.log(result)
 
 	// Search Database using intent for actions and reply
 	await intentsDB.findOne({'intent':result['intent']},(err,intent)=>{

@@ -27,43 +27,46 @@ require('./utils/validateApiRequestExe')(passport);
 
 // setup nlp and sentiment engine pipeline only once, when server starts
 // and use pipeline for inference only
-var pipeline = setupPipeline();
-pipeline.then(pipeline=>{
-	console.log('SERVER: Pipeline loaded');
-	// Required APIs
-	const chatbotAPI = require("./routes/api/chatbot.js")(app,pipeline);
-	const executiveAPI = require("./routes/api/executive.js")(app, io);
+new Promise(resolve=>{
+setupPipeline()
+	.then(pipeline=>{
+		console.log('SERVER: Pipeline loaded');
+		// Required APIs
+		const chatbotAPI = require("./routes/api/chatbot.js")(app,pipeline);
+		const executiveAPI = require("./routes/api/executive.js")(app, io);
 
-	const login = require("./routes/userAuth/login.js");
-	const signup = require("./routes/userAuth/signup.js");
+		const login = require("./routes/userAuth/login.js");
+		const signup = require("./routes/userAuth/signup.js");
 
-	// Home
-	app.get('/',(req,res)=>{
-		res.send("You've reached Server Home!");
+		// Home
+		app.get('/',(req,res)=>{
+			res.send("You've reached Server Home!");
+		})
+
+		// Chatbot API
+		chatbotAPI
+		// Executive API
+		executiveAPI;
+
+		// auth routes
+		app.use('/auth', login);
+		app.use('/auth', signup);
+
+		// For any unexpected get route
+		app.get('*',(req,res)=>{
+			res.status(404).send("Page Not Found");
+		})
+		// For any unexpected post rout
+		app.post('*',(req,res)=>{
+			res.status(404).send("Page Not Found");
+		})
+
+		const port = process.env.PORT || "8000";
+		const ip = process.env.IP;
+
+		server.listen(port,ip,()=>{
+			console.log(`SERVER: Server running on port ${port} and ip ${ip}`);
+		})
+		resolve();
 	})
-
-	// Chatbot API
-	chatbotAPI
-	// Executive API
-	executiveAPI;
-
-	// auth routes
-	app.use('/auth', login);
-	app.use('/auth', signup);
-
-	// For any unexpected get route
-	app.get('*',(req,res)=>{
-		res.status(404).send("Page Not Found");
-	})
-	// For any unexpected post rout
-	app.post('*',(req,res)=>{
-		res.status(404).send("Page Not Found");
-	})
-
-	const port = process.env.PORT || "8000";
-	const ip = process.env.IP;
-
-	server.listen(port,ip,()=>{
-		console.log(`SERVER: Server running on port ${port} and ip ${ip}`);
-	})
-})
+});
