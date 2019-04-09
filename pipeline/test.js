@@ -14,12 +14,12 @@ setupPipeline()
 			.then(res=>console.log('response : ',res))
 			.catch(err=>{
 				// console.log(err)
-				console.log("Error finding response")
+				console.log("SERVER: Error finding response")
 			});
 	})
 	.catch(err=>{
 		// console.log(err)
-		console.log("Error setting up pipeline")
+		console.log("SERVER: Error setting up pipeline")
 	})
 
 // const feat = require('./nlp/featurizer.js');

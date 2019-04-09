@@ -31,12 +31,12 @@ class Vectorizer{
 	fit(corpus){
 		// corpus = [text,text,...]
 		if(corpus===undefined | corpus === null | corpus.length==0)
-			throw new Error('Invalid corpus')
+			throw new Error('SERVER: Invalid corpus')
 		if(this.isTrained)
-			console.log("Warning: The featurizer model is already fitted on a data. Overwriting previous data");
+			console.log("SERVER: Warning: The featurizer model is already fitted on a data. Overwriting previous data");
 		this.buildVocab(corpus);
 		this.isTrained = true;
-		console.log('Featurizer Model trained successfully')
+		console.log('SERVER: Featurizer Model trained successfully')
 		return this
 	}
 	buildVocab(corpus){
@@ -69,7 +69,7 @@ class Vectorizer{
 		// Only top `num_words-1` most frequent words will be taken into account.
         // Only words known by the tokenizer will be taken into account.
 		if(!this.isTrained)
-			throw new Error('You must fit a document first before you can transform the document!');
+			throw new Error('SERVER: You must fit a document first before you can transform the document!');
 		let sequence = [],tokens,temp;
 		for(let text of corpus){
 			temp = [];
@@ -91,38 +91,38 @@ class Vectorizer{
 	}
 	getFeatureNames(){
 		if(!this.isTrained)
-			throw new Error('You must fit a document first before you can retrieve the feature names!');
+			throw new Error('SERVER: You must fit a document first before you can retrieve the feature names!');
 		return Object.keys(this.vocab);
 	}
 	getVocab(){
 		if(!this.isTrained)
-			throw new Error('You must fit a document first before you can retrieve the vocab!');
+			throw new Error('SERVER: You must fit a document first before you can retrieve the vocab!');
 		return this.vocab;
 	}
 	async loadVocab(path){
 		// If model is trained, throw warining
 		if(this.isTrained)
-			throw new Error('Warning: The featurizer model is already fitted on a data. Overwriting previous data');
+			throw new Error('SERVER: Warning: The featurizer model is already fitted on a data. Overwriting previous data');
   		await new Promise(resolve => {
   			fs.readFile(path,(err, data)=>{
 				if(err)
-					throw new Error('Error while loading vocab');
+					throw new Error('SERVER: Error while loading vocab');
 				this.vocab = JSON.parse(data)
 				this.isTrained = true;
 				this.vocabLength = Object.keys(this.vocab).length;
-				console.log("Vocab loaded successfully")
+				console.log("SERVER: Vocab loaded successfully")
 				resolve();
 	  		});
   		})
 	}
 	async saveVocab(path){
 		if(!this.isTrained)
-			throw new Error('You must fit a document first before you can save the vocab!');
+			throw new Error('SERVER: You must fit a document first before you can save the vocab!');
 		await new Promise(resolve => {
   			fs.writeFile(path,JSON.stringify(this.vocab),(err)=>{
 				if(err)
-					throw new Error('Error while saving vocab');
-				console.log('Vocab saved successfully')
+					throw new Error('SERVER: Error while saving vocab');
+				console.log('SERVER: Vocab saved successfully')
 				resolve();
 			})
   		})
@@ -146,11 +146,11 @@ async function featurizer(train=true,vocab_save_path=null,vocab_load_path=null){
 		// Connecting to database
 		const db = require('../../config/keys.js').mongoURI;
 		mongoose.connect(db,{useNewUrlParser:true})
-				.then(()=> console.log("Connected to database"))
-				.catch((err)=>console.log("Error connecting with mongodb"));
+				.then(()=> console.log("SERVER: Connected to intent database for training featurizer model"))
+				.catch((err)=>console.log("SERVER: Error connecting with intent database for training featurizer model"));
 		intentsDB.find((err,data)=>{
 				if(err){
-		            throw new Error('Error while retrieving data from database');
+		            throw new Error('SERVER: Error while retrieving data from database');
 	        	}
 	        	else{
 	        		if(data.length!=0){

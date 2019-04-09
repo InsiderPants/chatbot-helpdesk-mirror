@@ -13,7 +13,7 @@ module.exports = (passport) =>{
 		Executive.findOne({'email': jwt_payload.email})
 			.then(executive => {
 				if(executive){
-					console.log('valid')
+					console.log('SERVER: Valid executive request')
 					return done(null,executive);
 				}else{
 					return done(null,false);

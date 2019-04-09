@@ -17,8 +17,8 @@ app.use(bodyParser.json()) // if there's a json object in request, it'll populat
 // Connecting to database
 const db = require('./config/keys.js').mongoURI;
 mongoose.connect(db,{useNewUrlParser:true})
-		.then(()=> console.log("Connected to database"))
-		.catch((err)=>console.log("Error connecting with mongodb"));
+		.then(()=> console.log("SERVER: Connected to database in server.js"))
+		.catch((err)=>console.log("SERVER: Error connecting with mongodb in server.js"));
 
 // Passport middleware
 app.use(passport.initialize());
@@ -29,7 +29,7 @@ require('./utils/validateApiRequestExe')(passport);
 // and use pipeline for inference only
 var pipeline = setupPipeline();
 pipeline.then(pipeline=>{
-	console.log('pipeline loaded');
+	console.log('SERVER: Pipeline loaded');
 	// Required APIs
 	const chatbotAPI = require("./routes/api/chatbot.js")(app,pipeline);
 	const executiveAPI = require("./routes/api/executive.js")(app, io);
@@ -64,6 +64,6 @@ pipeline.then(pipeline=>{
 	const ip = process.env.IP;
 
 	server.listen(port,ip,()=>{
-		console.log(`Server running on port ${port} and ip ${ip}`);
+		console.log(`SERVER: Server running on port ${port} and ip ${ip}`);
 	})
 })

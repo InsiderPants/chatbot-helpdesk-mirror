@@ -26,7 +26,7 @@ module.exports = (app,pipeline) => {
 		// Find & Return response
 		findResponse(query,pipeline)
 			.then(response=>{
-				console.log(response)
+				console.log("SERVER: Resonse object : ",response)
 				// Save chat in conversation array
 				Customer.findOne({'email': email}, function(error, customer){
 			        if(error){
@@ -47,11 +47,6 @@ module.exports = (app,pipeline) => {
 		                            message: SERVER_ERROR
 		                        });
 		                    }else{
-		                    	// dummy response
-		                    	response.intent = 'greet'
-		                    	response.reply = ['hi there!','what can I do for you today']
-		                    	response.actions = ['greet','welcome_emoji']
-		                    	console.log('response : ',response)
 		                        // Send response to client
 		                        res.status(200).json({
 									success: true,
@@ -64,7 +59,7 @@ module.exports = (app,pipeline) => {
 			    });
 			})
 			.catch(err=>{
-				console.log('Error in findResponse')
+				console.log('SERVER: Error in findResponse')
 				res.send({reply:UNKNOWN_ERROR})
 			})
 	})

@@ -13,7 +13,7 @@ class LogisticRegression{
 	async train(features,labels){
 		// this.validateTrainInput(features,labels)
 		if(this.isTrained)
-			console.log("Warning: The model is already fitted on a data. Overwriting previous data")
+			console.log("SERVER : Warning: The model is already fitted on a data. Overwriting previous data")
 		this.model.add(tf.layers.dense({
   							units: 10, 
   							activation: 'sigmoid', 
@@ -35,17 +35,17 @@ class LogisticRegression{
 	predict(X){
 		this.validateTestInput(X)
 		if(!this.isTrained)
-			throw new Error('You must fit the model first before you can predict on new data!');
+			throw new Error('SERVER : You must fit the model first before you can predict on new data!');
 
 		// return {"intent":null,"confidence":1.0};
 	}
 	load_weights(weights_load_path){
 		if(this.isTrained)
-			console.log("Warning: The model is already trained. Overwriting previous weights")
+			console.log("SERVER : Warning: The model is already trained. Overwriting previous weights")
 	}
 	save_weights(weights_save_path){
 		if(!this.isTrained)
-			throw new Error('You must fit the model first before you save weights!');
+			throw new Error('SERVER : You must fit the model first before you save weights!');
 	}
 	validateTrainInput(X,y){
 
