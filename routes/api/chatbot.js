@@ -19,14 +19,13 @@ module.exports = (app,pipeline) => {
 	*desc   : receive query from *customer* and send reply using chatbot engine
 	*access : private route
 	*/
-	app.post("/api/chatbotGetResolution", (req,res)=>{
+	app.post("/api/chatbotGetResolution", validateApiRequest, (req,res)=>{
 		// Take data from request
 		let email = req.body.email,
 			query = req.body.message;
 		// Find & Return response
 		findResponse(query,pipeline)
 			.then(response=>{
-				console.log("SERVER: Resonse object : ",response)
 				// Save chat in conversation array
 				Customer.findOne({'email': email}, function(error, customer){
 			        if(error){
@@ -36,25 +35,36 @@ module.exports = (app,pipeline) => {
 			            });
 			        }
 			        else{
-			        	prevConversation = customer.conversation
-			        	newConvoClient = {mtag:'CLIENT', message:query}
-			        	newConvoServer = {mtag:'SERVER', message:response['reply']}
-			            customer.set({conversation:[...prevConversation,newConvoClient,newConvoServer]})
-		                customer.save(function(err,_){
-		                    if(error){
-		                        res.json({
-		                            success: false,
-		                            message: SERVER_ERROR
-		                        });
-		                    }else{
-		                        // Send response to client
-		                        res.status(200).json({
-									success: true,
-									message: ACCESS_VALIDATED,
-									response: response
-								})
-		                    }
-		                })
+			        	if(customer==null){
+			        		console.log("SERVER: Customer not found with email : ",email)
+			        		res.json({
+			        			success: false,
+			        			message: SERVER_ERROR
+			                });
+			        	}
+			        	else{
+				        	prevConversation = customer.conversation
+				        	newConvoClient = {mtag:'CLIENT', message:query}
+				        	newConvoServer = {mtag:'SERVER', message:response['reply']}
+				            customer.set({conversation:[...prevConversation,newConvoClient,newConvoServer]})
+			                customer.save(function(err,_){
+			                    if(error){
+			                        res.json({
+			                            success: false,
+			                            message: SERVER_ERROR
+			                        });
+			                    }else{
+			                    	// Log response(testing)
+			                    	console.log("SERVER: Resonse object : ",response)
+			                        // Send response to client
+			                        res.status(200).json({
+										success: true,
+										message: ACCESS_VALIDATED,
+										response: response
+									})
+			                    }
+			                })
+			            }
 			        }
 			    });
 			})
