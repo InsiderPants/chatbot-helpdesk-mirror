@@ -1,1 +1,0 @@
-{"<unknown>":1,"bye":2,"hi":3,"hello":4,"hola":5,"goodbye":6,"good":7}
