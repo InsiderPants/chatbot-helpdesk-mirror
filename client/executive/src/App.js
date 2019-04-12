@@ -2,11 +2,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
-
 import jwt_decode from 'jwt-decode';
-import setAuthToken from './utils/setAuthToken';
-import PrivateRoute from './components/common/PrivateRoute';
-import {setCurrentUser,signOutUser} from './actions/auth';
 
 // Components
 import Home from './components/home/home';
@@ -17,10 +13,13 @@ import Entities from './components/entities/entities';
 import Training from './components/training/training';
 import Analytics from './components/analytics/analytics';
 import Account from './components/account/account';
+import PrivateRoute from './components/common/PrivateRoute';
 
 // Actions
+import {setCurrentUser,signOutUser} from './actions/auth';
 
 // utils and others
+import setAuthToken from './utils/setAuthToken';
 import store from './store';
 
 // Check for Token
@@ -52,7 +51,6 @@ class App extends Component {
                             <Route exact path='/register' component={Register} />
                             <PrivateRoute exact path='/intent' component={AddIntent} />
                             <PrivateRoute exact path='/' component={Home} />
-                            <PrivateRoute exact path='/intent' component={AddIntent} />
                             <PrivateRoute exact path='/entities' component={Entities} />
                             <PrivateRoute exact path='/training' component={Training} />
                             <PrivateRoute exact path='/analytics' component={Analytics} />

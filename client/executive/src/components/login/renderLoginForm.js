@@ -9,6 +9,7 @@ import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 //actions
@@ -34,7 +35,7 @@ const styles = theme => ({
     },
     registerText: {
         textDecoration: 'none',
-    },
+    }
 })
 
 const theme = createMuiTheme({
@@ -59,6 +60,8 @@ class RenderLoginForm extends React.Component {
             emailHelperText: '',
             passwordEmpty: false,
             passwordHelperText: '',
+            snackbarToggle: false,
+            snackbarMessage: ''
         }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -120,9 +123,10 @@ class RenderLoginForm extends React.Component {
                     if(success){
                         // Dispatch Action to update user state
                         this.props.loginUser({
+                            name: body.name,
                             email: data.email,
-                            success:success,
-                            accessToken:body.accessToken
+                            success: success,
+                            accessToken: body.accessToken
                         });
                         this.props.invalidLogin({
                             error: ''
@@ -135,11 +139,17 @@ class RenderLoginForm extends React.Component {
                         this.props.invalidLogin({
                             error: message
                         });
-                        console.log(message)
+                        this.setState({
+                            snackbarToggle: true,
+                            snackbarMessage: message
+                        })
                     }
                 })
                 .catch(err => {
-                    console.log('Error sending login request');
+                    this.setState({
+                        snackbarToggle: true,
+                        snackbarMessage: 'Error sending login axios request'
+                    })
                 });
         }
     }
@@ -148,6 +158,14 @@ class RenderLoginForm extends React.Component {
         if(this.props.executive.isAuthenticated) {
             this.props.history.push('/');
         }
+    }
+
+    // for closing snackbar
+    closeSnackbar = () => {
+        this.setState({
+            snackbarToggle: false,
+            snackbarMessage: ''
+        })
     }
 
     render() {
@@ -198,6 +216,16 @@ class RenderLoginForm extends React.Component {
                         Login
                     </Button>
                 </form>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    open={this.state.snackbarToggle}
+                    onClose={this.closeSnackbar}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    autoHideDuration={4000}
+                    message={<span id="message-id">{this.state.snackbarMessage}</span>}
+                />
             </div>
         );
     }
@@ -206,7 +234,8 @@ class RenderLoginForm extends React.Component {
 //connecting to redux
 const mapStateToProps = (state) => {
     return {
-        executive: state.executive
+        executive: state.executive,
+        errors: state.errors
     };
 }
 

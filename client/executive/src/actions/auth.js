@@ -14,6 +14,7 @@ export const loginUser = (data, dispatch) => {
         dispatcher({
             type: LOGIN_EXECUTIVE,
             payload: {
+                name: data.name,
                 email: data.email
             }
         });
@@ -31,6 +32,7 @@ export const loginUser = (data, dispatch) => {
 };
 
 export const invalidLogin = (data,dispatch)=>{
+    // In case of invalid login/any error during login, set error set
     dispatch((dispatcher) => {
         dispatcher({
             type: GET_ERRORS,
@@ -40,10 +42,11 @@ export const invalidLogin = (data,dispatch)=>{
 }
 
 export const setCurrentUser = (decoded)=>{
-  return{
-    type:SET_CURRENT_USER,
-    payload:decoded
-  }
+    // It takes decoded data from token and set in state
+    return{
+        type:SET_CURRENT_USER,
+        payload:decoded
+    }
 }
 
 export const signOutUserButton = (dispatch) => {

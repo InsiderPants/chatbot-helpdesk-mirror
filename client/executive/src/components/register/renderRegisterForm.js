@@ -1,11 +1,13 @@
 import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
@@ -29,6 +31,10 @@ const styles = theme => ({
     button: {
         margin: theme.spacing.unit,
     },
+    loginTextContainer: {
+        position: 'relative',
+        right: '10%',
+    },
     formContainer: {
         position: 'relative',
         top: '3vh',
@@ -36,6 +42,9 @@ const styles = theme => ({
     registerHeading: {
         marginTop: theme.spacing.unit,
     },
+    loginText: {
+        textDecoration: 'none',
+    }
 });
 
 class RenderRegisterForm extends React.Component {
@@ -55,6 +64,8 @@ class RenderRegisterForm extends React.Component {
             passwordEmpty: false,
             passwordHelperText: '',
             registeredFlag: false,
+            snackbarToggle: false,
+            snackbarMessage: ''
         }
         this.handleRegisterFormSubmit = this.handleRegisterFormSubmit.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -115,11 +126,17 @@ class RenderRegisterForm extends React.Component {
                     }
                     else{
                         // Error from server side
-                        console.log(res.data.message)
+                        this.setState({
+                            snackbarToggle: true,
+                            snackbarMessage: res.data.message
+                        })
                     }
                 })
                 .catch(err => {
-                    console.log('Error sending signup request');
+                    this.setState({
+                        snackbarToggle: true,
+                        snackbarMessage: 'Error sending register axios request'
+                    })
                 })
         }
     }
@@ -164,6 +181,14 @@ class RenderRegisterForm extends React.Component {
         if(this.props.executive.isAuthenticated) {
             this.props.history.push('/');
         }
+    }
+
+    // for closing snackbar
+    closeSnackbar = () => {
+        this.setState({
+            snackbarToggle: false,
+            snackbarMessage: ''
+        })
     }
 
     render() {
@@ -219,7 +244,9 @@ class RenderRegisterForm extends React.Component {
                             helperText={this.state.passwordHelperText}
                         />
                     </MuiThemeProvider>
-                    <br/>
+                    <Typography className={classes.loginTextContainer} align='right' variant='body1'>
+                        <Link className={classes.loginText} to='/login'>Already Registerd? Click here to login.</Link>
+                    </Typography>
                     <br/>
                     <Button 
                         variant="contained" 
@@ -232,6 +259,16 @@ class RenderRegisterForm extends React.Component {
                         Register
                     </Button>
                 </form>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    open={this.state.snackbarToggle}
+                    onClose={this.closeSnackbar}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    autoHideDuration={4000}
+                    message={<span id="message-id">{this.state.snackbarMessage}</span>}
+                />
             </div>
         );
     }

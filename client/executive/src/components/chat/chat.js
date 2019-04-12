@@ -113,9 +113,11 @@ class Chat extends Component {
     
     render() {
         const {classes} = this.props;
+        const initialMessage = "Hi there! I'm "+this.props.executive.name+", how can I help you today?";
         return (
             <div>
                 <div className={classes.chat_container} ref={this.chatContainer}>
+                    <RenderChat tag='executive' message={initialMessage}/>
                     {
                         this.props.chat.conversation.map((chat, i) => <RenderChat tag={chat.tag} message={chat.message} key={i}/>)
                         //rendering chats
@@ -159,7 +161,8 @@ class Chat extends Component {
 //connecting to redux
 const mapStateToProps = (state) => {
     return {
-        chat: state.chat
+        chat: state.chat,
+        executive: state.executive
     };
 }
 

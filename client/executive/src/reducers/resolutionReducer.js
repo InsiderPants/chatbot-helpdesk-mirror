@@ -3,10 +3,7 @@ import { GET_USER_QUERY_FROM_BACKEND, GET_EXECUTIVE_ANSWER, SAVE_CHAT, LOADING_Q
 const initialState = {
     user_query: {},
     executive_reply: {},
-    conversation: [{
-        tag: 'executive',
-        message: "Hi there! I'm Manish(put executive name here) , how can I help you today?"
-    }],
+    conversation: [],
     isLoading: false,
 };
 
