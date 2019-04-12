@@ -166,7 +166,7 @@ class Navbar extends Component {
         
         return(
             <div className={classes.root}>
-                <AppBar position="static" className={classes.appBar}>
+                <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <MuiThemeProvider theme={theme}>
                         {this.props.renderComponent}

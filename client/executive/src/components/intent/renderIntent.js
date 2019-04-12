@@ -30,9 +30,6 @@ import Paper from '@material-ui/core/Paper';
 
 import Navbar from '../navbar/navbar';
 
-// width of side bar thing
-const drawerWidth = 300;
-
 // CSS
 const styles = theme => ({
     root: {
@@ -43,24 +40,10 @@ const styles = theme => ({
         backgroundColor: '#eceff1',
         minHeight: '100vh',
     },
-    appBar: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        height: '80px',
-    },
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    toolbar: {
-        height: '80px',
-    },
     content: {
         flexGrow: 1,
         padding: theme.spacing.unit * 3,
+        marginTop: 80,
         marginLeft: 300,
     },
     input: {
@@ -328,6 +311,10 @@ class RenderIntent extends React.Component {
                             setTimeout(() => {
                                 this.setState({
                                     showIntents: true,
+                                    intentName: [],
+                                    trainingPhrases: [],
+                                    responses: [],
+                                    actions: [],
                                 })
                             }, 3000);
                         }
@@ -712,6 +699,7 @@ class RenderIntent extends React.Component {
                         style={{ marginRight: 8, color: '#ffffff' }}
                         placeholder="Intent Name"
                         fullWidth
+                        required
                         margin="normal"
                         label={this.state.intentNameError ? " Intent Name only contain a-z(caps ok) and Underscore(_) only" : "Intent Name"}
                         InputLabelProps={{
@@ -729,7 +717,7 @@ class RenderIntent extends React.Component {
                 <Grid item xs={2} sm={2} md={2} lg={1}>
                     {/* Save Button */}
                     <Button variant="contained" onClick={this.handleSaveButton}  className={classes.button}>
-                        {this.state.sendIntentLoading ? <CircularProgress className={classes.progress} size={20} color='inherit'/> : "Save"}
+                        {this.state.sendIntentLoading ? <CircularProgress size={20} color='inherit'/> : "Save"}
                     </Button>
                 </Grid>
             </Grid>
