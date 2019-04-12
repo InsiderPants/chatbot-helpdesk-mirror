@@ -3,14 +3,16 @@
 */
 const mongoose = require("mongoose"),
 	  intentsDB = require("../../models/intentsDB.js"),
-	  passport	= require('passport');
+	  executiveDB = require('../../models/executiveDB.js'),
+	  passport	= require('passport'),
+	  bcrypt = require('bcryptjs');
 
 const {
-	SUCCESSFULLY_ADDED_TO_DATABASE, SUCCESSFULLY_REMOVED_FROM_DATABASE
+	SUCCESSFULLY_ADDED_TO_DATABASE, SUCCESSFULLY_REMOVED_FROM_DATABASE, SUCCESSFULLY_UPDATED
 } = require('../../utils/messages').success;
 
 const {	
-	SERVER_ERROR, DATABASE_SAVE_ERROR, NO_INTENT_IN_DB, INTENT_NOT_FOUND
+	SERVER_ERROR, DATABASE_SAVE_ERROR, NO_INTENT_IN_DB, INTENT_NOT_FOUND, OLD_PASSWORD_INCORRECT
 } = require('../../utils/messages').error;
 
 module.exports = (app, io) => {
@@ -205,4 +207,116 @@ module.exports = (app, io) => {
         	}
 		})
 	})
+
+	/*
+		route: Post /api/executiveUpdateContact
+		description: api for changing the contact detail of the executive4
+		private route
+	*/
+	app.post('/api/executiveUpdateContact', passport.authenticate('jwt',{session:false}), (req, res) => {
+		const { Email, NewContact } = req.body;
+		executiveDB.findOneAndUpdate({'email': Email}, {'contact': NewContact}, (err) => {
+			if(err) {
+				res.json({
+					success: false,
+					message: SERVER_ERROR
+				});
+			}
+			else {
+				res.status(200).json({
+					success: true,
+					message: SUCCESSFULLY_UPDATED,
+				})
+			}
+		})
+	})
+
+	/* 
+		route: /api/executiveUpdatePassword
+		description: api for password updation
+		private route
+	*/
+	app.post('/api/executiveUpdatePassword', passport.authenticate('jwt',{session:false}), (req, res) => {
+		const { Email, OldPassword, NewPassword } = req.body;
+		executiveDB.findOne({'email': Email}, (err, executive) => {
+			if(err) {
+				res.json({
+					success: false,
+					message: SERVER_ERROR,
+				})
+			}
+			else {
+				bcrypt.compare(OldPassword, executive.password)
+					.then(match => {
+						if(match) {
+							bcrypt.genSalt(10, (err, salt) => {
+								if(err) {
+									res.json({
+										success: false,
+										message: SERVER_ERROR,
+									})
+								}
+								bcrypt.hash(NewPassword, salt, (err, hash) => {
+									if(err) {
+										res.json({
+											success: false,
+											message: SERVER_ERROR,
+										})
+									}
+									executive.set({
+										password: hash
+									})
+									executive.save((err, _) => {
+										if(err) {
+											res.json({
+												success: false,
+												message: SERVER_ERROR,
+											})
+										}
+										else {
+											res.status(200).json({
+												success: true,
+												message: SUCCESSFULLY_UPDATED,
+											})
+										}
+									})
+								})
+							})
+						}
+						else {
+							res.json({
+								success: false,
+								message: OLD_PASSWORD_INCORRECT,
+							})
+						}
+					})
+			}
+		})
+	})
+
+	/* 
+		route: /api/executiveGetUntrainedIntents
+		desc: for sending untrained intents list according to page
+		private route
+	*/
+	// app.post('/api/executiveGetUntrainedIntents', passport.authenticate('jwt', {session: false}), (req, res) => {
+	// 	const { PageNumber } = req.body;
+	// 	let counter = 0;
+	// 	intentsDB.find((err, intents) => {
+	// 		if(err) {
+	// 			res.json({
+	// 				success: false,
+	// 				message: SERVER_ERROR,
+	// 			})
+	// 		}
+	// 		else {
+	// 			if(intents.length === 0) {
+	// 				res.json({
+	// 					success: false,
+	// 					message
+	// 				})
+	// 			}
+	// 		}
+	// 	})
+	// })
 }
