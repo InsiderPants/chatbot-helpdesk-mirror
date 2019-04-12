@@ -3,8 +3,6 @@ import ReduxThunk from 'redux-thunk';
 import rootReducer from './reducers/rootReducer';
 import { compose } from 'redux';
 
-
-
 const store = createStore(
     rootReducer, 
     compose(
