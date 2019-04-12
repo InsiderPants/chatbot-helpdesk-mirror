@@ -26,6 +26,7 @@ const styles = theme => ({
         flexGrow: 1,
         padding: theme.spacing.unit,
         marginLeft: 300,
+        marginTop: 80,
     },
     toolbar: {
         height: '80px',
@@ -41,7 +42,7 @@ class Body extends Component {
             <div className={classes.root}>
                 <Navbar renderComponent={<div></div>}/>
                 <div className={classes.content}>
-                    <Grid container spacing={8} justify="space-evenly">
+                    <Grid container spacing={0} justify="space-evenly">
                         {/* <Hidden smDown>
                             <Grid item md={5} lg={5} xl={5}>
                             <Paper className={classes.paper} style={{height: '50vh', backgroundColor: '#eceff1'}}>
