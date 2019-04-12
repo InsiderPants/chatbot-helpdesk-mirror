@@ -131,14 +131,17 @@ class NeuralNetwork{
 			console.log("SERVER: Warning: The model is already trained. Overwriting previous weights")
 		this.model =  await tf.loadLayersModel('file://'+weights_load_path+"/model.json");
 		console.log("SERVER: Model weights loaded successfully");
-		await new Promise(resolve => {
-  			fs.readFile(weights_load_path+'/intentDict.txt',(err, data)=>{
+		let p1 = new Promise(resolve=>{
+			fs.readFile(weights_load_path+'/intentDict.txt',(err, data)=>{
 				if(err)
 					throw new Error('SERVER: Error while loading intentDict');
 				this.intentDict = JSON.parse(data);
 				console.log("SERVER: intentDict loaded successfully");
+				resolve();
 	  		});
-	  		fs.readFile(weights_load_path+'/thingsToSave.txt',(err, data)=>{
+		})
+		let p2 = new Promise(resolve=>{
+			fs.readFile(weights_load_path+'/thingsToSave.txt',(err, data)=>{
 				if(err)
 					throw new Error('SERVER: Error while loading thingsToSave');
 				let thingsToLoad = JSON.parse(data);
@@ -149,8 +152,14 @@ class NeuralNetwork{
 				this.isTrained = true;
 				resolve();
 	  		});
-  		})
-  		return await this;
+		})
+		return Promise.all([p1,p2])
+					.then(_=>{
+						return this;
+					})
+					.catch(err=>{
+						console.log('SERVER: Error while loading weights');
+					})
 	}
 	async save_weights(weights_save_path){
 		if(!this.isTrained)
@@ -237,12 +246,12 @@ class NeuralNetwork{
 async function intentClassifier(train=true,weights_load_path=null,vocab_load_path=null,weights_save_path=null){
 	if(!train){
 		 return featurizer(train=false,vocab_save_path=null,vocab_load_path=vocab_load_path)
-			.then(async (featurizer)=>{
+			.then(featurizer=>{
 				var clf = new NeuralNetwork(featurizer);
 				// Load Model
 				if(weights_load_path!==null){
-					await clf.load_weights(weights_load_path)
-						.then(async (classifier)=>{
+					return clf.load_weights(weights_load_path)
+						.then(classifier=>{
 							console.log("SERVER: Classifier loaded successfully");
 							// return Model
 							return classifier
@@ -251,8 +260,6 @@ async function intentClassifier(train=true,weights_load_path=null,vocab_load_pat
 							console.log(err)
 							console.log("SERVER: Error loading classifier")
 						});
-					return clf
-
 				}
 				else
 					throw new Error("SERVER: weights_load_path not valid");
