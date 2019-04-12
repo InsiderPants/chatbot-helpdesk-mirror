@@ -27,10 +27,10 @@ require('./utils/validateApiRequestExe')(passport);
 
 // setup nlp and sentiment engine pipeline only once, when server starts
 // and use pipeline for inference only
-new Promise(resolve=>{
 setupPipeline()
 	.then(pipeline=>{
 		console.log('SERVER: Pipeline loaded');
+		// console.log(pipeline)
 		// Required APIs
 		const chatbotAPI = require("./routes/api/chatbot.js")(app,pipeline);
 		const executiveAPI = require("./routes/api/executive.js")(app, io);
@@ -67,6 +67,7 @@ setupPipeline()
 		server.listen(port,ip,()=>{
 			console.log(`SERVER: Server running on port ${port} and ip ${ip}`);
 		})
-		resolve();
 	})
-});
+	.catch(err=>{
+		throw new Error("SERVER: Error loading pipeline. Cannot start server in server,js");
+	})

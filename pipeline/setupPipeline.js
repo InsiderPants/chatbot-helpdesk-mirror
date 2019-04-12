@@ -18,23 +18,18 @@ async function setupPipeline(){
 	
 	// Load NER
 	pipeline['ner'] = null;
-	console.log(1)
 	// Load Intent Classifier
-	await new Promise(resolve =>{
-		intentClassifier(train=false,
+	await intentClassifier(train=false,
 				weights_load_path=config.weights_load_path,
 				vocab_load_path=config.vocab_load_path,
 				weights_save_path=null)
 			.then(intentClassifier=>{
 				pipeline['intentClassifier'] = intentClassifier;
-				resolve();
 			})
-	})
-	console.log(2)
 	// Load Sentiment Classifier
 	pipeline['sentimentEngine'] = null;
 
-	return await pipeline
+	return pipeline
 }
 
 module.exports = setupPipeline

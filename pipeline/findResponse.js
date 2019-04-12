@@ -6,14 +6,15 @@ const mongoose = require("mongoose"),
 
 function fallbackIntent(result){
 	result['intent'] = 'default_fallback';
-	result['reply'] = 'Sorry!!!';
-	result['actions'] = 'initiate_fallback';
+	result['reply'] = ['Sorry!!!'];
+	result['actions'] = ['initiate_fallback'];
 	return result;
 }
 
 async function findResponse(customerQuery,pipeline){
 	// Passing through NLP Engine
 	// Result object
+	let threshold = 0.3;
 	var result = {
 		"text":customerQuery,
 		"sentiment":null,
@@ -35,8 +36,6 @@ async function findResponse(customerQuery,pipeline){
 	// Passing through Sentiment Engine
 	// result['sentiment'] = await pipeline.sentimentEngine(result['text']);
 
-	console.log(result)
-
 	// Search Database using intent for actions and reply
 	await intentsDB.findOne({'intent':result['intent']},(err,intent)=>{
 			if(err){
@@ -50,8 +49,12 @@ async function findResponse(customerQuery,pipeline){
 	        	}
 	        	else{
 	       			// intent exists
-	        		result['reply'] = intent.reply;
-	        		result['actions'] = intent.actions;
+	       			if(result['confidence']<threshold){
+	       				result = fallbackIntent(result);
+	       			}else{
+	       				result['reply'] = intent.reply;
+	        			result['actions'] = intent.actions;
+	       			}
 	        	}
 	        }
 		});

@@ -64,7 +64,7 @@ class NeuralNetwork{
 	  		// Pass through featurizer
 	  		let seq = this.featurizer.transform([query]);
 	  		// Pad sequence
-	  		this.padding(seq);
+	  		this.padding(seq,true);
 	    	// Prepare input data as a 2D `tf.Tensor`.
 	    	const input = tf.tensor2d(seq, [1, this.max_len]);
 	    	// Call `model.predict` to get the prediction output as probabilities
@@ -98,10 +98,10 @@ class NeuralNetwork{
 		}
 		return corpus;
 	}
-	padding(corpus){
+	padding(corpus,testing=false){
 		let _len;
-		for(let example of corpus){
-			if(example.length==2){
+		if(!testing){
+			for(let example of corpus){
 				// If corpus conatins X and Y
 				_len = example[0].length;
 				if(this.max_len-_len >= 0){
@@ -112,19 +112,19 @@ class NeuralNetwork{
 					// trimming array to length of max_len
 					example[0] = example[0].slice(0,this.max_len)
 				}
-			}else{
-				// If corpus conatins X only
-				_len = example.length;
-				if(this.max_len-_len >= 0){
-					// stretching array to length of max_len
-					for(let i=0;i<this.max_len-_len;i++)
-						example.push(0)	
-				}else{
-					// trimming array to length of max_len
-					example = example.slice(0,this.max_len)
-				}
 			}
-		}
+		}else{
+			// If corpus conatins X only
+			_len = corpus[0].length;
+			if(this.max_len-_len >= 0){
+				// stretching array to length of max_len
+				for(let i=0;i<this.max_len-_len;i++)
+					corpus[0].push(0)	
+			}else{
+				// trimming array to length of max_len
+				corpus[0] = corpus[0].slice(0,this.max_len)
+			}
+		}	
 	}
 	async load_weights(weights_load_path){
 		if(this.isTrained)
@@ -236,22 +236,23 @@ class NeuralNetwork{
 
 async function intentClassifier(train=true,weights_load_path=null,vocab_load_path=null,weights_save_path=null){
 	if(!train){
-		featurizer(train=false,vocab_save_path=null,vocab_load_path=vocab_load_path)
-			.then(featurizer=>{
+		 return featurizer(train=false,vocab_save_path=null,vocab_load_path=vocab_load_path)
+			.then(async (featurizer)=>{
 				var clf = new NeuralNetwork(featurizer);
 				// Load Model
 				if(weights_load_path!==null){
-					console.log(weights_load_path)
-					clf.load_weights(weights_load_path)
-						.then(classifier=>{
+					await clf.load_weights(weights_load_path)
+						.then(async (classifier)=>{
 							console.log("SERVER: Classifier loaded successfully");
 							// return Model
-							return classifier;
+							return classifier
 						})
 						.catch(err=>{
 							console.log(err)
 							console.log("SERVER: Error loading classifier")
-						})
+						});
+					return clf
+
 				}
 				else
 					throw new Error("SERVER: weights_load_path not valid");
@@ -292,7 +293,7 @@ async function intentClassifier(train=true,weights_load_path=null,vocab_load_pat
 										corpus = clf.prepareXY(data)
 
 										// Pad the sequences to max_len
-										clf.padding(corpus);
+										clf.padding(corpus,false);
 
 										// Convert to tensors and get X and y
 					        			const [X, y] = clf.getData(corpus);
