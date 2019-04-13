@@ -12,7 +12,7 @@ const {
 } = require('../../utils/messages').success;
 
 const {	
-	SERVER_ERROR, DATABASE_SAVE_ERROR, NO_INTENT_IN_DB, INTENT_NOT_FOUND, OLD_PASSWORD_INCORRECT
+	SERVER_ERROR, DATABASE_SAVE_ERROR, NO_INTENT_IN_DB, INTENT_NOT_FOUND, OLD_PASSWORD_INCORRECT, EXECUTIVE_NOT_FOUND
 } = require('../../utils/messages').error;
 
 module.exports = (app, io) => {
@@ -299,24 +299,75 @@ module.exports = (app, io) => {
 		desc: for sending untrained intents list according to page
 		private route
 	*/
-	// app.post('/api/executiveGetUntrainedIntents', passport.authenticate('jwt', {session: false}), (req, res) => {
-	// 	const { PageNumber } = req.body;
-	// 	let counter = 0;
-	// 	intentsDB.find((err, intents) => {
-	// 		if(err) {
-	// 			res.json({
-	// 				success: false,
-	// 				message: SERVER_ERROR,
-	// 			})
-	// 		}
-	// 		else {
-	// 			if(intents.length === 0) {
-	// 				res.json({
-	// 					success: false,
-	// 					message
-	// 				})
-	// 			}
-	// 		}
-	// 	})
-	// })
+	app.post('/api/executiveGetUntrainedIntents', passport.authenticate('jwt', {session: false}), (req, res) => {
+		const { PageNumber } = req.body;
+		let counter = 0;
+		intentsDB.find((err, intents) => {
+			if(err) {
+				res.json({
+					success: false,
+					message: SERVER_ERROR,
+				})
+			}
+			else {
+				if(intents.length === 0) {
+					res.json({
+						success: false,
+						message: NO_INTENT_IN_DB,
+					})
+				}
+				else {
+					let untrainedIntents = [];
+					for(let i of intents) {
+						counter++;
+						if(counter <= (PageNumber)*20 && counter > (PageNumber-1)*20 ) {
+							untrainedIntents.push(i.intent);
+						}
+					}
+					res.status(200).json({
+						success: true,
+						message: null,
+						untrainedIntents: untrainedIntents,
+					})
+				}
+			}
+		})
+	})
+
+	/* 
+		route: /api/executiveGetProfile
+		description: get request for executive details for his/her profile name
+		private route
+	*/
+	app.post('/api/executiveGetProfile', passport.authenticate('jwt', {session: false}), (req, res) => {
+		const { Email } = req.body;
+		executiveDB.findOne({'email': Email}, (err, executive) => {
+			if(err) {
+				res.json({
+					success: false,
+					message: SERVER_ERROR,
+				})
+			}
+			else {
+				if(executive === null) {
+					res.json({
+						success: false,
+						message: EXECUTIVE_NOT_FOUND,
+					})
+				}
+				else {
+					res.status(200).json({
+						success: true,
+						message: null,
+						data: {
+							Contact: executive.contact,
+							CustomerHandleCounter: executive.customerHandleCounter,
+						}
+					})
+				}
+			}
+		})
+	})
+
+
 }
