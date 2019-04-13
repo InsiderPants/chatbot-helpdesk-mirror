@@ -34,6 +34,10 @@ const intentsDBSchema = new Schema({
 	actions:{
 		type: Array,
 		required: true
+	},
+	isTrained:{
+		type: Boolean,
+		default: false
 	}
 })
 

@@ -56,7 +56,7 @@ setupPipeline()
 		app.get('*',(req,res)=>{
 			res.status(404).send("Page Not Found");
 		})
-		// For any unexpected post rout
+		// For any unexpected post route
 		app.post('*',(req,res)=>{
 			res.status(404).send("Page Not Found");
 		})
