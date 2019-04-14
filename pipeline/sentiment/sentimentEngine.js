@@ -15,8 +15,8 @@ function getTokenizer() {
 
 class SentimentAnalysis {
     // change default dataset path
-    constructor(datasetPath='/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentAnalysisDataset.json') {
-        // this.model = tf.sequential();   //model is sequential
+    constructor(datasetPath='/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentData/sentimentAnalysisDataset.json') {
+        this.model = tf.sequential();   //model is sequential
         this.dataset = [];              //dataset object
         this.max_len = -1;              // maxlength of input string
         this.datasetPath = datasetPath; //dataset path
@@ -95,7 +95,7 @@ class SentimentAnalysis {
     // load vocab
     async loadVocab(path) {
         return new Promise(resolve => {
-            fs.readFile(path, (err, data) => {
+            fs.readFile(path + 'sentimentAnalysisVocab.json', (err, data) => {
                 if(err)
                     throw new Error('SERVER: Error while loading Sentiment Vocabulary');
                 this.vocab = JSON.parse(data);
@@ -107,7 +107,7 @@ class SentimentAnalysis {
     // save vocab
     async saveVocab(path) {
         await new Promise(resolve => {
-            fs.writeFile(path, JSON.stringify(this.vocab), err => {
+            fs.writeFile(path + 'sentimentAnalysisVocab.json', JSON.stringify(this.vocab), err => {
                 if(err)
                     throw new Error('SERVER: Error while Saving sentiment vocab');
                 console.log('SERVER: Sentiment Vocabulary Saved Successfully');
@@ -158,7 +158,7 @@ class SentimentAnalysis {
     // for loading weights for embedding layer
     async glove_embedding(path) {
         return new Promise(resolve => {
-            fs.readFile(path, (err, data) => {
+            fs.readFile(path + 'embedding_matrix.json', (err, data) => {
                 if(err)
                     throw new Error('SERVER: Error while loading glove word vector');
                 const weight = JSON.parse(data);
@@ -171,34 +171,33 @@ class SentimentAnalysis {
     // training the model
     async train(X, y) {
         // console.log(this.embedding_matrix)
-        const model = tf.sequential();
-        model.add(tf.layers.embedding({
+        this.model.add(tf.layers.embedding({
             inputDim: this.vocabLength+1,
             outputDim: 100,
             weights: [this.embedding_matrix],
             inputLength: this.max_len,
             trainable: false,
         }));
-        // model.add(tf.layers.lstm({
+        // this.model.add(tf.layers.lstm({
         //     units: 128,
         // }))
-        model.add(tf.layers.flatten())
-        model.add(tf.layers.dense({
-            // inputShape: [this.max_len],
-            units: 64,
-            activation: 'relu',
-        }))
-        model.add(tf.layers.dense({
+        this.model.add(tf.layers.flatten())
+        // this.model.add(tf.layers.dense({
+        //     // inputShape: [this.max_len],
+        //     units: 64,
+        //     activation: 'relu',
+        // }))
+        this.model.add(tf.layers.dense({
             units: 1,
             activation: 'softmax',
         }));
-        model.compile({
+        this.model.compile({
             optimizer: tf.train.adam(),
             loss: 'binaryCrossentropy',
             metrics: ['accuracy']
         });
-        console.log(model.summary())
-        this.history = await model.fit(X, y, {
+        console.log(this.model.summary())
+        this.history = await this.model.fit(X, y, {
             epochs: 2,
             batchSize: 32,
             validationSplit: 0.2,
@@ -229,6 +228,43 @@ class SentimentAnalysis {
         let y_train = tf.tensor1d(y);
         return [X_train, y_train];
     } 
+
+    // model save
+    async saveModel(save_weights_path) {
+        // saving model
+        await this.model.save('file://' + save_weights_path + 'sentimentModel');
+        console.log("SERVER: Sentiment Model weights saved successfully");
+        //saving vocab
+        await this.saveVocab(save_weights_path);
+        const others = {
+            history: this.history,
+            max_len: this.max_len,
+        };
+        await new Promise(resolve => {
+            fs.writeFile(save_weights_path + 'sentimentOthers.json', JSON.stringify(others), err=> {
+                if(err)
+                    throw new Error('SERVER: error while saving history and max length input of sentiment engine');
+                console.log('SERVER: successfully saved history and max len input');
+                resolve();
+            })
+        })
+
+    }
+
+    // load model
+    async loadModel(loadModelPath) {
+        this.model = await tf.loadLayersModel('file://' + loadModelPath + 'sentimentModel/model.json');
+        await this.loadVocab(loadModelPath);
+        await new Promise(resolve => {
+            fs.readFile(loadModelPath + 'sentimentOthers.json', (err, doc) => {
+                const data = JSON.parse(doc);
+                this.max_len = data.max_len;
+                this.history = data.history;
+                resolve();
+            })
+        })
+    }
+
 }
 
 async function senti() {
@@ -239,7 +275,7 @@ async function senti() {
     a.buildVocab(); 
     a.tokenize();
     a.padding();
-    await a.glove_embedding('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/embedding_matrix.json');
+    await a.glove_embedding('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentData/');
     // console.log(a.vocab)
     // console.log(a.vocabLength);
     // console.log(a.embedding_matrix.shape);
@@ -248,7 +284,11 @@ async function senti() {
     const [X, y] = a.convert2Tensor();
     console.log(X.shape+'   '+ y.shape)
     await a.train(X, y);
-    // a.saveVocab('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentAnalysisVocab.json');
+    console.log('saving..');
+    await a.saveModel('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentData/')
+    // await a.loadModel('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentData/');
+    // a.model.predict(tf.tensor2d([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,1, 1, 1, 7,1,2,56,87]], [1,154])).print()
+
 }
 
 a = senti();
