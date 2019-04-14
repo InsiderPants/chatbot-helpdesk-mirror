@@ -44,7 +44,8 @@ class NeuralNetwork{
 	  		epochs: 5,
 	  		callbacks: {
 		      	onEpochEnd: async (epoch, logs) => {
-		      		console.log(epoch)
+					  console.log(epoch)
+					  // set socket io here
 		      	},
 	  		}
 	  	});
@@ -288,9 +289,10 @@ async function intentClassifier(train=true,weights_load_path=null,vocab_load_pat
 										// Create dictionary of intents
 										for(let d of data){
 											if(d.intent in intentDict)
-												continue
-											else
+												continue;
+											else {
 												intentDict[d.intent] = Object.keys(intentDict).length;
+											}
 										}
 
 										// Inititate Model
@@ -298,7 +300,7 @@ async function intentClassifier(train=true,weights_load_path=null,vocab_load_pat
 
 					        			// get corpus containing X and y and set max_len of X for padding
 										corpus = clf.prepareXY(data)
-
+										
 										// Pad the sequences to max_len
 										clf.padding(corpus,false);
 
@@ -309,19 +311,32 @@ async function intentClassifier(train=true,weights_load_path=null,vocab_load_pat
 										clf.train(X,y)
 											.then(classifier=>{
 												console.log('SERVER: Classifier trained successfully')
-												// Save Model
-												if(weights_save_path !== null){
-													clf.save_weights(weights_save_path).then(res=>{
-														console.log('SERVER: All done, disconnecting database now')
-														mongoose.disconnect();
-														resolve();
+												// marking intents trained
+												for (let d of data) {
+													d.set({
+														isTrained: true
+													})
+													d.save((err, _) => {
+														if (err) {
+															throw new Error('SERVER: Error while saving isTrained property after training');															
+														}
 													})
 												}
-												else{
+												// Save Model
+												if (weights_save_path !== null) {
+													clf.save_weights(weights_save_path).then(res => {
+														console.log('SERVER: All done, disconnecting database now')
+														resolve();
+
+													})
+												}
+												else {
 													console.log('SERVER: weights_save_path not given/invalid, disconnecting database now')
-													mongoose.disconnect();
 													resolve();
 												}
+											})
+											.then(() => {
+												mongoose.disconnect()
 											})
 											.catch(err=>{
 												console.log(err)

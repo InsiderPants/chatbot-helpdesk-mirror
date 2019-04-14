@@ -16,6 +16,7 @@ module.exports = {
         NO_INTENT_IN_DB: "No intent exists in database. Add some to view",
         INTENT_NOT_FOUND: "Intent not found in database",
         OLD_PASSWORD_INCORRECT: "Old password is incorrect.",
+        EXECUTIVE_NOT_FOUND: "No such executive registered in our database."
     },
     success: {
         ACCESS_VALIDATED: "Access validated",
