@@ -131,25 +131,25 @@ class NeuralNetwork{
 		if(this.isTrained)
 			console.log("SERVER: Warning: The model is already trained. Overwriting previous weights")
 		this.model =  await tf.loadLayersModel('file://'+weights_load_path+"/model.json");
-		console.log("SERVER: Model weights loaded successfully");
+		console.log("SERVER: Intent Classifier Model weights loaded successfully");
 		let p1 = new Promise(resolve=>{
 			fs.readFile(weights_load_path+'/intentDict.txt',(err, data)=>{
 				if(err)
-					throw new Error('SERVER: Error while loading intentDict');
+					throw new Error('SERVER: Error while loading Intent Dictionary');
 				this.intentDict = JSON.parse(data);
-				console.log("SERVER: intentDict loaded successfully");
+				console.log("SERVER: Intent Dictionary loaded successfully");
 				resolve();
 	  		});
 		})
 		let p2 = new Promise(resolve=>{
-			fs.readFile(weights_load_path+'/thingsToSave.txt',(err, data)=>{
+			fs.readFile(weights_load_path+'/modelData.txt',(err, data)=>{
 				if(err)
-					throw new Error('SERVER: Error while loading thingsToSave');
+					throw new Error('SERVER: Error while loading Model data');
 				let thingsToLoad = JSON.parse(data);
 				this.history = thingsToLoad.history;
 				this.max_len = thingsToLoad.max_len;
 				this.num_classes = thingsToLoad.num_classes;
-				console.log("SERVER: thingsToSave loaded successfully");
+				console.log("SERVER: Model data loaded successfully");
 				this.isTrained = true;
 				resolve();
 	  		});
@@ -170,18 +170,18 @@ class NeuralNetwork{
 		await new Promise(resolve => {
   			fs.writeFile(weights_save_path+'/intentDict.txt',JSON.stringify(this.intentDict),(err)=>{
 				if(err)
-					throw new Error('SERVER: Error while saving intentDict');
-				console.log('SERVER: intentDict saved successfully')
+					throw new Error('SERVER: Error while saving Intent Dictionary');
+				console.log('SERVER: Intent Dictionary saved successfully')
 			})
-			let thingsToSave = {
+			let modelData = {
 				history:this.history,
 				max_len:this.max_len,
 				num_classes:this.num_classes
 			}
-			fs.writeFile(weights_save_path+'/thingsToSave.txt',JSON.stringify(thingsToSave),(err)=>{
+			fs.writeFile(weights_save_path+'/modelData.txt',JSON.stringify(modelData),(err)=>{
 				if(err)
-					throw new Error('SERVER: Error while saving thingsToSave');
-				console.log('SERVER: thingsToSave saved successfully')
+					throw new Error('SERVER: Error while saving Model data');
+				console.log('SERVER: Model data saved successfully')
 				resolve();
 			})
   		})
@@ -309,34 +309,37 @@ async function intentClassifier(train=true,weights_load_path=null,vocab_load_pat
 
 					     				// Train Model
 										clf.train(X,y)
-											.then(classifier=>{
+											.then(async (classifier)=>{
 												console.log('SERVER: Classifier trained successfully')
 												// marking intents trained
-												for (let d of data) {
-													d.set({
-														isTrained: true
-													})
-													d.save((err, _) => {
-														if (err) {
-															throw new Error('SERVER: Error while saving isTrained property after training');															
-														}
-													})
-												}
-												// Save Model
-												if (weights_save_path !== null) {
-													clf.save_weights(weights_save_path).then(res => {
-														console.log('SERVER: All done, disconnecting database now')
+												await new Promise(resolve=>{
+													for (let d of data) {
+														d.set({
+															isTrained: true
+														})
+														d.save((err, _) => {
+															if (err) {
+																throw new Error('SERVER: Error while saving isTrained property after training');															
+															}
+														})
+													}
+													// Save Model
+													if (weights_save_path !== null) {
+														clf.save_weights(weights_save_path)
+															.then(res => {
+																console.log('SERVER: All done, disconnecting database now')
+																resolve();
+															})
+													}
+													else {
+														console.log('SERVER: weights_save_path not given/invalid, disconnecting database now')
 														resolve();
-
-													})
-												}
-												else {
-													console.log('SERVER: weights_save_path not given/invalid, disconnecting database now')
-													resolve();
-												}
+													}
+												})
 											})
 											.then(() => {
 												mongoose.disconnect()
+												console.log('SERVER: Disconnected from mongodb')
 											})
 											.catch(err=>{
 												console.log(err)

@@ -6,3 +6,4 @@
 6. remove delays
 7. repeatedly pressing save button cause unexpected behaviour
 8. Use lemmatizer, stemmer etc in tokenizer
+9. Check if intent classifier trains on one intent only. I doubt if it trains with one intent using categorical crossentropy and softmax.

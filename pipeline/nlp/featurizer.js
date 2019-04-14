@@ -106,11 +106,11 @@ class Vectorizer{
   		await new Promise(resolve => {
   			fs.readFile(path,(err, data)=>{
 				if(err)
-					throw new Error('SERVER: Error while loading vocab');
+					throw new Error('SERVER: Error while loading featurizer vocab');
 				this.vocab = JSON.parse(data)
 				this.isTrained = true;
 				this.vocabLength = Object.keys(this.vocab).length;
-				console.log("SERVER: Vocab loaded successfully")
+				console.log("SERVER: Featurizer Vocab loaded successfully")
 				resolve();
 	  		});
   		})
@@ -122,7 +122,7 @@ class Vectorizer{
   			fs.writeFile(path,JSON.stringify(this.vocab),(err)=>{
 				if(err)
 					throw new Error('SERVER: Error while saving vocab');
-				console.log('SERVER: Vocab saved successfully')
+				console.log('SERVER: Featurizer Vocab saved successfully')
 				resolve();
 			})
   		})
