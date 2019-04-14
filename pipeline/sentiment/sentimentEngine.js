@@ -16,7 +16,7 @@ function getTokenizer() {
 class SentimentAnalysis {
     // change default dataset path
     constructor(datasetPath='/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentAnalysisDataset.json') {
-        this.model = tf.sequential();   //model is sequential
+        // this.model = tf.sequential();   //model is sequential
         this.dataset = [];              //dataset object
         this.max_len = -1;              // maxlength of input string
         this.datasetPath = datasetPath; //dataset path
@@ -24,7 +24,7 @@ class SentimentAnalysis {
         this.raw_corpus = [];           // raw sentences in dataset
         this.corpus = [];               // corpus to cleaned sentences
         this.vocab = {};                // vocabulary
-        this.vocabLength = 1;           // length of vocabulary
+        this.vocabLength = 0;           // length of vocabulary
         this.threshold = 20;            // threshold for not taking those words which occurs in dataset less than 20 times
         this.embedding_matrix = [];     // weights for embedding layer
         this.history = null;
@@ -86,8 +86,8 @@ class SentimentAnalysis {
                 //checking if key is in vocab or not
                 if(e.key in this.vocab)
                     continue;
-                this.vocabLength++;
-                this.vocab[e.key] = this.vocabLength;
+                    this.vocabLength++;
+                    this.vocab[e.key] = this.vocabLength;
             }
         }
     }
@@ -126,7 +126,7 @@ class SentimentAnalysis {
                 if(j in this.vocab)
                     temp.push(this.vocab[j]);
                 else
-                    temp.push(this.vocabLength+1);
+                    temp.push(this.vocabLength);
             }
             if(max_len_input<count)
                 max_len_input = count;
@@ -161,7 +161,8 @@ class SentimentAnalysis {
             fs.readFile(path, (err, data) => {
                 if(err)
                     throw new Error('SERVER: Error while loading glove word vector');
-                this.embedding_matrix = JSON.parse(data);
+                const weight = JSON.parse(data);
+                this.embedding_matrix = tf.tensor2d(weight, [this.vocabLength+1, 100]);
                 resolve();
             })
         })
@@ -170,34 +171,40 @@ class SentimentAnalysis {
     // training the model
     async train(X, y) {
         // console.log(this.embedding_matrix)
-        // this.model.add(tf.layers.embedding({
-        //     inputDim: this.vocabLength,
-        //     outputDim: 100,
-        //     weights: [this.embedding_matrix],
-        //     inputLength: this.max_len,
-        //     trainable: false,
-        // }));
-        this.model.add(tf.layers.dense({
-            inputShape: [this.max_len],
+        const model = tf.sequential();
+        model.add(tf.layers.embedding({
+            inputDim: this.vocabLength+1,
+            outputDim: 100,
+            weights: [this.embedding_matrix],
+            inputLength: this.max_len,
+            trainable: false,
+        }));
+        // model.add(tf.layers.lstm({
+        //     units: 128,
+        // }))
+        model.add(tf.layers.flatten())
+        model.add(tf.layers.dense({
+            // inputShape: [this.max_len],
             units: 64,
-            activation: 'sigmoid',
+            activation: 'relu',
         }))
-        this.model.add(tf.layers.dense({
+        model.add(tf.layers.dense({
             units: 1,
             activation: 'softmax',
         }));
-        this.model.compile({
+        model.compile({
             optimizer: tf.train.adam(),
             loss: 'binaryCrossentropy',
             metrics: ['accuracy']
         });
-        this.history = await this.model.fit(X, y, {
+        console.log(model.summary())
+        this.history = await model.fit(X, y, {
             epochs: 2,
             batchSize: 32,
             validationSplit: 0.2,
             callbacks: {
                 onEpochEnd: async (epoch, logs) => {
-                    console.log(tf.memory().numTensors + " tensors");
+                    // console.log(tf.memory().numTensors + " tensors");
                     console.log(epoch + logs);
 
                 }
@@ -229,16 +236,19 @@ async function senti() {
     console.log('1');
     await a.readDataset();
     a.buildCorpus();
-    a.buildVocab();    
+    a.buildVocab(); 
     a.tokenize();
     a.padding();
-    // a.saveVocab('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentAnalysisVocab.json');
     await a.glove_embedding('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/embedding_matrix.json');
-    console.log(a.embedding_matrix.length);
-    console.log(a.embedding_matrix[0].length);
+    // console.log(a.vocab)
+    // console.log(a.vocabLength);
+    // console.log(a.embedding_matrix.shape);
+    
     console.log("training start");
     const [X, y] = a.convert2Tensor();
+    console.log(X.shape+'   '+ y.shape)
     await a.train(X, y);
+    // a.saveVocab('/Users/manis/Desktop/customer-query-resolution-chatbot/pipeline/train/data/sentimentAnalysisVocab.json');
 }
 
 a = senti();
