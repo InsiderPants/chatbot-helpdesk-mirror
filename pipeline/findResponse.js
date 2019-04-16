@@ -14,7 +14,8 @@ function fallbackIntent(result){
 async function findResponse(customerQuery,pipeline){
 	// Passing through NLP Engine
 	// Result object
-	let threshold = 0.3;
+	let intentThreshold = 0.3;
+	let sentimentThreshold = 0.3;
 	var result = {
 		"text":customerQuery,
 		"sentiment":null,
@@ -29,12 +30,12 @@ async function findResponse(customerQuery,pipeline){
 	// console.log("SERVER: Entities for query : ",entities);
 
 	// Intent Classification
-	classifiedResult = await pipeline.intentClassifier.predict(customerQuery);
-	result['intent'] = await classifiedResult['intent'];
-	result['confidence'] = await classifiedResult['confidence'];
+	intentClassifiedResult = await pipeline.intentClassifier.predict(customerQuery);
+	result['intent'] = intentClassifiedResult['intent'];
+	result['confidence'] = intentClassifiedResult['confidence'];
 
 	// Passing through Sentiment Engine
-	// result['sentiment'] = await pipeline.sentimentEngine(result['text']);
+	result['sentiment'] = await pipeline.sentimentEngine.predict(customerQuery);
 
 	// Search Database using intent for actions and reply
 	await intentsDB.findOne({'intent':result['intent']},(err,intent)=>{
@@ -49,9 +50,14 @@ async function findResponse(customerQuery,pipeline){
 	        	}
 	        	else{
 	       			// intent exists
-	       			if(result['confidence']<threshold){
+	       			if(result['confidence']<intentThreshold){
 	       				result = fallbackIntent(result);
-	       			}else{
+	       			}
+	       			else if(result['sentiment']<sentimentThreshold){
+	       				result['reply'] = ["I feel it's better to redirect you to human operator right away"]
+						result['actions'] = ['initiate_handoff']
+	       			}
+	       			else{
 	       				result['reply'] = intent.reply;
 	        			result['actions'] = intent.actions;
 	       			}

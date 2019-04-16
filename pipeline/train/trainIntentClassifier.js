@@ -6,8 +6,8 @@ const intentClassifier = require('../nlp/intentClassifier');
 
 // Config
 config = {
-	vocab_load_path:__dirname+'/data/vocab.txt',
-	weights_save_path:__dirname+'/data/weights'
+	vocab_load_path:__dirname+'/data/intentclassifier/vocab.txt',
+	weights_save_path:__dirname+'/data/intentclassifier/'
 }
 
 // Train classifier and save

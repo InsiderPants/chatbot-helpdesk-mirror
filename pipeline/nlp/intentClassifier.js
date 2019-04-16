@@ -42,6 +42,8 @@ class NeuralNetwork{
 	  	});
 	  	this.history = await this.model.fit(features, labels, {
 	  		epochs: 5,
+	  		batchSize: 32,
+            validationSplit: 0.2,
 	  		callbacks: {
 		      	onEpochEnd: async (epoch, logs) => {
 					  console.log(epoch)
@@ -125,15 +127,15 @@ class NeuralNetwork{
 				// trimming array to length of max_len
 				corpus[0] = corpus[0].slice(0,this.max_len)
 			}
-		}	
+		}
 	}
 	async load_weights(weights_load_path){
 		if(this.isTrained)
 			console.log("SERVER: Warning: The model is already trained. Overwriting previous weights")
-		this.model =  await tf.loadLayersModel('file://'+weights_load_path+"/model.json");
+		this.model =  await tf.loadLayersModel('file://'+weights_load_path+"model.json");
 		console.log("SERVER: Intent Classifier Model weights loaded successfully");
 		let p1 = new Promise(resolve=>{
-			fs.readFile(weights_load_path+'/intentDict.txt',(err, data)=>{
+			fs.readFile(weights_load_path+'intentDict.txt',(err, data)=>{
 				if(err)
 					throw new Error('SERVER: Error while loading Intent Dictionary');
 				this.intentDict = JSON.parse(data);
@@ -142,7 +144,7 @@ class NeuralNetwork{
 	  		});
 		})
 		let p2 = new Promise(resolve=>{
-			fs.readFile(weights_load_path+'/modelData.txt',(err, data)=>{
+			fs.readFile(weights_load_path+'modelData.txt',(err, data)=>{
 				if(err)
 					throw new Error('SERVER: Error while loading Model data');
 				let thingsToLoad = JSON.parse(data);
@@ -168,7 +170,7 @@ class NeuralNetwork{
 		const saveResult = await this.model.save('file://'+weights_save_path);
 		console.log("SERVER: Model weights saved successfully");
 		await new Promise(resolve => {
-  			fs.writeFile(weights_save_path+'/intentDict.txt',JSON.stringify(this.intentDict),(err)=>{
+  			fs.writeFile(weights_save_path+'intentDict.txt',JSON.stringify(this.intentDict),(err)=>{
 				if(err)
 					throw new Error('SERVER: Error while saving Intent Dictionary');
 				console.log('SERVER: Intent Dictionary saved successfully')
@@ -178,7 +180,7 @@ class NeuralNetwork{
 				max_len:this.max_len,
 				num_classes:this.num_classes
 			}
-			fs.writeFile(weights_save_path+'/modelData.txt',JSON.stringify(modelData),(err)=>{
+			fs.writeFile(weights_save_path+'modelData.txt',JSON.stringify(modelData),(err)=>{
 				if(err)
 					throw new Error('SERVER: Error while saving Model data');
 				console.log('SERVER: Model data saved successfully')
