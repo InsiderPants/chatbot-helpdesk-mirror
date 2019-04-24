@@ -10,6 +10,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Snackbar from '@material-ui/core/Snackbar';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import ErrorIcon from '@material-ui/icons/Error';
 import { withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 //actions
@@ -35,7 +37,11 @@ const styles = theme => ({
     },
     registerText: {
         textDecoration: 'none',
-    }
+    }, 
+    error: {
+        backgroundColor: theme.palette.error.dark,
+        margin: theme.spacing.unit,
+    },
 })
 
 const theme = createMuiTheme({
@@ -148,7 +154,7 @@ class RenderLoginForm extends React.Component {
                 .catch(err => {
                     this.setState({
                         snackbarToggle: true,
-                        snackbarMessage: 'Error sending login axios request'
+                        snackbarMessage: '  Error sending login axios request'
                     })
                 });
         }
@@ -217,15 +223,24 @@ class RenderLoginForm extends React.Component {
                     </Button>
                 </form>
                 <Snackbar
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    open={this.state.snackbarToggle}
-                    onClose={this.closeSnackbar}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
                     }}
+                    open={this.state.snackbarToggle}
                     autoHideDuration={4000}
-                    message={<span id="message-id">{this.state.snackbarMessage}</span>}
-                />
+                    onClose={this.closeSnackbar}
+                >
+                    <SnackbarContent
+                        className={classes.error}
+                        message={
+                            <span id="client-snackbar" style={{ display: 'flex', alignItems: 'center' }}>
+                                <ErrorIcon className={classes.icon}/>
+                                {this.state.snackbarMessage}
+                            </span>
+                        }
+                    />
+                </Snackbar>
             </div>
         );
     }
