@@ -6,7 +6,7 @@ const featurizer = require('../nlp/featurizer');
 
 // Config
 config = {
-	vocab_save_path:__dirname+'/data/vocab.txt'
+	vocab_save_path:__dirname+'/data/intentclassifier/vocab.txt'
 }
 
 // Train featurizer and save
