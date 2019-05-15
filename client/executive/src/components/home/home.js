@@ -10,11 +10,10 @@ import Body from '../body/body';
 class Home extends React.Component {
 
     render() {
-        //console.log(this.props.executive.isAuthenticated)
         return(
             <div>
                 {
-                    //checking if executive is authencated or not
+                    // Checking if executive is authenticated or not
                     localStorage.getItem('AccessToken') !== null ?
                     <Body />
                     :
@@ -25,17 +24,16 @@ class Home extends React.Component {
     }
 }
 
-//connecting to redux
+// Connecting to redux
 const mapStateToProps = (state) => {
     return {
         executive: state.executive
     };
 };
 
+// Mapping dispatch to props
 const mapDispatchToProps = (dispatch) => {
-    return {
-
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

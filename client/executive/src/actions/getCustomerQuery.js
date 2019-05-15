@@ -1,7 +1,4 @@
-//importing packages
-import io from 'socket.io-client';
-
-//importing types
+// Importing types
 import {
     GET_ERRORS,
     GET_USER_QUERY_FROM_BACKEND,
@@ -10,16 +7,15 @@ import {
     LOADING_QUERY
 } from './types';
 
-//getting customer query from backend
-export const getCustomerQuery = (data, socket, dispatch) => {
-    console.log(data)
-    let newSocket = io(socket.io.uri+'/api/executiveGetResolution')
-    // console.log(newSocket)
+// Sending executive answer/response to backend
+export const sendExecutiveResponse = (data, socket, dispatch) => {
     dispatch((dispatcher) => {
+        // Save executive answer/response in redux state
         dispatcher({
             type: GET_EXECUTIVE_ANSWER,
             payload: data.message,
         });
+        // Save executive answer/response with tag into convo array in redux state
         dispatcher({
             type: SAVE_CHAT,
             payload: {
@@ -27,33 +23,41 @@ export const getCustomerQuery = (data, socket, dispatch) => {
                 message: data.message,
             }
         });
+        // Set loading to true for spinner
         dispatcher({
             type: LOADING_QUERY,
         });
+        // Send executive answer/response to backend and from there to customer
+        socket.emit('executive', {...data, id: 'executive'})
+    });
+};
 
-        //conetion to newSocket io
-        newSocket.on('executive', (data) => {
-            console.log(data);//just for checking
-            dispatcher({
-                type: GET_USER_QUERY_FROM_BACKEND,
-                payload: data.message,
-            });
-            dispatcher({
-                type: SAVE_CHAT,
-                payload: {
-                    tag: 'user',
-                    message: data.message,
-                }
-            });
-        })
-        //sending executive chat
-        newSocket.emit('executive', {...data, id: 'executive'})
-        //catching errors
-        newSocket.on('error', (err) => {
-            dispatcher({
-                type: GET_ERRORS,
-                payload: (err.response) ? err : "Unknown Error Occured",
-            });
-        })
+// Getting customer query/response from backend
+export const getCustomerQuery = (data, dispatch) => {
+    dispatch((dispatcher) => {
+        // Save customer query/response in redux state and set loading to false to stop spinner
+        dispatcher({
+            type: GET_USER_QUERY_FROM_BACKEND,
+            payload: data.message,
+        });
+        // Save customer query/response with tag into convo array in redux state
+        dispatcher({
+            type: SAVE_CHAT,
+            payload: {
+                tag: 'user',
+                message: data.message,
+            }
+        });
+    });
+};
+
+// Getting error from backend
+export const getError = (err, dispatch) => {
+    dispatch((dispatcher) => {
+        // Set error in redux state
+        dispatcher({
+            type: GET_ERRORS,
+            payload: (err.response) ? err : "Unknown Error Occured",
+        });
     });
 };
