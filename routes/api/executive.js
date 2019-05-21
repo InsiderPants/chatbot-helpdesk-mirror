@@ -31,6 +31,11 @@ module.exports = (app, io) => {
 			console.log(data);
 			socket.emit('customer', data)
 		})
+
+		setInterval(() => {
+			socket.emit('executive', {message: 'testing', id: 'customer'})
+		}, 2000);
+
 		// Collecting Customer Query and Sending to Executive
 		socket.on('customer', (data) => {
 			console.log(data);
