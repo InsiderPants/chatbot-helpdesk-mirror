@@ -44,7 +44,7 @@ class App extends Component {
     render(){
         return(
             <Provider store={store}>
-                <Router>
+                <Router basename='executive/'>
                     <div>
                         <Switch>
                             <Route exact path='/login' component={Login} />

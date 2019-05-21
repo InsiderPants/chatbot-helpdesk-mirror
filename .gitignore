@@ -9,3 +9,4 @@ client/customer/build
 package-lock.json
 pipeline/train/data/
 pipeline/train/data/vocab.txt
+.vscode
