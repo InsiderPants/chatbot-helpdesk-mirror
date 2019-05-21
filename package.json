@@ -1,26 +1,32 @@
 {
-  "name": "customer-query-resolution-chatbot",
+  "name": "chatbot-helpdesk",
   "version": "1.0.0",
-  "description": "customer-query-resolution-chatbot",
+  "description": "chatbot-helpdesk",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon server.js"
+    "server": "nodemon server.js",
+    "customer-install": "npm install --prefix client/customer",
+    "executive-install": "npm install --prefix client/executive",
+    "customer-build": "npm run build --prefix client/customer",
+    "executive-build": "npm run build --prefix client/executive",
+    "heroku-postbuild": "npm run customer-install && npm run executive-install && npm run customer-build && npm run executive-build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dabasajay/customer-query-resolution-chatbot.git"
+    "url": "git+https://github.com/dabasajay/chatbot-helpdesk.git"
   },
   "author": "Manish, Prashant, Raghav, Ayush, Ajay",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dabasajay/customer-query-resolution-chatbot/issues"
+    "url": "https://github.com/dabasajay/chatbot-helpdesk/issues"
   },
-  "homepage": "https://github.com/dabasajay/customer-query-resolution-chatbot#readme",
+  "homepage": "https://github.com/dabasajay/chatbot-helpdesk#readme",
   "dependencies": {
     "@tensorflow/tfjs-node": "^1.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "concurrently": "^4.1.0",
     "express": "^4.16.4",
     "http": "0.0.0",
     "jsonwebtoken": "^8.5.1",

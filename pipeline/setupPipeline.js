@@ -21,29 +21,30 @@ async function setupPipeline(){
 	// Load NER
 	pipeline['ner'] = null;
 	// Load Intent Classifier
-	return intentClassifier(train=false,
-				weights_load_path=config.weights_load_path,
-				vocab_load_path=config.vocab_load_path,
-				weights_save_path=null)
-			.then(intentClassifier=>{
-				pipeline['intentClassifier'] = intentClassifier;
-				// Load Sentiment Classifier
-				return sentimentEngine(train=false,
-						dataset_path=null,
-						embeddings_path=null,
-						weights_save_path=null,
-						weights_load_path=config.weights_load_path_sentiment)
-					.then(sentimentClassifier=>{
-						pipeline['sentimentEngine'] = sentimentClassifier;
-						return pipeline;
-					})
-					.catch(err=>{
-						console.log('SERVER: Error while loading sentiment engine')
-					});
-			})
-			.catch(err=>{
-				console.log('SERVER: Error while loading intent classifier')
-			});
+	// return intentClassifier(train=false,
+	// 			weights_load_path=config.weights_load_path,
+	// 			vocab_load_path=config.vocab_load_path,
+	// 			weights_save_path=null)
+	// 		.then(intentClassifier=>{
+	// 			pipeline['intentClassifier'] = intentClassifier;
+	// 			// Load Sentiment Classifier
+	// 			return sentimentEngine(train=false,
+	// 					dataset_path=null,
+	// 					embeddings_path=null,
+	// 					weights_save_path=null,
+	// 					weights_load_path=config.weights_load_path_sentiment)
+	// 				.then(sentimentClassifier=>{
+	// 					pipeline['sentimentEngine'] = sentimentClassifier;
+	// 					return pipeline;
+	// 				})
+	// 				.catch(err=>{
+	// 					console.log('SERVER: Error while loading sentiment engine')
+	// 				});
+	// 		})
+	// 		.catch(err=>{
+	// 			console.log('SERVER: Error while loading intent classifier')
+	// 		});
+	return pipeline
 }
 
 module.exports = setupPipeline

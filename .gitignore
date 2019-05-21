@@ -7,6 +7,7 @@ client/customer/node_modules
 client/customer/coverage
 client/customer/build
 package-lock.json
+pipeline/test.js
 pipeline/train/data/
 pipeline/train/data/vocab.txt
 .vscode

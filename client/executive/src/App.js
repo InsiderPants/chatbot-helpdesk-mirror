@@ -22,21 +22,21 @@ import {setCurrentUser,signOutUser} from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 import store from './store';
 
-// Check for Token
+// Check for token in local storage
 if(localStorage.AccessToken){
-  // set auth token header auth
+  // Set auth token header auth
   setAuthToken(localStorage.AccessToken);
-  // decode token and get user info and expiration
+  // Decode token and get user info and expiration
   const decoded = jwt_decode(localStorage.AccessToken);
   // Set current user
   store.dispatch(setCurrentUser(decoded));
-  // check for expired token
+  // Check for expired token
   const currentTime = Date.now()/1000;
   if(decoded.exp < currentTime){
     // Logout user
     store.dispatch(signOutUser());
-    // redirect to login
-    window.location.href = '/login';
+    // Redirect to login
+    window.location.href = 'executive/login';
   }
 }
 
@@ -55,6 +55,7 @@ class App extends Component {
                             <PrivateRoute exact path='/training' component={Training} />
                             <PrivateRoute exact path='/analytics' component={Analytics} />
                             <PrivateRoute exact path='/account' component={Account} />
+                            {/* Default route */}
                             <Route component={Login} />
                         </Switch>
                     </div>

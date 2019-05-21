@@ -21,19 +21,19 @@ const mongoose = require("mongoose"),
 const intentsDBSchema = new Schema({
 	intent:{
 		type: String,
-		required: true
+		required: 'Intent is required'
 	},
 	examples:{
 		type: Array,
-		required: true
+		required: 'Examples are required'
 	},
 	reply:{
 		type: Array,
-		required: true
+		required: 'Reply is required'
 	},
 	actions:{
 		type: Array,
-		required: true
+		required: 'Actions are required'
 	},
 	isTrained:{
 		type: Boolean,

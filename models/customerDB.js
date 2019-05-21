@@ -5,15 +5,15 @@ const mongoose = require("mongoose"),
 const customerSchema = new Schema({
 	name:{
 		type: String,
-		required: true
+		required: 'Name is required'
 	},
 	email:{
 		type: String,
-		required: true
+		required: 'Email is required'
 	},
 	contact:{
 		type: String,
-		required: true
+		required: 'Contact is required'
 	},
 	visitCounter:{
 		type: Number,
