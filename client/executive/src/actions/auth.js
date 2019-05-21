@@ -1,4 +1,4 @@
-//importing types
+// Importing libraries & types
 import {
     LOGIN_EXECUTIVE,
     LOGOUT_EXECUTIVE,
@@ -6,9 +6,10 @@ import {
     GET_ERRORS
 } from './types';
 import jwt_decode from 'jwt-decode';
+// Utilities
 import setAuthToken from '../utils/setAuthToken';
 
-//action for executive login
+// Action for executive login
 export const loginUser = (data, dispatch) => {
     dispatch((dispatcher) => {
         dispatcher({
@@ -18,13 +19,13 @@ export const loginUser = (data, dispatch) => {
                 email: data.email
             }
         });
-        // it stores it as string
+        // Store login token as string in local storage
         localStorage.setItem('AccessToken', data.accessToken);
-        // set token to auth header to send it to server in every request
-        // instead of doing it manually, we create a function authActions
+        // Set token to auth header to send it to server in every request
+        // Instead of doing it manually, we create a function authActions
         // that automatically attach token to auth header of request
         setAuthToken(data.accessToken);
-        // decode token to get user data to get email and name
+        // Decode token to get user data
         const decoded = jwt_decode(data.accessToken);
         // Set current user
         dispatch(setCurrentUser(decoded));
@@ -32,7 +33,7 @@ export const loginUser = (data, dispatch) => {
 };
 
 export const invalidLogin = (data,dispatch)=>{
-    // In case of invalid login/any error during login, set error set
+    // In case of invalid login/any error during login, set error
     dispatch((dispatcher) => {
         dispatcher({
             type: GET_ERRORS,
@@ -49,6 +50,7 @@ export const setCurrentUser = (decoded)=>{
     }
 }
 
+// Action for executive logout using logout button
 export const signOutUserButton = (dispatch) => {
     dispatch((dispatcher) => {
         dispatcher({
@@ -63,7 +65,8 @@ export const signOutUserButton = (dispatch) => {
     dispatch(setCurrentUser({}));
 };
 
-//action for executive logout for app.js
+// Action for executive logout for app.js (during app loading)
+// Doing same thing as `signOutUserButton` above but just requires different syntax
 export const signOutUser = () => (dispatch) => {
     dispatch({
         type: LOGOUT_EXECUTIVE,

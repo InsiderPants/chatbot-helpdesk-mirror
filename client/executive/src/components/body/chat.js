@@ -14,10 +14,9 @@ import Fab from '@material-ui/core/Fab';
 import RenderChat from './renderChat';
 
 //action
-import { getCustomerQuery } from '../../actions/getCustomerQuery';
+import { sendExecutiveResponse, getCustomerQuery, getError } from '../../actions/getCustomerQuery';
 
-// ESTABLISHING SOCKET CONNECTION TO THE SERVER ----
-let socket = io('http://localhost:8000');
+var _API_ENDPOINT_FOR_SOCKET = 'http://localhost:8000/api/executiveGetResolution';
 
 //CSS
 const styles = theme => ({
@@ -68,9 +67,8 @@ class Chat extends Component {
         this.state = {
             message: '',
         }
-
         this.chatContainer = React.createRef();
-
+        this.socket = io(_API_ENDPOINT_FOR_SOCKET);
         this.onSendEnterPress = this.onSendEnterPress.bind(this);
         this.onSend = this.onSend.bind(this);
         this.handelMessageFieldChange = this.handelMessageFieldChange.bind(this);
@@ -79,9 +77,9 @@ class Chat extends Component {
     onSendEnterPress(event){
         if(event.key === 'Enter'){
             if(this.state.message.length !== 0){
-                this.props.getCustomerQuery({
+                this.props.sendExecutiveResponse({
                     message: this.state.message
-                });
+                },this.socket);
                 this.setState({message: ''});
             }
             event.preventDefault();
@@ -90,9 +88,9 @@ class Chat extends Component {
 
     onSend(event) {
         if(this.state.message.length !== 0) {
-            this.props.getCustomerQuery({
+            this.props.sendExecutiveResponse({
                 message: this.state.message
-            });
+            },this.socket);
             this.setState({
                 message: ""
             });
@@ -111,6 +109,23 @@ class Chat extends Component {
         this.chatContainer.current.scrollTop = this.chatContainer.current.scrollHeight;
     }
     
+    componentDidMount(){
+        // Attaching socket handlers
+        // For getting customer query/response from backend
+        this.socket.on('executive', (data) => {
+            this.props.getCustomerQuery(data)
+        })
+        // For getting error from backend
+        this.socket.on('error', (err) => {
+            this.props.getError(err)
+        })
+    }
+
+    componentWillUnmount(){
+        // Removing socket handlers
+        this.socket.off('executive')
+    }
+
     render() {
         const {classes} = this.props;
         const initialMessage = "Hi there! I'm "+this.props.executive.name+", how can I help you today?";
@@ -168,7 +183,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getCustomerQuery: (data) => getCustomerQuery(data, socket, dispatch)
+        sendExecutiveResponse: (data, socket) => sendExecutiveResponse(data, socket, dispatch),
+        getCustomerQuery: (data) => getCustomerQuery(data, dispatch),
+        getError: (err) => getError(err, dispatch)
     };
 };
 

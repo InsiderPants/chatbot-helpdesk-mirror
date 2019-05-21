@@ -14,20 +14,21 @@ const express = require("express"),
 
 // Body Parser middleware to parse request
 app.use(bodyParser.urlencoded({extended:false}));
-app.use(bodyParser.json()) // if there's a json object in request, it'll populate it
-
-// Connecting to database
-const db = require('./config/keys.js').mongoURI;
-mongoose.connect(db,{useNewUrlParser:true})
-		.then(()=> console.log("SERVER: Connected to database in server.js"))
-		.catch((err)=>console.log("SERVER: Error connecting with mongodb in server.js"));
-
+// If there's a json object in request, it'll populate it
+app.use(bodyParser.json())
+/*
+	*Executive authentication
+*/
 // Passport middleware
 app.use(passport.initialize());
 // Passport Config
 require('./utils/validateApiRequestExe')(passport);
-
+/*
+	*Static serving with express
+*/
+// Serve this directory for `domain.xx/executive`
 app.use('/executive', express.static(path.join(__dirname, 'client/executive/build')));
+// Serve this directory for rest
 app.use(express.static(path.join(__dirname, 'client/customer/build')));
 
 // node clusters

@@ -2,10 +2,10 @@
 import {combineReducers} from 'redux';
 import errorReducer from './errorReducer';
 import resolutionReducer from './resolutionReducer';
-import executiveReducer from './executiveReducer';
+import executiveProfileReducer from './executiveProfileReducer';
 
 export default combineReducers({
   chat: resolutionReducer,
-  executive: executiveReducer,
+  executive: executiveProfileReducer,
   errors: errorReducer
 });

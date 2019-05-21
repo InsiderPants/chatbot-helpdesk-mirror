@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 
 //importing components
-import Chat from '../chat/chat';
+import Chat from './chat';
 import Navbar from '../navbar/navbar';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
