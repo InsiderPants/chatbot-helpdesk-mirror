@@ -8,6 +8,7 @@ const express = require("express"),
 	  passport = require('passport'),
 	  io = require('socket.io')(server),
 	  bodyParser = require('body-parser'),
+	  path = require('path'),
 	  setupPipeline = require("./pipeline/setupPipeline");
 
 // Body Parser middleware to parse request
@@ -25,6 +26,14 @@ app.use(passport.initialize());
 // Passport Config
 require('./utils/validateApiRequestExe')(passport);
 
+app.use('/executive', express.static(path.join(__dirname, 'client/executive/build')));
+app.use(express.static(path.join(__dirname, 'client/customer/build')));
+
+
+// app.get('/', (req,res) => {
+// 	res.status(200).json({a: 'hello'});
+// })
+
 // setup nlp and sentiment engine pipeline only once, when server starts
 // and use pipeline for inference only
 setupPipeline()
@@ -39,9 +48,17 @@ setupPipeline()
 		const signup = require("./routes/userAuth/signup.js");
 
 		// Home
-		app.get('/',(req,res)=>{
-			res.send("You've reached Server Home!");
+		// app.get('/',(req,res)=>{
+		// 	res.send('HELLO')
+		// })
+		app.get('/executive/*', (req, res) => {
+			res.sendFile(path.join(__dirname, 'client/executive/build', 'index.html'))
 		})
+
+		app.get('*', (req, res) => {
+			res.sendFile(path.join(__dirname, 'client/customer/build', 'index.html'))
+		})
+
 
 		// Chatbot API
 		chatbotAPI
@@ -53,9 +70,9 @@ setupPipeline()
 		app.use('/auth', signup);
 
 		// For any unexpected get route
-		app.get('*',(req,res)=>{
-			res.status(404).send("Page Not Found");
-		})
+		// app.get('*',(req,res)=>{
+		// 	res.status(404).send("Page Not Found");
+		// })
 		// For any unexpected post route
 		app.post('*',(req,res)=>{
 			res.status(404).send("Page Not Found");
@@ -69,5 +86,5 @@ setupPipeline()
 		})
 	})
 	.catch(err=>{
-		throw new Error("SERVER: Error loading pipeline. Cannot start server in server,js");
+		throw new Error("SERVER: Error loading pipeline. Cannot start server in server.js");
 	})
